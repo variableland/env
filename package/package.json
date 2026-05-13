@@ -1,6 +1,6 @@
 {
   "name": "@vlandoss/env",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple helper to define environment-based configuration",
   "homepage": "https://github.com/variableland/env/tree/main/package#readme",
   "bugs": {
