@@ -35,7 +35,7 @@ const serverLoader = createServerFn({ method: "GET" })
 
 const clientLoader = browserCollections.docs.createClientLoader({
   component({ toc, frontmatter, default: MDX }, props: { url: string }) {
-    const markdownUrl = `${props.url}.mdx`;
+    const markdownUrl = props.url === "/" ? "/index.mdx" : `${props.url}.mdx`;
     const githubUrl = `https://github.com/variableland/env/blob/main/docs/content/docs${props.url}.mdx`;
 
     return (

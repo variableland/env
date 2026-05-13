@@ -3,5 +3,5 @@
   "name": "vlandoss-env-docs",
   "compatibility_date": "2026-05-01",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "@tanstack/react-start/server-entry"
+  "main": "./src/server.ts"
 }
