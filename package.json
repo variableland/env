@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "docs": "pnpm --filter=docs dev",
     "build": "turbo build",
     "test": "turbo test",
     "test:types": "turbo test:types",

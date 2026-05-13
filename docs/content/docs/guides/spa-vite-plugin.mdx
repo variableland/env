@@ -1,0 +1,101 @@
+---
+title: SPA — Vite plugin (#config)
+description: Strictest SPA wiring. Each build artifact contains only its own env's config file — others are absent from the bundle entirely.
+icon: Boxes
+---
+
+## When to use this
+
+- Pure SPA built with Vite.
+- You want **each build artifact to ship only its env's config** — other env files must not be present in the deployment at all.
+- You're OK with one `vite build --mode <env>` per environment.
+
+If a single multi-env build is acceptable, the simpler [dynamic-import pattern](/guides/spa-dynamic-import) is the default.
+
+## Reference example
+
+[`examples/spa-vite-plugin/`](https://github.com/variableland/env/tree/main/examples/spa-vite-plugin) — React + Vite SPA importing config through the `#config` alias.
+
+## Wiring
+
+```ts title="vite.config.ts"
+import react from "@vitejs/plugin-react";
+import { envConfig } from "@vlandoss/env/vite";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [react(), envConfig()],
+});
+```
+
+```ts title="src/env/schema.ts"
+import { type Config, schema } from "@vlandoss/env";
+import * as e from "@vlandoss/env/zod";
+import * as z from "zod";
+
+export const Env = schema({
+  api: { BASE_URL: z.url(), TIMEOUT_MS: z.coerce.number().int().positive().default(5000) },
+  feature: { ANALYTICS: e.bool.default(false) },
+  build: { LABEL: z.string().min(1) },
+});
+
+export type EnvConfig = Config<typeof Env>;
+```
+
+```ts title="src/env/config.d.ts"
+declare module "#config" {
+  import type { EnvConfig } from "./schema.ts";
+  const config: EnvConfig;
+  export default config;
+}
+```
+
+```ts title="src/env/index.ts"
+import config from "#config";
+import { defineEnv } from "@vlandoss/env";
+import { Env } from "./schema.ts";
+
+export const env = defineEnv({ schema: Env, config });
+```
+
+```ts title="src/config/production.ts"
+import type { EnvConfig } from "../env/schema.ts";
+
+export default {
+  api: { BASE_URL: "https://api.example.com", TIMEOUT_MS: 8000 },
+  feature: { ANALYTICS: true },
+  build: { LABEL: "prod-build-marker-b71c" },
+} satisfies EnvConfig;
+```
+
+## Building per env
+
+```bash title="terminal"
+vite build --mode development
+vite build --mode production
+vite build --mode staging
+```
+
+Each command produces a separate `dist/` whose bundle contains **only** the matching `config/*.ts`.
+
+## What each piece does
+
+- **`envConfig()` plugin** registers `resolve.alias["#config"]` pointing at `[src/]config/<mode>.{ts,mts,js,mjs,json}` (same discovery algorithm as `loadConfig`). It also injects `__ENV_NAME__ = JSON.stringify(mode)` so `envName()` returns the right mode in the browser — see [Custom modes](/guides/custom-modes).
+- **`#config.d.ts`** declares the type of the alias for TypeScript. Vite resolves the runtime import; this just stops `tsc` from complaining.
+- **`defineEnv({ schema, config })`** runs synchronously here — `config` is a plain object, not a Promise.
+
+## Plugin options
+
+```ts
+envConfig({
+  alias: "#config",       // default
+  cwd: process.cwd(),     // default — base directory for discovery
+});
+```
+
+When no file matches the current mode, the alias resolves to a virtual module that throws **only if `#config` is actually imported** — so tools that introspect the Vite config (Vitest's IDE-driven discovery, third-party plugins) don't trip over a config-time error.
+
+## Tradeoffs
+
+- **One build per env.** Your CI/CD needs to run `vite build --mode <env>` for every environment you ship, and produce a separate artifact for each.
+- **No runtime switching.** Once built, the artifact is locked to its env. If you need to swap envs without rebuilding, use the [dynamic-import pattern](/guides/spa-dynamic-import).

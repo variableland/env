@@ -1,0 +1,197 @@
+---
+title: SSR / SSG
+description: Server-rendered apps where the server has access to secrets and the browser receives only a public subset, injected into HTML via <ClientEnv />.
+icon: LayoutTemplate
+---
+
+## When to use this
+
+- Server-rendered app (React Router, TanStack Start, Next, Remix, …).
+- You need to split env into:
+  - **server-only** values (secrets, DB URLs) — never sent to the browser.
+  - **public** values (API base URL, app name) — safe to ship and read isomorphically.
+- You don't want to maintain two parallel schemas.
+
+## Reference examples
+
+- [`examples/ssr-react-router/`](https://github.com/variableland/env/tree/main/examples/ssr-react-router) — React Router 7, config loaded with `loadConfig({ schema, pattern })`.
+- [`examples/ssr-tanstack-start/`](https://github.com/variableland/env/tree/main/examples/ssr-tanstack-start) — TanStack Start, config loaded via the `#config` alias.
+
+The two differ only in **how config is loaded**. The public/server split and the `<ClientEnv />` bridge are identical.
+
+## Schemas — compose, don't duplicate
+
+```ts title="app/env/schema.public.ts"
+import { schema } from "@vlandoss/env";
+import * as z from "zod";
+
+export const PublicEnv = schema({
+  API_BASE_URL: z.url(),
+  APP_NAME: z.string().min(1),
+});
+```
+
+```ts title="app/env/schema.server.ts"
+import { type Config, schema } from "@vlandoss/env";
+import * as e from "@vlandoss/env/zod";
+import * as z from "zod";
+import { PublicEnv } from "./schema.public.ts";
+
+export const ServerEnv = schema({
+  server: { PORT: e.port, HOST: e.host },
+  secrets: {
+    DATABASE_URL: z.string().min(1),
+    SESSION_SECRET: e.secret,
+  },
+  public: PublicEnv,  // composed in — schema() inlines the inner shape
+});
+
+export type ServerEnvConfig = Config<typeof ServerEnv>;
+```
+
+`PublicEnv` is the single source of truth for everything the browser may see. The server schema embeds it under `public.*`. See [Schema composition](/guides/schema-composition) for what's happening at the type level.
+
+## Server env — load + validate
+
+The wiring varies by how you read the config from disk. Both end the same way: a typed `env` object containing both server secrets and the public subset.
+
+### With `loadConfig` (no Vite plugin)
+
+```ts title="app/env/env.server.ts"
+import { defineEnv } from "@vlandoss/env";
+import { loadConfig } from "@vlandoss/env/node";
+import { ServerEnv } from "./schema.server.ts";
+
+const config = await loadConfig({ schema: ServerEnv, pattern: "app/config/{env}.ts" });
+
+export const env = defineEnv({
+  schema: ServerEnv,
+  config,
+  vars: {
+    secrets: {
+      DATABASE_URL: "DATABASE_URL",
+      SESSION_SECRET: "SESSION_SECRET",
+    },
+    public: null,  // flat branch — see below
+  },
+});
+```
+
+### With the `#config` alias (uses `envConfig()` plugin)
+
+```ts title="src/env/env.server.ts"
+import config from "#config";
+import { defineEnv } from "@vlandoss/env";
+import { ServerEnv } from "./schema.server.ts";
+
+export const env = defineEnv({
+  schema: ServerEnv,
+  config,
+  vars: {
+    secrets: { DATABASE_URL: "DATABASE_URL", SESSION_SECRET: "SESSION_SECRET" },
+    public: null,
+  },
+});
+```
+
+```ts title="vite.config.ts"
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import react from "@vitejs/plugin-react";
+import { envConfig } from "@vlandoss/env/vite";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [tanstackStart(), react(), envConfig()],
+});
+```
+
+### Why `vars: { public: null }`?
+
+`PublicEnv` leaves are bare (`API_BASE_URL`, `APP_NAME`). Inside `ServerEnv` they live under the `public` branch. Without an override, the convention would map them to `PUBLIC_API_BASE_URL` / `PUBLIC_APP_NAME`. `null` declares the branch as flat — no prefix is added, so server and client read the **same** env-var names. See [Env-var naming](/concepts/env-var-naming).
+
+## Public env — isomorphic
+
+```ts title="app/env/env.public.ts"
+import { defineEnv } from "@vlandoss/env";
+import { PublicEnv } from "./schema.public.ts";
+
+export const env = defineEnv({ schema: PublicEnv });
+```
+
+This file works on **both** server and client:
+
+- On the server, `defineEnv`'s default `runtimeEnv` is `process.env`.
+- In the browser, it's `window.__env` if set, otherwise the JSON inside `<script id="env" type="application/json">` (written by `<ClientEnv />`).
+
+## The hydration bridge — `<ClientEnv />`
+
+The server picks the public-safe values and renders them into a `<script>` tag. `readEnv()` (and therefore `defineEnv` with no `runtimeEnv` override) parses that script in the browser.
+
+### React Router
+
+```tsx title="app/root.tsx"
+import { ClientEnv } from "@vlandoss/env/react";
+import { Outlet, useLoaderData } from "react-router";
+import { env as serverEnv } from "./env/env.server.ts";
+
+export const loader = () => ({
+  runtimeEnv: {
+    ENV: serverEnv.$name,
+    API_BASE_URL: serverEnv.public.API_BASE_URL,
+    APP_NAME: serverEnv.public.APP_NAME,
+  },
+});
+
+export default function App() {
+  const { runtimeEnv } = useLoaderData<typeof loader>();
+  return (
+    <>
+      <ClientEnv runtimeEnv={runtimeEnv} />
+      <Outlet />
+    </>
+  );
+}
+```
+
+### TanStack Start
+
+```tsx title="src/routes/__root.tsx"
+import { createRootRoute, Outlet, Scripts } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { ClientEnv } from "@vlandoss/env/react";
+
+const getPublicEnv = createServerFn({ method: "GET" }).handler(async () => {
+  const { env } = await import("../env/env.server.ts");
+  return {
+    ENV: env.$name,
+    API_BASE_URL: env.public.API_BASE_URL,
+    APP_NAME: env.public.APP_NAME,
+  };
+});
+
+export const Route = createRootRoute({
+  loader: () => getPublicEnv(),
+  component: RootComponent,
+});
+
+function RootComponent() {
+  const runtimeEnv = Route.useLoaderData();
+  return (
+    <html>
+      <body>
+        <ClientEnv runtimeEnv={runtimeEnv} />
+        <Outlet />
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+```
+
+In both cases, `ClientEnv` should render **before** any client component that reads from `env.public.*`.
+
+## Tradeoffs
+
+- `<ClientEnv />` only applies to SSR/SSG — in a pure SPA there's no server pass to inject the script. Use one of the SPA recipes instead.
+- The values you pass to `runtimeEnv` are visible in the page source. Treat the list as a public allowlist; never include secrets.
+- The server schema is the source of truth — if you grow `PublicEnv`, the only place to update is the `runtimeEnv` object passed to `<ClientEnv />`.

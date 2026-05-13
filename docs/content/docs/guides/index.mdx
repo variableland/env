@@ -1,0 +1,34 @@
+---
+title: Overview
+description: Recipes for wiring @vlandoss/env in each runtime — Node, SPA, SSR — and for the patterns that come up once you compose schemas across files.
+icon: Map
+---
+
+Each guide is a self-contained recipe. Start with the one that matches **where your code runs**.
+
+## By runtime
+
+| Guide                                                              | When to use                                                                                  |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| [Node (`loadConfig`)](/guides/node-loadconfig)                | Long-running Node server reading config files from disk.                                     |
+| [SPA — dynamic import](/guides/spa-dynamic-import)            | Pure SPA built with Vite. Bundler emits one chunk per env; browser downloads the right one.  |
+| [SPA — Vite plugin (`#config`)](/guides/spa-vite-plugin)      | Pure SPA where you want each build artifact to contain **only** its env (max isolation).     |
+| [SSR / SSG](/guides/ssr)                                      | Server-rendered React app. Public values hydrate the browser via `<ClientEnv />`.            |
+
+## By task
+
+| Guide                                                              | When to use                                                                                  |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| [Schema composition](/guides/schema-composition)              | Share a contract across server and client by inlining one `schema()` inside another.         |
+| [Custom modes (`staging`, `qa`)](/guides/custom-modes)        | Surface non-default Vite modes to browser code. Explains why the plugin is required.         |
+
+## How a guide is structured
+
+Every guide follows the same shape:
+
+1. **When to use it** — 1–2 bullets so you know whether to keep reading.
+2. **Minimal working snippet** — copy-pasteable.
+3. **What each piece does** — short explanation per moving part.
+4. **Tradeoffs / limits** — when this recipe stops being a good fit.
+
+Signatures and option tables live in the [API reference](/api-reference), not in the guides.

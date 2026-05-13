@@ -1,0 +1,92 @@
+---
+title: SPA — dynamic import
+description: Recommended SPA wiring. Vite splits each per-environment config into its own chunk; the browser downloads only the one matching the current mode.
+icon: Globe
+---
+
+## When to use this
+
+- Pure SPA built with Vite (no SSR).
+- One build artifact that serves every environment is acceptable — the browser only **downloads** the chunk it needs.
+- You want the simplest wiring.
+
+If you need each build artifact to contain **only** its env's config (others not present at all), use the [Vite plugin pattern](/guides/spa-vite-plugin) instead.
+
+## Reference example
+
+[`examples/spa-vite-dynamic/`](https://github.com/variableland/env/tree/main/examples/spa-vite-dynamic) — React + Vite SPA loading config via dynamic `import()`.
+
+## Wiring
+
+```ts title="src/env/schema.ts"
+import { type Config, schema } from "@vlandoss/env";
+import * as e from "@vlandoss/env/zod";
+import * as z from "zod";
+
+export const Env = schema({
+  api: {
+    BASE_URL: z.url(),
+    TIMEOUT_MS: z.coerce.number().int().positive().default(5000),
+  },
+  feature: { ANALYTICS: e.bool.default(false) },
+  build: { LABEL: z.string().min(1) },
+});
+
+export type EnvConfig = Config<typeof Env>;
+```
+
+```ts title="src/config/development.ts"
+import type { EnvConfig } from "../env/schema.ts";
+
+export default {
+  api: { BASE_URL: "http://localhost:3001/dev-api", TIMEOUT_MS: 2000 },
+  feature: { ANALYTICS: false },
+  build: { LABEL: "spa-dynamic-dev-7c21" },
+} satisfies EnvConfig;
+```
+
+```ts title="src/env/index.ts"
+import { defineEnv, envName } from "@vlandoss/env";
+import { Env } from "./schema.ts";
+
+export const env = await defineEnv({
+  schema: Env,
+  config: import(`../config/${envName()}.ts`),
+});
+```
+
+```ts title="vite.config.ts"
+import react from "@vitejs/plugin-react";
+import { envConfig } from "@vlandoss/env/vite";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [react(), envConfig()],
+});
+```
+
+## What each piece does
+
+- **Dynamic `import()` in `defineEnv`**: Vite sees the template literal and emits one chunk per matching file under `../config/`. `defineEnv` auto-unwraps the ESM module namespace (no manual `.default`).
+- **`await defineEnv(...)`**: when `config` is a Promise, `defineEnv` returns `Promise<Env<S>>`. You can also skip the `await` and let consumers handle the Promise.
+- **`envConfig()` plugin**: in this pattern you don't import `#config`, so why bring the plugin? Because it also injects `__ENV_NAME__` at build time, which is **the only way `envName()` can return non-`production` values in the browser** — Vite forces `NODE_ENV="production"` regardless of `--mode`. Without the plugin, `envName()` in browser code would always say `"production"` after a build. See [`envName()`](/concepts/env-name) and [Custom modes](/guides/custom-modes).
+
+## Hardening chunk filenames
+
+By default, Vite names code-split chunks predictably (`assets/development.js`, `assets/staging.js`, …). If you don't want a curious user to fetch other envs by guessing filenames, hash-only the names:
+
+```ts title="vite.config.ts"
+export default defineConfig({
+  plugins: [react(), envConfig()],
+  build: {
+    rollupOptions: {
+      output: { chunkFileNames: "assets/[hash].js" },
+    },
+  },
+});
+```
+
+## Tradeoffs
+
+- All env configs are **shipped** in the deployment as separate chunks. The browser only downloads one, but the others exist as static assets. Use the [Vite plugin pattern](/guides/spa-vite-plugin) if that's not acceptable.
+- The browser does an extra request for the config chunk after the main JS — usually negligible, but it does block `defineEnv` from resolving until that chunk lands.

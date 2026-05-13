@@ -1,0 +1,51 @@
+---
+title: Introduction
+description: Contract-first environment configuration. Define your env once with Standard Schema, merge per-environment config with process.env, and read typed values from every runtime.
+icon: BookOpen
+---
+
+`@vlandoss/env` lets you describe every variable your app expects in a single Standard Schema contract (Zod, Valibot, ArkType…), then resolves it against per-environment config files and `process.env` at boot. Missing or malformed values fail the process before user code ever reads them.
+
+The core is **runtime-agnostic** — Node, Bun, Deno, browsers, Workers, Edge. File-based config loading lives in a separate, opt-in entrypoint so the core stays portable.
+
+## The shape of a typical setup
+
+```ts title="src/env/schema.ts"
+import { schema, type Config } from "@vlandoss/env";
+import * as z from "zod";
+
+export const Env = schema({
+  server: { PORT: z.coerce.number().int().positive(), HOST: z.string() },
+  db: { URL: z.string() },
+});
+
+export type EnvConfig = Config<typeof Env>;
+```
+
+```ts title="src/env/index.ts"
+import { defineEnv } from "@vlandoss/env";
+import { loadConfig } from "@vlandoss/env/node";
+import { Env } from "./schema.ts";
+
+const config = await loadConfig(Env);
+export const env = defineEnv({ schema: Env, config });
+```
+
+`env.server.PORT` is `number`. `env.$name` is `"development" | "production" | …`. Reading anything not in the schema is a compile error.
+
+## Entrypoints
+
+| Entrypoint              | Runtime                              | What it gives you                                              |
+| ----------------------- | ------------------------------------ | -------------------------------------------------------------- |
+| `@vlandoss/env`         | Any                                  | `schema`, `defineEnv`, `envName`, `readEnv`, types             |
+| `@vlandoss/env/node`    | Node                                 | `loadConfig` — reads `config/<envName>.{ts,…}` from disk       |
+| `@vlandoss/env/vite`    | Build time                           | `envConfig()` plugin — `#config` alias + `__ENV_NAME__` inject |
+| `@vlandoss/env/react`   | SSR / SSG                            | `<ClientEnv />` — serializes runtime env into HTML             |
+| `@vlandoss/env/zod`     | Any                                  | Opinionated Zod primitives (`port`, `host`, `bool`, …)         |
+
+## Where to go next
+
+- **[Getting started](/getting-started/installation)** — install and wire up a minimal Node app.
+- **[Concepts](/concepts/overview)** — the mental model: resolution order, env-var naming, `envName()` precedence.
+- **[Guides](/guides)** — recipes per runtime (Node, SPA, SSR) and per task (composition, custom modes).
+- **[API reference](/api-reference)** — every export, organized by entrypoint.

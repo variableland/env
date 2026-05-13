@@ -1,0 +1,49 @@
+---
+title: Resolution order
+description: How defineEnv merges defaults, config files, and environment variables — and what happens when a required leaf has no value.
+icon: Layers
+---
+
+For every leaf in the schema, `defineEnv` looks in this order. **Later sources win.**
+
+1. **`defaults`** — inline fallbacks passed to `defineEnv({ defaults: … })`.
+2. **`config`** — the loaded per-environment object (typically from `loadConfig` or the `#config` alias).
+3. **Environment variable** — read from `process.env` on the server or `window.__env` (set by `<ClientEnv />`) in the browser.
+
+```ts
+defineEnv({
+  schema: Env,
+  defaults: { server: { PORT: 3000 } },  // 1
+  config,                                // 2
+  // runtimeEnv defaults to process.env or window.__env  // 3
+});
+```
+
+## What happens when nothing matches
+
+If a leaf is required and has no value from any source, `defineEnv` throws naming the dot-path:
+
+```text
+Invalid value at "server.PORT": Required
+```
+
+Schema-level defaults (`z.string().default(…)`) still apply normally; `defaults` in `defineEnv` is for values you only know at wiring time, not at schema-definition time.
+
+## What `runtimeEnv` is for
+
+By default `runtimeEnv` is `process.env` (server) or `window.__env` (browser, populated by `<ClientEnv />` or `readEnv()`). Override it when you need to:
+
+- Inject a fixture in tests.
+- Read from a non-default global (e.g. `Deno.env.toObject()`).
+- Combine multiple sources before merging.
+
+```ts
+defineEnv({ schema: Env, config, runtimeEnv: { ...process.env, ...overrides } });
+```
+
+## Type checking of inputs
+
+- `config` is checked against `Config<typeof Env>` — the **input** type of every leaf (pre-coercion).
+- `defaults` is checked against the **output** type (post-coercion), because defaults skip the schema's coercion step.
+
+So `db: { URL: 42 }` in `defaults` is a compile error if `URL` is `z.string()`, even though the schema would accept `42` after coercion in `config`.

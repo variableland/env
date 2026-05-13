@@ -1,0 +1,24 @@
+---
+title: Overview
+description: Every export of @vlandoss/env, organized by the entrypoint you import it from.
+icon: Map
+---
+
+The package is split into five entrypoints. Each page here documents one of them — signature, options, return type, and a minimal usage snippet. For "when to reach for this" prose, follow the link back to the guide that uses it.
+
+## Entrypoints
+
+| Page                                                  | Import                          | Lives in                                  |
+| ----------------------------------------------------- | ------------------------------- | ----------------------------------------- |
+| [Core](/api-reference/core)                      | `@vlandoss/env`                 | Any runtime — schema, defineEnv, envName  |
+| [Node](/api-reference/node)                      | `@vlandoss/env/node`            | Node — `loadConfig`                       |
+| [Vite](/api-reference/vite)                      | `@vlandoss/env/vite`            | Vite config — `envConfig()` plugin        |
+| [React](/api-reference/react)                    | `@vlandoss/env/react`           | SSR / SSG — `<ClientEnv />`               |
+| [Zod primitives](/api-reference/zod)             | `@vlandoss/env/zod`             | Any — opinionated single-purpose schemas  |
+| [Types](/api-reference/types)                    | `@vlandoss/env`                 | All exported type aliases                 |
+
+## Conventions used in this section
+
+- Tables list options in declaration order.
+- Sync vs. async behavior is marked explicitly on overloaded functions.
+- Each export page ends with a "See also" linking to the relevant guide and concept page.

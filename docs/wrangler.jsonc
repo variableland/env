@@ -1,0 +1,7 @@
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "vlandoss-env-docs",
+  "compatibility_date": "2026-05-01",
+  "pages_build_output_dir": "./dist",
+  "compatibility_flags": ["nodejs_compat"]
+}

@@ -1,0 +1,5 @@
+.source
+.tanstack
+.wrangler
+dist
+node_modules

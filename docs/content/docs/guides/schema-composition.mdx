@@ -1,0 +1,68 @@
+---
+title: Schema composition
+description: Share a contract across files by passing one schema() result as a branch of another. The inner shape is inlined recursively — no wrapper type, no runtime cost.
+icon: Combine
+---
+
+## When to use this
+
+- You want one contract reused in multiple places — e.g. a `PublicEnv` that's the source of truth for both server and client.
+- You want to keep the contract definitions colocated with the code that owns them, then assemble them at the edges.
+
+## How composition works
+
+`schema()` accepts another `schema()` result as a branch. The inner shape is inlined recursively:
+
+```ts
+import { schema } from "@vlandoss/env";
+import * as z from "zod";
+
+const PublicEnv = schema({ API_BASE_URL: z.url() });
+
+const ServerEnv = schema({
+  secrets: { DATABASE_URL: z.string().min(1) },
+  public: PublicEnv,
+  //       ^ inlined — ServerEnv.shape.public is the same shape as PublicEnv.shape
+});
+```
+
+`ServerEnv` ends up with a `public` branch identical to `PublicEnv` — no wrapper, no special "embedded schema" runtime concept. From `defineEnv`'s point of view it's just a plain nested branch.
+
+## Reference example
+
+See the [SSR guide](/guides/ssr) for the full pattern with two files (`schema.public.ts` and `schema.server.ts`) and a flat env-var binding on the composed branch.
+
+## Combining with `vars: null`
+
+When you inline a public schema into a server schema, the leaves under it sit at `public.*` — but you usually want them bound to the **same** env-var names whether read from server code or browser code. `vars: { public: null }` tells `defineEnv` to skip the branch prefix:
+
+```ts
+import { defineEnv } from "@vlandoss/env";
+
+defineEnv({
+  schema: ServerEnv,
+  config,
+  vars: {
+    secrets: { DATABASE_URL: "DATABASE_URL" },
+    public: null,  // API_BASE_URL stays API_BASE_URL (not PUBLIC_API_BASE_URL)
+  },
+});
+```
+
+See [Env-var naming](/concepts/env-var-naming) for the full rules around `vars`.
+
+## When to compose vs. when to duplicate
+
+| Situation                                          | Compose | Duplicate |
+| -------------------------------------------------- | :-----: | :-------: |
+| Same values used isomorphically (server + client)  |    ✓    |           |
+| Same values across multiple server packages        |    ✓    |           |
+| Two contracts that just happen to share a leaf name |        |     ✓     |
+| Values whose validation rules differ per consumer  |        |     ✓     |
+
+Composing tightly couples both consumers to a single contract — that's the point when the values are genuinely the same thing.
+
+## Limits
+
+- Composition is **shape inlining**, not class-style inheritance. There's no override; if `ServerEnv.public.API_BASE_URL` needs to differ from `PublicEnv.API_BASE_URL`, they're different leaves and should live in different contracts.
+- `Config<typeof ServerEnv>` only sees the inlined shape — the type system has no record of "this branch came from `PublicEnv`". That's deliberate: it keeps the typing rules simple.

@@ -1,0 +1,15 @@
+{
+  "title": "Guides",
+  "icon": "BookMarked",
+  "pages": [
+    "index",
+    "---By runtime---",
+    "node-loadconfig",
+    "spa-dynamic-import",
+    "spa-vite-plugin",
+    "ssr",
+    "---By task---",
+    "schema-composition",
+    "custom-modes"
+  ]
+}
