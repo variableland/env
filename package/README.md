@@ -12,12 +12,12 @@ pnpm add @vlandoss/env zod
 
 ## Documentation
 
-📚 **[vlandoss-env-docs.pages.dev](https://vlandoss-env-docs.pages.dev)**
+📚 **[env.oss.variable.land](https://env.oss.variable.land)**
 
-- [Getting started](https://vlandoss-env-docs.pages.dev/getting-started/installation)
-- [Concepts](https://vlandoss-env-docs.pages.dev/concepts/overview) — mental model, resolution order, env-var naming
-- [Guides](https://vlandoss-env-docs.pages.dev/guides) — recipes for Node, SPA, SSR
-- [API reference](https://vlandoss-env-docs.pages.dev/api-reference)
+- [Getting started](https://env.oss.variable.land/getting-started/installation)
+- [Concepts](https://env.oss.variable.land/concepts/overview) — mental model, resolution order, env-var naming
+- [Guides](https://env.oss.variable.land/guides) — recipes for Node, SPA, SSR
+- [API reference](https://env.oss.variable.land/api-reference)
 
 ## Examples
 
