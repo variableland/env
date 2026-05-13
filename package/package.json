@@ -13,6 +13,16 @@
   "license": "MIT",
   "author": "rcrd <rcrd@variable.land>",
   "type": "module",
+  "keywords": [
+    "env",
+    "environment",
+    "config",
+    "configuration",
+    "typed",
+    "standard-schema",
+    "zod",
+    "vite"
+  ],
   "exports": {
     ".": "./src/lib/index.ts",
     "./node": "./src/node.ts",
