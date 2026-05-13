@@ -1,5 +1,12 @@
 # @vlandoss/env
 
+## 0.1.1
+
+### Patch Changes
+
+- [#2](https://github.com/variableland/env/pull/2) [`f2d9b91`](https://github.com/variableland/env/commit/f2d9b9179327dab8d3e1d0e77a7766840244501e) Thanks [@rqbazan](https://github.com/rqbazan)! - - Fix `homepage` URL in `package.json` after flattening the monorepo (`packages/env` → `package`).
+  - Add `keywords` to `package.json` for npm discoverability.
+
 ## 0.1.0
 
 ### Minor Changes
