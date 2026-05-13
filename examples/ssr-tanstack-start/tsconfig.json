@@ -1,0 +1,7 @@
+{
+  "extends": "@vlandoss/config/ts/react",
+  "compilerOptions": {
+    "types": ["vite/client"]
+  },
+  "include": ["src/**/*", "test/**/*", "vite.config.ts", "playwright.config.ts"]
+}

@@ -1,0 +1,101 @@
+{
+  "name": "@vlandoss/env",
+  "version": "0.0.0",
+  "description": "A simple helper to define environment-based configuration",
+  "homepage": "https://github.com/variableland/env/tree/main/packages/env#readme",
+  "bugs": {
+    "url": "https://github.com/variableland/env/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/variableland/env.git"
+  },
+  "license": "MIT",
+  "author": "rcrd <rcrd@variable.land>",
+  "type": "module",
+  "exports": {
+    ".": "./src/lib/index.ts",
+    "./node": "./src/node.ts",
+    "./vite": "./src/vite.ts",
+    "./react": "./src/react.tsx",
+    "./zod": "./src/zod.ts"
+  },
+  "files": [
+    "dist",
+    "src",
+    "!src/**/__tests__",
+    "!src/**/*.test.*"
+  ],
+  "scripts": {
+    "build": "rr build:lib",
+    "test": "vitest run",
+    "test:browser": "vitest --browser.headless=false",
+    "prepublishOnly": "pnpm build",
+    "test:types": "rr tsc"
+  },
+  "dependencies": {
+    "@standard-schema/spec": "1.1.0",
+    "lodash.merge": "4.6.2",
+    "type-fest": "5.4.4"
+  },
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./node": {
+        "types": "./dist/node.d.mts",
+        "default": "./dist/node.mjs"
+      },
+      "./vite": {
+        "types": "./dist/vite.d.mts",
+        "default": "./dist/vite.mjs"
+      },
+      "./react": {
+        "types": "./dist/react.d.ts",
+        "default": "./dist/react.js"
+      },
+      "./zod": {
+        "types": "./dist/zod.d.ts",
+        "default": "./dist/zod.js"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@types/lodash.merge": "4.6.9",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitest/browser-playwright": "4.1.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "vite": "catalog:",
+    "vitest-browser-react": "2.1.0",
+    "zod": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19",
+    "vite": ">=5",
+    "zod": "^4"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    },
+    "zod": {
+      "optional": true
+    }
+  }
+}

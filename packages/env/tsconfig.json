@@ -1,0 +1,3 @@
+{
+  "extends": ["@vlandoss/config/ts/react"]
+}

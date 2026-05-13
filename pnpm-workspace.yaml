@@ -1,0 +1,19 @@
+packages:
+  - packages/*
+  - examples/*
+
+catalog:
+  "@types/node": 24.12.4
+  "@types/react": 19.2.14
+  "@types/react-dom": 19.2.3
+  "@vitejs/plugin-react": 6.0.1
+  react: 19.2.4
+  react-dom: 19.2.4
+  typescript: 6.0.3
+  vite: 8.0.11
+  zod: 4.3.6
+
+onlyBuiltDependencies:
+  - '@biomejs/biome'
+  - lefthook
+  - esbuild

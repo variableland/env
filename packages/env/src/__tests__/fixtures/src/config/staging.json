@@ -1,0 +1,6 @@
+{
+  "server": {
+    "PORT": 5000,
+    "HOST": "staging.example.com"
+  }
+}

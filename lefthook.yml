@@ -1,0 +1,4 @@
+remotes:
+  - git_url: https://github.com/variableland/dx
+    configs:
+      - packages/config/src/lefthook/turborepo.yml

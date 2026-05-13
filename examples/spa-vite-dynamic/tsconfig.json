@@ -1,0 +1,4 @@
+{
+  "extends": "@vlandoss/config/ts/react",
+  "include": ["src", "test", "vite.config.ts", "playwright.config.ts"]
+}
