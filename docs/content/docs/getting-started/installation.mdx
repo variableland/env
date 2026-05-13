@@ -1,0 +1,46 @@
+---
+title: Installation
+description: Add @vlandoss/env to a project, install the peer dependencies you need, and pick which runtime entrypoints to import.
+icon: Download
+---
+
+## Install the package
+
+```bash title="terminal"
+pnpm add @vlandoss/env zod
+```
+
+Node `>=20` is required.
+
+## Peer dependencies
+
+Peers are **optional** — install only the ones whose entrypoints you import:
+
+| If you import…           | Install                  |
+| ------------------------ | ------------------------ |
+| `@vlandoss/env/zod`      | `zod@^4`                 |
+| `@vlandoss/env/vite`     | `vite@>=5`               |
+| `@vlandoss/env/react`    | `react@>=19`, `react-dom@>=19` |
+| `@vlandoss/env/node`     | _(none — Node built-ins)_ |
+
+## Available entrypoints
+
+| Entrypoint              | Use it from                                                                |
+| ----------------------- | -------------------------------------------------------------------------- |
+| `@vlandoss/env`         | Anywhere — `schema`, `defineEnv`, `envName`, `readEnv`, types              |
+| `@vlandoss/env/node`    | Node — `loadConfig` reads `[src/]config/<envName>.{ts,…}` from disk        |
+| `@vlandoss/env/vite`    | `vite.config.ts` — `envConfig()` plugin (`#config` alias + mode inject)    |
+| `@vlandoss/env/react`   | SSR / SSG render path — `<ClientEnv />` serializes env into HTML           |
+| `@vlandoss/env/zod`     | Anywhere — opinionated single-purpose Zod primitives                       |
+
+## Verify the install
+
+```bash title="terminal"
+pnpm exec tsc --noEmit
+```
+
+Types ship with the package, so type-checking works without extra setup.
+
+## Next
+
+Go to [Quickstart](/getting-started/quickstart) for a minimal Node example, or jump to [Concepts](/concepts/overview) for the mental model.

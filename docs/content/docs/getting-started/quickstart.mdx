@@ -1,0 +1,77 @@
+---
+title: Quickstart
+description: Wire a typed env in a Node app in under five minutes — schema, per-environment config files, and a validated env object you can import anywhere.
+icon: Rocket
+---
+
+A working setup has three files: the **schema** (contract), one or more **per-environment config files** (typed values), and the **wiring** (`defineEnv` + `loadConfig`).
+
+```text title="project layout"
+src/
+  env/
+    schema.ts          # the contract
+    index.ts           # wiring
+  config/
+    development.ts
+    production.ts
+```
+
+## 1. Define the schema
+
+```ts title="src/env/schema.ts"
+import { schema, type Config } from "@vlandoss/env";
+import * as z from "zod";
+
+export const Env = schema({
+  log: { LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]) },
+  server: { PORT: z.coerce.number().int().positive(), HOST: z.string() },
+  db: { URL: z.string() },
+});
+
+export type EnvConfig = Config<typeof Env>;
+```
+
+## 2. Write a per-environment config file
+
+`EnvConfig` is type-checked against the schema — typos and wrong types fail at compile time.
+
+```ts title="src/config/development.ts"
+import type { EnvConfig } from "../env/schema.ts";
+
+export default {
+  log: { LEVEL: "debug" },
+  server: { PORT: 3000, HOST: "localhost" },
+  db: { URL: "postgres://localhost/dev" },
+} satisfies EnvConfig;
+```
+
+## 3. Wire it up
+
+```ts title="src/env/index.ts"
+import { defineEnv } from "@vlandoss/env";
+import { loadConfig } from "@vlandoss/env/node";
+import { Env } from "./schema.ts";
+
+const config = await loadConfig(Env);
+export const env = defineEnv({ schema: Env, config });
+```
+
+`loadConfig(Env)` auto-discovers `[src/]config/<envName>.{ts,mts,js,mjs,json}` under `process.cwd()`. `defineEnv` then merges `config` with `process.env` and validates against the schema. If anything is missing or wrong, it throws naming the dot-path of the offending leaf.
+
+## 4. Read typed values
+
+```ts title="src/app.ts"
+import { env } from "./env/index.ts";
+
+console.log(env.server.PORT);  // number
+console.log(env.db.URL);       // string
+console.log(env.$name);        // "development" | "production" | …
+if (env.IS_PROD) { /* ... */ }
+```
+
+## Where to go next
+
+- [Concepts → Resolution order](/concepts/resolution) — how defaults, config files, and env vars combine.
+- [Concepts → Env-var naming](/concepts/env-var-naming) — the `SERVER_PORT` convention and how to override it.
+- [Guides → SPA / browser](/guides/spa-dynamic-import) — the same pattern without a file system.
+- [Guides → SSR](/guides/ssr) — splitting public values from server-only secrets.

@@ -1,8 +1,12 @@
 # env
 
+[![npm version](https://img.shields.io/npm/v/@vlandoss/env?label=%40vlandoss%2Fenv&color=blue)](https://www.npmjs.com/package/@vlandoss/env)
+[![CI](https://github.com/variableland/env/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/variableland/env/actions/workflows/ci.yml)
+[![changesets](https://img.shields.io/badge/maintained%20with-changesets-176de3.svg)](https://github.com/changesets/changesets)
+
 🌱 Contract-first environment configuration with typed schemas and per-runtime entrypoints.
 
-> Monorepo home for [`@vlandoss/env`](./package) and its examples.
+> Monorepo home for [`@vlandoss/env`](./package), its [examples](./examples), and the [documentation site](./docs).
 
 ```bash
 pnpm add @vlandoss/env
@@ -32,6 +36,7 @@ This monorepo uses [Turborepo](https://turbo.build/repo/docs):
 - `pnpm test` — run unit tests
 - `pnpm test:e2e` — run end-to-end tests (Playwright)
 - `pnpm test:types` — js & ts checks
+- `pnpm docs` — start the documentation site locally
 
 It also uses [run-run](https://github.com/variableland/dx/blob/main/packages/run-run/README.md) 🦊:
 

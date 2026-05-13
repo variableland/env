@@ -1,0 +1,98 @@
+---
+title: Env-var naming
+description: How schema paths become environment variable names, and how to override them with the `vars` option.
+icon: Tag
+---
+
+You don't map every leaf to an env-var name. By convention, each leaf binds to a name derived from its dot-path.
+
+## The convention
+
+camelCase keys are converted to `SCREAMING_SNAKE_CASE` and joined with `_`:
+
+| Schema path             | Env var                  |
+| ----------------------- | ------------------------ |
+| `server.PORT`           | `SERVER_PORT`            |
+| `db.URL`                | `DB_URL`                 |
+| `sessionCookie.PREFIX`  | `SESSION_COOKIE_PREFIX`  |
+| `db.kit.LOGGING`        | `DB_KIT_LOGGING`         |
+| `PORT` (top-level leaf) | `PORT`                   |
+
+## Per-leaf override
+
+When a leaf doesn't follow the convention, declare just the exception in `vars`:
+
+```ts
+defineEnv({
+  schema: Env,
+  vars: {
+    db: { URL: "DATABASE_URL" },  // DB_URL -> DATABASE_URL
+  },
+});
+```
+
+## Branch prefix shorthand
+
+A string at a branch level becomes the prefix for **every** leaf under it:
+
+```ts
+defineEnv({
+  schema: Env,
+  vars: {
+    db: "DATABASE",   // db.URL -> DATABASE_URL, db.LOGGING -> DATABASE_LOGGING
+  },
+});
+```
+
+## Flat branches with `null`
+
+`null` declares a flat branch — leaves under it use their own name with no prefix. Useful when composing schemas where the inner contract already uses fully-qualified names:
+
+```ts
+defineEnv({
+  schema: Env,
+  vars: {
+    server: null,     // server.PORT -> PORT, server.HOST -> HOST
+  },
+});
+```
+
+The empty string `""` is **not** accepted — `null` is the only way to declare a flat branch. This avoids the readability confusion of `""` (which looks like a missing value).
+
+## Mixed mode: branch prefix + per-leaf override
+
+Use `$` to set the branch prefix and override individual leaves at the same time:
+
+```ts
+defineEnv({
+  schema: Env,
+  vars: {
+    db: {
+      $: "DATABASE",                // branch prefix
+      LOGGING: "POSTGRES_LOGGING",  // override for this one leaf
+    },
+    public: {
+      $: null,                      // flat branch + leaf override
+      APP_NAME: "PUBLIC_APP_NAME",
+    },
+  },
+});
+```
+
+## Type safety
+
+`vars` is fully type-checked against the schema. Unknown branches, unknown leaves, non-uppercase literals, or non-string values fail at compile time:
+
+```ts
+defineEnv({
+  schema: Env,
+  vars: {
+    // @ts-expect-error 'cache' is not in the schema
+    cache: { TTL: "CACHE_TTL" },
+    server: {
+      // @ts-expect-error must be uppercase
+      PORT: "port",
+    },
+  },
+});
+```

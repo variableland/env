@@ -1,0 +1,66 @@
+---
+title: Overview
+description: The mental model behind @vlandoss/env — one contract, three runtime adapters, and a single resolved env object.
+icon: Map
+---
+
+`@vlandoss/env` is built around four ideas. Once they click, the rest of the API is small.
+
+## 1. One contract per app
+
+A **schema** declares every variable your app expects, grouped into branches. It's the only source of truth — types, validation, and env-var names all derive from it.
+
+```ts
+import { schema } from "@vlandoss/env";
+
+const Env = schema({
+  server: { PORT: z.coerce.number(), HOST: z.string() },
+  db: { URL: z.string() },
+});
+```
+
+Leaves are Standard Schema validators (Zod, Valibot, ArkType…). Branches are nested objects. Other `schema()` results can be inlined to share contracts across files.
+
+## 2. Per-environment config files, not `.env` per environment
+
+Each environment has a file (`development.ts`, `production.ts`, …) that returns a typed object matching the schema. These are **versioned defaults**, not secrets. Secrets still come from `process.env`.
+
+```ts title="src/config/production.ts"
+export default {
+  server: { PORT: 8080, HOST: "0.0.0.0" },
+} satisfies EnvConfig;
+```
+
+## 3. Env vars override config, with predictable naming
+
+At boot, `defineEnv` merges three layers — see [Resolution order](/concepts/resolution). Each leaf maps to an env-var name by convention (`server.PORT` → `SERVER_PORT`); when the convention doesn't fit, override it in `vars` — see [Env-var naming](/concepts/env-var-naming).
+
+## 4. Runtime-agnostic core, opt-in adapters
+
+The core (`@vlandoss/env`) doesn't touch the file system or the bundler. Adapters do:
+
+| Entrypoint              | Runtime           | Responsibility                                                |
+| ----------------------- | ----------------- | ------------------------------------------------------------- |
+| `@vlandoss/env`         | Any               | Schema, resolution, validation, types                         |
+| `@vlandoss/env/node`    | Node              | Load config files from disk (`loadConfig`)                    |
+| `@vlandoss/env/vite`    | Build time        | Alias `#config`, inject `__ENV_NAME__` for the browser        |
+| `@vlandoss/env/react`   | SSR / SSG         | Serialize public env into `<script id="env">` for hydration   |
+| `@vlandoss/env/zod`     | Any               | Opinionated Zod primitives (`port`, `host`, `bool`, `secret`) |
+
+You import the adapter that matches where the code runs. Pure SPA? No `/node`. No SSR? No `/react`. The core stays small.
+
+## How the pieces fit
+
+```text
+  schema()  ─┐
+             │
+  config/*  ─┼─► defineEnv() ─► env  (typed, validated)
+             │
+  process.env or window.__env ─┘
+```
+
+Read on:
+
+- [Resolution order](/concepts/resolution) — precedence of the three sources.
+- [Env-var naming](/concepts/env-var-naming) — convention and overrides.
+- [`envName()`](/concepts/env-name) — how the current environment is detected.
