@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "vite build && wrangler deploy",
     "test:types": "rr tsc"
   },
   "dependencies": {
@@ -19,6 +21,7 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.36.4",
     "@tailwindcss/vite": "4.3.0",
     "@tanstack/router-plugin": "1.167.35",
     "@types/mdx": "2.0.13",
@@ -28,6 +31,7 @@
     "@vitejs/plugin-react": "catalog:",
     "tailwindcss": "4.3.0",
     "typescript": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "wrangler": "^4.90.1"
   }
 }
