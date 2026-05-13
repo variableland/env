@@ -2,13 +2,11 @@
 
 🌱 Contract-first environment configuration with typed schemas and per-runtime entrypoints.
 
-> Monorepo home for [`@vlandoss/env`](./packages/env) and its examples.
+> Monorepo home for [`@vlandoss/env`](./package) and its examples.
 
-## Packages
-
-| Name              | Description                                                                                | Documentation                   |
-| ----------------- | ------------------------------------------------------------------------------------------ | ------------------------------- |
-| `@vlandoss/env`   | 🌱 Contract-first environment configuration with typed schemas and per-runtime entrypoints | [env](./packages/env/README.md) |
+```bash
+pnpm add @vlandoss/env
+```
 
 ## Development
 
@@ -31,10 +29,9 @@ pnpm test
 
 This monorepo uses [Turborepo](https://turbo.build/repo/docs):
 
-- `pnpm build` — build all packages
 - `pnpm test` — run unit tests
 - `pnpm test:e2e` — run end-to-end tests (Playwright)
-- `pnpm test:types` — typecheck all packages
+- `pnpm test:types` — js & ts checks
 
 It also uses [run-run](https://github.com/variableland/dx/blob/main/packages/run-run/README.md) 🦊:
 

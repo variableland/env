@@ -1,6 +1,6 @@
 # `@vlandoss/env` examples
 
-Real-world usage examples for [`@vlandoss/env`](../packages/env). Each example is a standalone workspace package with end-to-end tests (Playwright) that exercise real `env` failure modes — missing required vars, wrong types, per-mode config isolation, SSR↔client hydration drift.
+Real-world usage examples for [`@vlandoss/env`](../package). Each example is a standalone workspace package with end-to-end tests (Playwright) that exercise real `env` failure modes — missing required vars, wrong types, per-mode config isolation, SSR↔client hydration drift.
 
 | Example | Entry of `env` exercised | Stack |
 |---|---|---|
