@@ -1,5 +1,11 @@
 # @vlandoss/env
 
+## 0.1.2
+
+### Patch Changes
+
+- [#4](https://github.com/variableland/env/pull/4) [`4e05752`](https://github.com/variableland/env/commit/4e057523eed79ff2b2228d8e38a3353f811d4fba) Thanks [@rqbazan](https://github.com/rqbazan)! - Slim down package README and move full documentation to the new Fumadocs site
+
 ## 0.1.1
 
 ### Patch Changes
