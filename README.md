@@ -36,7 +36,7 @@ This monorepo uses [Turborepo](https://turbo.build/repo/docs):
 - `pnpm test` — run unit tests
 - `pnpm test:e2e` — run end-to-end tests (Playwright)
 - `pnpm test:types` — js & ts checks
-- `pnpm docs` — start the documentation site locally (http://localhost:5173)
+- `pnpm docs` — start the documentation site locally
 
 It also uses [run-run](https://github.com/variableland/dx/blob/main/packages/run-run/README.md) 🦊:
 
