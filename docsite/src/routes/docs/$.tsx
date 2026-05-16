@@ -18,6 +18,14 @@ export const Route = createFileRoute("/docs/$")({
     await clientLoader.preload(data.path);
     return data;
   },
+  head: ({ loaderData }) => ({
+    meta: loaderData
+      ? [
+          { title: `${loaderData.title} — @vlandoss/env docs` },
+          ...(loaderData.description ? [{ name: "description", content: loaderData.description }] : []),
+        ]
+      : [],
+  }),
 });
 
 const serverLoader = createServerFn({ method: "GET" })
@@ -29,6 +37,8 @@ const serverLoader = createServerFn({ method: "GET" })
     return {
       path: page.path,
       url: page.url,
+      title: page.data.title,
+      description: page.data.description,
       pageTree: await source.serializePageTree(source.getPageTree()),
     };
   });

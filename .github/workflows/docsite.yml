@@ -1,0 +1,59 @@
+name: Docsite
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "docsite/**"
+      - ".github/workflows/docsite.yml"
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+    paths:
+      - "docsite/**"
+      - ".github/workflows/docsite.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  seo:
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    env:
+      MISE_EXPERIMENTAL: "1"
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Setup mise
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+          experimental: true
+
+      - name: 📦 Install root workspace
+        run: pnpm install --frozen-lockfile
+
+      - name: 💾 Cache pnpm dlx (Unlighthouse + start-server-and-test)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pnpm/dlx
+          key: pnpm-dlx-${{ runner.os }}-unlighthouse-0.17.9-sst-3.0.5
+
+      - name: 🌐 Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: 🔎 SEO audit (Unlighthouse)
+        run: pnpm --filter docsite check:seo-ci
+
+      - name: 📤 Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unlighthouse-report
+          path: docsite/.unlighthouse/
+          retention-days: 14

@@ -1,5 +1,6 @@
 .source
 .tanstack
+.unlighthouse
 .wrangler
 dist
 node_modules

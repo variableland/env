@@ -118,6 +118,6 @@ export const WHY_POINTS = [
 export const LANDING_META = {
   version: "v0.2.0",
   githubUrl: "https://github.com/variableland/env",
-  docsHref: "/docs/getting-started/quickstart",
+  docsHref: "/docs",
   publishDate: "2026",
 } as const;
