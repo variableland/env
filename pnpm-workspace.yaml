@@ -17,3 +17,6 @@ onlyBuiltDependencies:
   - "@biomejs/biome"
   - lefthook
   - esbuild
+
+publicHoistPattern:
+  - "@total-typescript/*"
