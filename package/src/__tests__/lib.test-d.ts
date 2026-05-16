@@ -131,7 +131,7 @@ describe("defineEnv() return type overloads", () => {
     expectTypeOf(env).toEqualTypeOf<Promise<Env<typeof S>>>();
   });
 
-  test("rejects string config at compile time (use @vlandoss/env/node loadConfig instead)", () => {
+  test("rejects string config at compile time (use @vlandoss/env/fs loadConfig instead)", () => {
     // @ts-expect-error config must be an object, module namespace, or Promise
     defineEnv({ schema: S, config: "src/config/*.ts" });
   });

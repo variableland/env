@@ -1,4 +1,4 @@
-import merge from "lodash.merge";
+import { defu } from "defu";
 import { envName, readEnv } from "./runtime.ts";
 import type { DefineEnvAsyncOptions, DefineEnvSyncOptions, Env, RuntimeEnv, Schema, Shorthands, Vars } from "./types.ts";
 import { validate } from "./validate.ts";
@@ -45,7 +45,12 @@ function finalize<S extends Schema>(
   runtimeEnv: RuntimeEnv,
 ): Env<S> {
   const envOverride = resolveEnvOverride(schema.shape, vars, runtimeEnv);
-  const merged = merge({}, defaults, config, envOverride);
+  // `defu(target, ...defaults)` — first arg wins, later args fill in. This
+  // preserves the precedence env > config > defaults that lodash.merge gave
+  // us via `merge({}, defaults, config, envOverride)`. defu also deep-merges
+  // reliably across V8 isolates (Workers, Edge), where lodash's
+  // `isPlainObject` check collapses to a shallow merge.
+  const merged = defu(envOverride, config, defaults);
   const parsed = validate(schema.shape, merged);
   return { ...shorthands(envName(runtimeEnv)), ...parsed } as Env<S>;
 }

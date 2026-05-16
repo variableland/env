@@ -8,11 +8,11 @@ icon: GitBranch
 
 You run `vite build --mode staging`. Vite **forces `NODE_ENV="production"`** at build time, regardless of `--mode`. So in browser code, the default precedence of `envName()` returns `"production"` — not `"staging"`.
 
-This is independent of how you load config: it bites both [Pattern 1 (dynamic import)](/guides/spa-dynamic-import) and any browser code that calls `envName()` directly.
+This is independent of how you load config: it bites both [Pattern 1 (dynamic import)](/docs/guides/spa-dynamic-import) and any browser code that calls `envName()` directly.
 
 ## The fix
 
-The `envConfig()` plugin injects `__ENV_NAME__ = JSON.stringify(mode)` as a build-time constant. `envName()` checks `__ENV_NAME__` **before** `NODE_ENV` in its [precedence chain](/concepts/env-name), so the browser sees the mode you actually built.
+The `envConfig()` plugin injects `__ENV_NAME__ = JSON.stringify(mode)` as a build-time constant. `envName()` checks `__ENV_NAME__` **before** `NODE_ENV` in its [precedence chain](/docs/concepts/env-name), so the browser sees the mode you actually built.
 
 ```ts title="vite.config.ts"
 import { envConfig } from "@vlandoss/env/vite";
@@ -44,7 +44,7 @@ src/
     production.ts
 ```
 
-The plugin's discovery scans `[src/]config/<mode>.{ts,mts,js,mjs,json}` and pulls in the right one — same algorithm as `loadConfig` in `@vlandoss/env/node`.
+The plugin's discovery scans `[src/]config/<mode>.{ts,mts,js,mjs,json}` and pulls in the right one — same algorithm as `loadConfig` in `@vlandoss/env/fs`.
 
 ## Verifying it works
 

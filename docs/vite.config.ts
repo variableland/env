@@ -7,7 +7,4 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [cloudflare({ viteEnvironment: { name: "ssr" } }), tailwindcss(), mdx(), tanstackStart(), react()],
-  resolve: {
-    tsconfigPaths: true,
-  },
 });

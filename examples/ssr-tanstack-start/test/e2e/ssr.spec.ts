@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test";
 
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 
-test("SSR HTML contains ClientEnv script with the public env JSON", async ({ request }) => {
+test("SSR HTML contains EnvScript with the public env JSON", async ({ request }) => {
   const res = await request.get("/");
   expect(res.ok()).toBe(true);
   const html = await res.text();
@@ -48,12 +48,12 @@ test("rendered values match between server and client after hydration", async ({
   expect(hydrationErrors, hydrationErrors.join("\n")).toHaveLength(0);
 });
 
-test("ClientEnv script tag is accessible from the client DOM after hydration", async ({ page }) => {
+test("EnvScript tag is accessible from the client DOM after hydration", async ({ page }) => {
   // TanStack Start lazy-executes route modules (env.public.ts isn't imported
   // on initial load), so `window.__env` — populated by the env package's
   // `readEnv()` cache — won't be set unless the app touches it. Instead we
   // verify the contract that matters: the `<script id="env">` tag the server
-  // wrote via `<ClientEnv />` survives hydration and carries the public env
+  // wrote via `<EnvScript />` survives hydration and carries the public env
   // payload. The env package's `readEnv()` reads from this script on demand.
   await page.goto("/");
   const fromScript = await page.evaluate(() => {

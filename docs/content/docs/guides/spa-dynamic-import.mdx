@@ -10,7 +10,7 @@ icon: Globe
 - One build artifact that serves every environment is acceptable — the browser only **downloads** the chunk it needs.
 - You want the simplest wiring.
 
-If you need each build artifact to contain **only** its env's config (others not present at all), use the [Vite plugin pattern](/guides/spa-vite-plugin) instead.
+If you need each build artifact to contain **only** its env's config (others not present at all), use the [Vite plugin pattern](/docs/guides/spa-vite-plugin) instead.
 
 ## Reference example
 
@@ -69,7 +69,7 @@ export default defineConfig({
 
 - **Dynamic `import()` in `defineEnv`**: Vite sees the template literal and emits one chunk per matching file under `../config/`. `defineEnv` auto-unwraps the ESM module namespace (no manual `.default`).
 - **`await defineEnv(...)`**: when `config` is a Promise, `defineEnv` returns `Promise<Env<S>>`. You can also skip the `await` and let consumers handle the Promise.
-- **`envConfig()` plugin**: in this pattern you don't import `#config`, so why bring the plugin? Because it also injects `__ENV_NAME__` at build time, which is **the only way `envName()` can return non-`production` values in the browser** — Vite forces `NODE_ENV="production"` regardless of `--mode`. Without the plugin, `envName()` in browser code would always say `"production"` after a build. See [`envName()`](/concepts/env-name) and [Custom modes](/guides/custom-modes).
+- **`envConfig()` plugin**: in this pattern you don't import `#config`, so why bring the plugin? Because it also injects `__ENV_NAME__` at build time, which is **the only way `envName()` can return non-`production` values in the browser** — Vite forces `NODE_ENV="production"` regardless of `--mode`. Without the plugin, `envName()` in browser code would always say `"production"` after a build. See [`envName()`](/docs/concepts/env-name) and [Custom modes](/docs/guides/custom-modes).
 
 ## Hardening chunk filenames
 
@@ -88,5 +88,5 @@ export default defineConfig({
 
 ## Tradeoffs
 
-- All env configs are **shipped** in the deployment as separate chunks. The browser only downloads one, but the others exist as static assets. Use the [Vite plugin pattern](/guides/spa-vite-plugin) if that's not acceptable.
+- All env configs are **shipped** in the deployment as separate chunks. The browser only downloads one, but the others exist as static assets. Use the [Vite plugin pattern](/docs/guides/spa-vite-plugin) if that's not acceptable.
 - The browser does an extra request for the config chunk after the main JS — usually negligible, but it does block `defineEnv` from resolving until that chunk lands.

@@ -1,4 +1,4 @@
-export { CLIENT_ENV_GLOBAL_ID, CLIENT_ENV_SCRIPT_ID } from "./const.ts";
+export { ENV_GLOBAL_ID, ENV_SCRIPT_ID } from "./const.ts";
 export { defineEnv } from "./define-env.ts";
 export { envName, readEnv } from "./runtime.ts";
 export { schema } from "./schema.ts";

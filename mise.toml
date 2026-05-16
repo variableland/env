@@ -1,2 +1,85 @@
+min_version = "2025.5.0"
+experimental_monorepo_root = true
+
 [env]
+MISE_EXPERIMENTAL = "1"
 _.path = ["{{config_root}}/node_modules/.bin"]
+
+[tools]
+node = "24"
+pnpm = "10.30.3"
+
+[monorepo]
+config_roots = [
+  "examples/backend-node",
+  "examples/backend-bun",
+  "examples/backend-deno",
+  "examples/worker-cloudflare",
+  "examples/edge-nextjs",
+  "examples/spa-vite-plugin",
+  "examples/spa-vite-dynamic",
+  "examples/ssr-react-router",
+  "examples/ssr-tanstack-start",
+]
+
+[tasks.setup]
+description = "Bootstrap everything: tools, root deps, env tarball, examples, playwright"
+run = [
+  "mise install",
+  "for d in examples/*/; do mise install -C \"$d\"; done",
+  "pnpm install",
+  "mise run env:pack",
+  "for d in examples/*/; do mise -C \"$d\" run install || exit 1; done",
+  "mise run playwright:install",
+]
+
+[tasks."env:pack"]
+description = "Build @vlandoss/env and pack it into package/.local/vlandoss-env.tgz"
+dir = "{{config_root}}/package"
+sources = ["src/**/*", "package.json", "tsdown.config.ts"]
+outputs = [".local/vlandoss-env.tgz"]
+run = [
+  "pnpm build",
+  "mkdir -p .local",
+  "pnpm pack --pack-destination .local",
+  "mv .local/vlandoss-env-*.tgz .local/vlandoss-env.tgz",
+]
+
+[tasks."env:watch"]
+description = "Rebuild + repack on every change in package/src and bump examples"
+dir = "{{config_root}}/package"
+run = "pnpm dlx chokidar-cli 'src/**/*' --ignore 'dist/**' -c 'mise run env:pack && mise run examples:bump'"
+
+[tasks."examples:bump"]
+description = "Reinstall the local env tarball in every example"
+run = "for d in examples/*/; do mise -C \"$d\" run reinstall || exit 1; done"
+
+[tasks."playwright:install"]
+description = "Install Playwright chromium browser globally (one-time, idempotent)"
+run = "pnpm dlx playwright@1.59.1 install --with-deps chromium"
+
+[tasks."test:e2e"]
+description = "Run e2e suites for every example"
+depends = ["env:pack"]
+run = "for d in examples/*/; do mise -C \"$d\" run test:e2e || exit 1; done"
+
+[tasks."examples:test:static"]
+description = "JS & TS check across every example"
+depends = ["env:pack"]
+run = "for d in examples/*/; do mise -C \"$d\" run test:static || exit 1; done"
+
+[tasks.docs]
+description = "Start the docs site dev server"
+run = "pnpm --filter=docs dev"
+
+[tasks."lib:test"]
+description = "Unit tests for @vlandoss/env"
+run = "pnpm --filter=@vlandoss/env test"
+
+[tasks."lib:build"]
+description = "Build @vlandoss/env"
+run = "pnpm --filter=@vlandoss/env build"
+
+[tasks."test:static"]
+description = "JS & TS check across the workspace (package + docs)"
+run = "rr test:static"

@@ -1,0 +1,20 @@
+{
+  "name": "example-backend-bun",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@vlandoss/env": "file:../../package/.local/vlandoss-env.tgz",
+    "hono": "4.12.18",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.4",
+    "@playwright/test": "1.59.1",
+    "@types/bun": "1.3.14",
+    "@vlandoss/config": "0.2.0",
+    "@vlandoss/run-run": "0.5.3",
+    "playwright": "1.59.1",
+    "typescript": "6.0.3"
+  }
+}

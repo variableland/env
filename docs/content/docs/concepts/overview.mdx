@@ -14,16 +14,23 @@ A **schema** declares every variable your app expects, grouped into branches. It
 import { schema } from "@vlandoss/env";
 
 const Env = schema({
-  server: { PORT: z.coerce.number(), HOST: z.string() },
-  db: { URL: z.string() },
+  server: {
+    HOST: z.string(),
+    PORT: z.coerce.number().int().positive()
+  },
+  db: {
+    URL: z.string()
+  },
 });
+
+export type EnvConfig = Config<typeof Env>;
 ```
 
 Leaves are Standard Schema validators (Zod, Valibot, ArkType…). Branches are nested objects. Other `schema()` results can be inlined to share contracts across files.
 
 ## 2. Per-environment config files, not `.env` per environment
 
-Each environment has a file (`development.ts`, `production.ts`, …) that returns a typed object matching the schema. These are **versioned defaults**, not secrets. Secrets still come from `process.env`.
+Each environment has a file (`development.ts`, `production.ts`, …) that returns a typed object matching the schema. These are **versioned defaults**, not secrets. Secrets still come from your environment variables.
 
 ```ts title="src/config/production.ts"
 export default {
@@ -33,7 +40,7 @@ export default {
 
 ## 3. Env vars override config, with predictable naming
 
-At boot, `defineEnv` merges three layers — see [Resolution order](/concepts/resolution). Each leaf maps to an env-var name by convention (`server.PORT` → `SERVER_PORT`); when the convention doesn't fit, override it in `vars` — see [Env-var naming](/concepts/env-var-naming).
+At boot, `defineEnv` merges three layers — see [Resolution order](/docs/concepts/resolution). Each leaf maps to an env-var name by convention (`server.PORT` → `SERVER_PORT`); when the convention doesn't fit, override it in `vars` — see [Env-var naming](/docs/concepts/env-var-naming).
 
 ## 4. Runtime-agnostic core, opt-in adapters
 
@@ -42,25 +49,54 @@ The core (`@vlandoss/env`) doesn't touch the file system or the bundler. Adapter
 | Entrypoint              | Runtime           | Responsibility                                                |
 | ----------------------- | ----------------- | ------------------------------------------------------------- |
 | `@vlandoss/env`         | Any               | Schema, resolution, validation, types                         |
-| `@vlandoss/env/node`    | Node              | Load config files from disk (`loadConfig`)                    |
+| `@vlandoss/env/fs`      | Node / Bun / Deno | Load config files from disk (`loadConfig`)                    |
 | `@vlandoss/env/vite`    | Build time        | Alias `#config`, inject `__ENV_NAME__` for the browser        |
 | `@vlandoss/env/react`   | SSR / SSG         | Serialize public env into `<script id="env">` for hydration   |
 | `@vlandoss/env/zod`     | Any               | Opinionated Zod primitives (`port`, `host`, `bool`, `secret`) |
 
-You import the adapter that matches where the code runs. Pure SPA? No `/node`. No SSR? No `/react`. The core stays small.
+You import the adapter that matches where the code runs. Pure SPA? No `/fs`. No SSR? No `/react`. The core stays small.
+
+<Callout type="info" title="Workers, Edge, and other isolate runtimes">
+  The core never touches `process` directly. On runtimes where `process` isn't
+  defined (Cloudflare Workers without `nodejs_compat`, some Edge isolates),
+  pass the environment source explicitly:
+
+  ```ts
+  export default {
+    async fetch(req, env, ctx) {
+      const resolved = defineEnv({ schema: Env, runtimeEnv: env });
+      // ...
+    },
+  };
+  ```
+
+  On Node, Bun, Deno and most Edge runtimes that polyfill `process.env`, the
+  default `readEnv()` picks it up automatically — no `runtimeEnv` needed.
+</Callout>
 
 ## How the pieces fit
 
-```text
-  schema()  ─┐
-             │
-  config/*  ─┼─► defineEnv() ─► env  (typed, validated)
-             │
-  process.env or window.__env ─┘
-```
+<Mermaid
+  chart={`flowchart LR
+  S["schema()"]
+  C["config/&lt;envName&gt;"]
+  V["Environment variables"]
+  D(["defineEnv()"])
+  E[["env<br/>(typed, validated)"]]
+  S --> D
+  C --> D
+  V --> D
+  D --> E`}
+/>
+
+- **`schema()`** — the contract. Every variable, branch, and Standard Schema validator your app expects.
+- **`config/<envName>`** — versioned defaults for the active environment, type-checked against the schema.
+- **Environment variables** — the runtime layer. `process.env` on the server, `window.__env` (hydrated by `<EnvScript />`) in the browser. Always wins over config.
+- **`defineEnv()`** — merges the three sources in [resolution order](/docs/concepts/resolution), validates each leaf, and throws if anything is missing or wrong.
+- **`env`** — the fully typed, validated object you import everywhere. Reading anything not in the schema is a compile error.
 
 Read on:
 
-- [Resolution order](/concepts/resolution) — precedence of the three sources.
-- [Env-var naming](/concepts/env-var-naming) — convention and overrides.
-- [`envName()`](/concepts/env-name) — how the current environment is detected.
+- [Resolution order](/docs/concepts/resolution) — precedence of the three sources.
+- [Env-var naming](/docs/concepts/env-var-naming) — convention and overrides.
+- [`envName()`](/docs/concepts/env-name) — how the current environment is detected.

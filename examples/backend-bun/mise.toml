@@ -1,0 +1,38 @@
+[tools]
+bun = "1.2.4"
+node = "24"  # for `rr` and `playwright` (node-based tooling)
+
+[env]
+_.path = ["{{config_root}}/node_modules/.bin"]
+
+[tasks.install]
+description = "Install deps (bun)"
+sources = [
+  "package.json",
+  "bun.lock",
+  "{{config_root}}/../../package/.local/vlandoss-env.tgz",
+]
+run = [
+  "mise run //:env:pack",
+  "bun install",
+]
+
+[tasks.reinstall]
+description = "Force-reinstall the env tarball"
+run = [
+  "mise run //:env:pack",
+  "bun install --force",
+]
+
+[tasks.start]
+depends = ["install"]
+run = "bun src/server.ts"
+
+[tasks."test:e2e"]
+depends = ["install"]
+run = "playwright test"
+
+[tasks."test:static"]
+description = "JS & TS check"
+depends = ["install"]
+run = "rr test:static"

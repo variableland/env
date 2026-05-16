@@ -1,0 +1,3 @@
+{
+  "vitest.configSearchPatternInclude": "**/vitest.config.{ts,js,mjs,cjs,cts,mts}"
+}

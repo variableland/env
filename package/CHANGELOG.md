@@ -19,7 +19,7 @@
 
 - [`42c6eb7`](https://github.com/variableland/env/commit/42c6eb7ea8f81b3a315bc52235fb52856c893eeb) Thanks [@rqbazan](https://github.com/rqbazan)! - Initial public release of `@vlandoss/env` under the `@vlandoss` scope.
 
-  Contract-first environment configuration with typed schemas and per-runtime entrypoints:
+  Contract-first environment configuration with typed schemas:
 
   - `@vlandoss/env` — runtime-agnostic core (`schema`, `defineEnv`, `envName`, `readEnv`).
   - `@vlandoss/env/node` — `loadConfig` with auto-discovery or `{env}` template.

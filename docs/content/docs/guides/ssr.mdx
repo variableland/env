@@ -1,6 +1,6 @@
 ---
 title: SSR / SSG
-description: Server-rendered apps where the server has access to secrets and the browser receives only a public subset, injected into HTML via <ClientEnv />.
+description: Server-rendered apps where the server has access to secrets and the browser receives only a public subset, injected into HTML via <EnvScript />.
 icon: LayoutTemplate
 ---
 
@@ -17,7 +17,7 @@ icon: LayoutTemplate
 - [`examples/ssr-react-router/`](https://github.com/variableland/env/tree/main/examples/ssr-react-router) — React Router 7, config loaded with `loadConfig({ schema, pattern })`.
 - [`examples/ssr-tanstack-start/`](https://github.com/variableland/env/tree/main/examples/ssr-tanstack-start) — TanStack Start, config loaded via the `#config` alias.
 
-The two differ only in **how config is loaded**. The public/server split and the `<ClientEnv />` bridge are identical.
+The two differ only in **how config is loaded**. The public/server split and the `<EnvScript />` bridge are identical.
 
 ## Schemas — compose, don't duplicate
 
@@ -49,7 +49,7 @@ export const ServerEnv = schema({
 export type ServerEnvConfig = Config<typeof ServerEnv>;
 ```
 
-`PublicEnv` is the single source of truth for everything the browser may see. The server schema embeds it under `public.*`. See [Schema composition](/guides/schema-composition) for what's happening at the type level.
+`PublicEnv` is the single source of truth for everything the browser may see. The server schema embeds it under `public.*`. See [Schema composition](/docs/guides/schema-composition) for what's happening at the type level.
 
 ## Server env — load + validate
 
@@ -59,7 +59,7 @@ The wiring varies by how you read the config from disk. Both end the same way: a
 
 ```ts title="app/env/env.server.ts"
 import { defineEnv } from "@vlandoss/env";
-import { loadConfig } from "@vlandoss/env/node";
+import { loadConfig } from "@vlandoss/env/fs";
 import { ServerEnv } from "./schema.server.ts";
 
 const config = await loadConfig({ schema: ServerEnv, pattern: "app/config/{env}.ts" });
@@ -107,7 +107,7 @@ export default defineConfig({
 
 ### Why `vars: { public: null }`?
 
-`PublicEnv` leaves are bare (`API_BASE_URL`, `APP_NAME`). Inside `ServerEnv` they live under the `public` branch. Without an override, the convention would map them to `PUBLIC_API_BASE_URL` / `PUBLIC_APP_NAME`. `null` declares the branch as flat — no prefix is added, so server and client read the **same** env-var names. See [Env-var naming](/concepts/env-var-naming).
+`PublicEnv` leaves are bare (`API_BASE_URL`, `APP_NAME`). Inside `ServerEnv` they live under the `public` branch. Without an override, the convention would map them to `PUBLIC_API_BASE_URL` / `PUBLIC_APP_NAME`. `null` declares the branch as flat — no prefix is added, so server and client read the **same** env-var names. See [Env-var naming](/docs/concepts/env-var-naming).
 
 ## Public env — isomorphic
 
@@ -121,16 +121,16 @@ export const env = defineEnv({ schema: PublicEnv });
 This file works on **both** server and client:
 
 - On the server, `defineEnv`'s default `runtimeEnv` is `process.env`.
-- In the browser, it's `window.__env` if set, otherwise the JSON inside `<script id="env" type="application/json">` (written by `<ClientEnv />`).
+- In the browser, it's `window.__env` if set, otherwise the JSON inside `<script id="env" type="application/json">` (written by `<EnvScript />`).
 
-## The hydration bridge — `<ClientEnv />`
+## The hydration bridge — `<EnvScript />`
 
 The server picks the public-safe values and renders them into a `<script>` tag. `readEnv()` (and therefore `defineEnv` with no `runtimeEnv` override) parses that script in the browser.
 
 ### React Router
 
 ```tsx title="app/root.tsx"
-import { ClientEnv } from "@vlandoss/env/react";
+import { EnvScript } from "@vlandoss/env/react";
 import { Outlet, useLoaderData } from "react-router";
 import { env as serverEnv } from "./env/env.server.ts";
 
@@ -146,7 +146,7 @@ export default function App() {
   const { runtimeEnv } = useLoaderData<typeof loader>();
   return (
     <>
-      <ClientEnv runtimeEnv={runtimeEnv} />
+      <EnvScript runtimeEnv={runtimeEnv} />
       <Outlet />
     </>
   );
@@ -158,7 +158,7 @@ export default function App() {
 ```tsx title="src/routes/__root.tsx"
 import { createRootRoute, Outlet, Scripts } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { ClientEnv } from "@vlandoss/env/react";
+import { EnvScript } from "@vlandoss/env/react";
 
 const getPublicEnv = createServerFn({ method: "GET" }).handler(async () => {
   const { env } = await import("../env/env.server.ts");
@@ -179,7 +179,7 @@ function RootComponent() {
   return (
     <html>
       <body>
-        <ClientEnv runtimeEnv={runtimeEnv} />
+        <EnvScript runtimeEnv={runtimeEnv} />
         <Outlet />
         <Scripts />
       </body>
@@ -188,10 +188,10 @@ function RootComponent() {
 }
 ```
 
-In both cases, `ClientEnv` should render **before** any client component that reads from `env.public.*`.
+In both cases, `EnvScript` should render **before** any client component that reads from `env.public.*`.
 
 ## Tradeoffs
 
-- `<ClientEnv />` only applies to SSR/SSG — in a pure SPA there's no server pass to inject the script. Use one of the SPA recipes instead.
+- `<EnvScript />` only applies to SSR/SSG — in a pure SPA there's no server pass to inject the script. Use one of the SPA recipes instead.
 - The values you pass to `runtimeEnv` are visible in the page source. Treat the list as a public allowlist; never include secrets.
-- The server schema is the source of truth — if you grow `PublicEnv`, the only place to update is the `runtimeEnv` object passed to `<ClientEnv />`.
+- The server schema is the source of truth — if you grow `PublicEnv`, the only place to update is the `runtimeEnv` object passed to `<EnvScript />`.

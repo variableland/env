@@ -1,6 +1,6 @@
 ---
 title: Env-var naming
-description: How schema paths become environment variable names, and how to override them with the `vars` option.
+description: How schema paths become environment variable names, and how to override them with the vars option.
 icon: Tag
 ---
 
@@ -68,12 +68,12 @@ defineEnv({
   schema: Env,
   vars: {
     db: {
-      $: "DATABASE",                // branch prefix
-      LOGGING: "POSTGRES_LOGGING",  // override for this one leaf
+      $: "DATABASE",                // db.* -> DATABASE_*
+      LOGGING: "POSTGRES_LOGGING",  // db.LOGGING -> POSTGRES_LOGGING
     },
     public: {
-      $: null,                      // flat branch + leaf override
-      APP_NAME: "PUBLIC_APP_NAME",
+      $: null,                      // public.* -> *
+      APP_NAME: "PUBLIC_APP_NAME",  // public.APP_NAME -> PUBLIC_APP_NAME
     },
   },
 });

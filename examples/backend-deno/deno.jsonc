@@ -1,0 +1,8 @@
+{
+  // `manual` = Deno reads `node_modules/` but doesn't manage it. We hydrate
+  // the directory with `bun install` because Deno itself can't extract local
+  // `file:` tarballs — both `auto` and `manual` modes leave the `.tgz` as a
+  // dangling symlink. Bun extracts it correctly into a flat layout that Deno
+  // can walk.
+  "nodeModulesDir": "manual"
+}

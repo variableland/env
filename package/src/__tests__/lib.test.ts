@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import * as z from "zod";
-import { defineEnv, envName, schema } from "../lib/index.ts";
+import { defineEnv, envName, readEnv, schema } from "../lib/index.ts";
 import { toScreamingSnake } from "../lib/vars.ts";
 
 describe("toScreamingSnake", () => {
@@ -284,6 +284,55 @@ describe("defineEnv() — shorthands", () => {
     const env = defineEnv({ schema: schema({}), config: {}, runtimeEnv: {} });
     expect(env.$name).toBe("development");
     expect(env.IS_DEV).toBe(true);
+  });
+});
+
+describe("readEnv() — defensive fallback", () => {
+  it("returns process.env when process is available", () => {
+    process.env.__VLANDOSS_ENV_TEST__ = "1";
+    try {
+      expect(readEnv().__VLANDOSS_ENV_TEST__).toBe("1");
+    } finally {
+      delete process.env.__VLANDOSS_ENV_TEST__;
+    }
+  });
+
+  it("returns {} when process exists but process.env is missing", () => {
+    const original = process.env;
+    // @ts-expect-error simulating a runtime where process exists but env doesn't
+    process.env = undefined;
+    try {
+      expect(readEnv()).toEqual({});
+    } finally {
+      process.env = original;
+    }
+  });
+
+  it("returns {} when process is undefined (Workers-like runtime)", () => {
+    const original = globalThis.process;
+    // @ts-expect-error simulating a runtime without process (Cloudflare Workers)
+    delete globalThis.process;
+    try {
+      expect(readEnv()).toEqual({});
+    } finally {
+      globalThis.process = original;
+    }
+  });
+
+  it("defineEnv still works when process is undefined as long as runtimeEnv is passed", () => {
+    const original = globalThis.process;
+    // @ts-expect-error simulating a Worker `fetch(req, env)` handler scenario
+    delete globalThis.process;
+    try {
+      const env = defineEnv({
+        schema: schema({ server: { PORT: z.coerce.number() } }),
+        config: {},
+        runtimeEnv: { SERVER_PORT: "8787" },
+      });
+      expect(env.server.PORT).toBe(8787);
+    } finally {
+      globalThis.process = original;
+    }
   });
 });
 

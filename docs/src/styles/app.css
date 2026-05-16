@@ -1,5 +1,13 @@
 @import "tailwindcss";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
 @import "fumadocs-ui/css/emerald.css";
 @import "fumadocs-ui/css/preset.css";
+@import "./landing.css";
 
 @source "../../node_modules/fumadocs-ui/dist/**/*.js";
+
+@theme {
+  --font-sans: "Geist Variable", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+}

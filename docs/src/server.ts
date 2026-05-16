@@ -1,12 +1,12 @@
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 import { isMarkdownPreferred, rewritePath } from "fumadocs-core/negotiation";
 
-// Public `/foo.mdx` URLs and `Accept: text/markdown` requests both serve raw
-// markdown via the internal `/raw/{slug}` route. We rewrite here so the route
-// tree stays a vanilla splat (TanStack Router has no documented pattern that
-// combines `$` splat with a literal `.mdx` suffix).
-const { rewrite: stripMdxSuffix } = rewritePath("{/*path}.mdx", "/raw{/*path}");
-const { rewrite: rewriteToRaw } = rewritePath("{/*path}", "/raw{/*path}");
+// Public `/docs/foo.mdx` URLs and `Accept: text/markdown` requests on `/docs/*`
+// both serve raw markdown via the internal `/raw/{slug}` route. We rewrite here
+// so the route tree stays a vanilla splat (TanStack Router has no documented
+// pattern that combines `$` splat with a literal `.mdx` suffix).
+const { rewrite: stripMdxSuffix } = rewritePath("/docs{/*path}.mdx", "/raw{/*path}");
+const { rewrite: rewriteToRaw } = rewritePath("/docs{/*path}", "/raw{/*path}");
 
 export default createServerEntry({
   fetch(request) {

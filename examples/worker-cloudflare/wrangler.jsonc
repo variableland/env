@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "example-worker-cloudflare",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-01",
+  // No `compatibility_flags: ["nodejs_compat"]` — this example proves the
+  // @vlandoss/env core runs on Workers without the Node compat shim. The env
+  // is read from `c.env` (the per-request bindings), not from `process.env`.
+  "vars": {
+    "LOG_LEVEL": "debug",
+    "DATABASE_URL": "postgres://localhost/dev",
+    "DB_LOGGING": "true"
+  },
+  "dev": {
+    "port": 8787,
+    "ip": "127.0.0.1"
+  }
+}

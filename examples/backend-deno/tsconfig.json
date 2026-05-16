@@ -1,0 +1,7 @@
+{
+  "extends": "@vlandoss/config/ts/no-dom/app",
+  "compilerOptions": {
+    "types": ["node", "@types/deno"]
+  },
+  "include": ["src", "test", "playwright.config.ts"]
+}

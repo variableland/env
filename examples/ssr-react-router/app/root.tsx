@@ -1,4 +1,4 @@
-import { ClientEnv } from "@vlandoss/env/react";
+import { EnvScript } from "@vlandoss/env/react";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "react-router";
 import { env as serverEnv } from "./env/env.server.ts";
 
@@ -32,7 +32,7 @@ export default function App() {
   const { runtimeEnv } = useLoaderData<typeof loader>();
   return (
     <>
-      <ClientEnv runtimeEnv={runtimeEnv} />
+      <EnvScript runtimeEnv={runtimeEnv} />
       <Outlet />
     </>
   );

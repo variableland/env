@@ -1,0 +1,47 @@
+[tools]
+node = "24"
+pnpm = "10.30.3"
+
+[env]
+_.path = ["{{config_root}}/node_modules/.bin"]
+
+[tasks.install]
+description = "Install deps (pnpm)"
+sources = [
+  "package.json",
+  "pnpm-lock.yaml",
+  "{{config_root}}/../../package/.local/vlandoss-env.tgz",
+]
+outputs = ["node_modules/.modules.yaml"]
+run = [
+  "mise run //:env:pack",
+  "pnpm install --ignore-workspace",
+]
+
+[tasks.reinstall]
+description = "Force-reinstall the env tarball"
+run = [
+  "mise run //:env:pack",
+  "pnpm install --ignore-workspace --force",
+]
+
+[tasks.dev]
+depends = ["install"]
+run = "vite"
+
+[tasks.build]
+depends = ["install"]
+run = "vite build"
+
+[tasks.preview]
+depends = ["install"]
+run = "vite preview"
+
+[tasks."test:e2e"]
+depends = ["install"]
+run = "playwright test"
+
+[tasks."test:static"]
+description = "JS & TS check"
+depends = ["install"]
+run = "rr test:static"

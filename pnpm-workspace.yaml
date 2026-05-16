@@ -1,7 +1,6 @@
 packages:
   - package
   - docs
-  - examples/*
 
 catalog:
   "@types/node": 24.12.4

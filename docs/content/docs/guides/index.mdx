@@ -10,17 +10,17 @@ Each guide is a self-contained recipe. Start with the one that matches **where y
 
 | Guide                                                              | When to use                                                                                  |
 | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
-| [Node (`loadConfig`)](/guides/node-loadconfig)                | Long-running Node server reading config files from disk.                                     |
-| [SPA — dynamic import](/guides/spa-dynamic-import)            | Pure SPA built with Vite. Bundler emits one chunk per env; browser downloads the right one.  |
-| [SPA — Vite plugin (`#config`)](/guides/spa-vite-plugin)      | Pure SPA where you want each build artifact to contain **only** its env (max isolation).     |
-| [SSR / SSG](/guides/ssr)                                      | Server-rendered React app. Public values hydrate the browser via `<ClientEnv />`.            |
+| [Filesystem (`loadConfig`)](/docs/guides/fs-loadconfig)            | Long-running Node/Bun/Deno server reading config files from disk.                            |
+| [SPA — dynamic import](/docs/guides/spa-dynamic-import)            | Pure SPA built with Vite. Bundler emits one chunk per env; browser downloads the right one.  |
+| [SPA — Vite plugin (`#config`)](/docs/guides/spa-vite-plugin)      | Pure SPA where you want each build artifact to contain **only** its env (max isolation).     |
+| [SSR / SSG](/docs/guides/ssr)                                      | Server-rendered React app. Public values hydrate the browser via `<EnvScript />`.            |
 
 ## By task
 
 | Guide                                                              | When to use                                                                                  |
 | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
-| [Schema composition](/guides/schema-composition)              | Share a contract across server and client by inlining one `schema()` inside another.         |
-| [Custom modes (`staging`, `qa`)](/guides/custom-modes)        | Surface non-default Vite modes to browser code. Explains why the plugin is required.         |
+| [Schema composition](/docs/guides/schema-composition)              | Share a contract across server and client by inlining one `schema()` inside another.         |
+| [Custom modes (`staging`, `qa`)](/docs/guides/custom-modes)        | Surface non-default Vite modes to browser code. Explains why the plugin is required.         |
 
 ## How a guide is structured
 
@@ -31,4 +31,4 @@ Every guide follows the same shape:
 3. **What each piece does** — short explanation per moving part.
 4. **Tradeoffs / limits** — when this recipe stops being a good fit.
 
-Signatures and option tables live in the [API reference](/api-reference), not in the guides.
+Signatures and option tables live in the [API reference](/docs/api-reference), not in the guides.

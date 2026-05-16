@@ -1,0 +1,57 @@
+name: E2E
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+jobs:
+  test:
+    name: ${{ matrix.example }}
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    env:
+      MISE_EXPERIMENTAL: "1"
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.example }}
+      cancel-in-progress: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { example: backend-node,        browser: false }
+          - { example: backend-bun,         browser: false }
+          - { example: backend-deno,        browser: false }
+          - { example: worker-cloudflare,   browser: false }
+          - { example: edge-nextjs,         browser: false }
+          - { example: spa-vite-dynamic,    browser: true  }
+          - { example: spa-vite-plugin,     browser: true  }
+          - { example: ssr-react-router,    browser: true  }
+          - { example: ssr-tanstack-start,  browser: true  }
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Setup mise (root + example tools)
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+          experimental: true
+          working_directory: examples/${{ matrix.example }}
+
+      - name: 📦 Install root workspace (for env:pack)
+        run: pnpm install --frozen-lockfile
+
+      - name: 🎁 Pack @vlandoss/env
+        run: mise run env:pack
+
+      - name: 🎭 Install Playwright browsers
+        if: matrix.browser
+        run: mise run playwright:install
+
+      - name: 🧩 Test e2e
+        run: mise run //examples/${{ matrix.example }}:test:e2e
