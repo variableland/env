@@ -15,7 +15,7 @@ sources = [
 outputs = ["node_modules/.modules.yaml"]
 run = [
   "mise run //:env:pack",
-  "pnpm install --ignore-workspace",
+  "pnpm install --ignore-workspace --no-frozen-lockfile",
   "react-router typegen",
 ]
 
@@ -23,7 +23,7 @@ run = [
 description = "Force-reinstall the env tarball"
 run = [
   "mise run //:env:pack",
-  "pnpm install --ignore-workspace --force",
+  "pnpm install --ignore-workspace --no-frozen-lockfile --force",
   "react-router typegen",
 ]
 

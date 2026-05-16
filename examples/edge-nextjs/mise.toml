@@ -15,14 +15,14 @@ sources = [
 outputs = ["node_modules/.modules.yaml"]
 run = [
   "mise run //:env:pack",
-  "pnpm install --ignore-workspace",
+  "pnpm install --ignore-workspace --no-frozen-lockfile",
 ]
 
 [tasks.reinstall]
 description = "Force-reinstall the env tarball"
 run = [
   "mise run //:env:pack",
-  "pnpm install --ignore-workspace --force",
+  "pnpm install --ignore-workspace --no-frozen-lockfile --force",
 ]
 
 [tasks.dev]
