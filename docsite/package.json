@@ -13,8 +13,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "vite build && wrangler deploy",
-    "check:seo": "pnpm dlx start-server-and-test@3.0.5 \"vite preview --host 127.0.0.1 --port 4173 --strictPort\" http://127.0.0.1:4173 \"pnpm dlx unlighthouse@0.17.9 --site http://127.0.0.1:4173\"",
-    "check:seo-ci": "vite build && pnpm dlx start-server-and-test@3.0.5 \"vite preview --host 127.0.0.1 --port 4173 --strictPort\" http://127.0.0.1:4173 \"pnpm dlx -p unlighthouse@0.17.9 unlighthouse-ci --site http://127.0.0.1:4173\""
+    "check:seo": "vite build && pnpm dlx @lhci/cli@0.14.0 autorun"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",

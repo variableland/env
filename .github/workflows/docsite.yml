@@ -22,6 +22,7 @@ concurrency:
 jobs:
   seo:
     runs-on: blacksmith-4vcpu-ubuntu-2404
+    timeout-minutes: 8
     env:
       MISE_EXPERIMENTAL: "1"
     steps:
@@ -38,22 +39,24 @@ jobs:
       - name: 📦 Install root workspace
         run: pnpm install --frozen-lockfile
 
-      - name: 💾 Cache pnpm dlx (Unlighthouse + start-server-and-test)
+      - name: 💾 Cache pnpm dlx (Lighthouse CI)
         uses: actions/cache@v4
         with:
           path: ~/.cache/pnpm/dlx
-          key: pnpm-dlx-${{ runner.os }}-unlighthouse-0.17.9-sst-3.0.5
+          key: pnpm-dlx-${{ runner.os }}-lhci-0.14.0
 
       - name: 🌐 Setup Chrome
         uses: browser-actions/setup-chrome@v1
 
-      - name: 🔎 SEO audit (Unlighthouse)
-        run: pnpm --filter docsite check:seo-ci
+      - name: 🔎 SEO audit (Lighthouse CI)
+        timeout-minutes: 5
+        run: pnpm --filter docsite check:seo
 
       - name: 📤 Upload report
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: unlighthouse-report
-          path: docsite/.unlighthouse/
+          name: lighthouseci-report
+          path: docsite/.lighthouseci/**
           retention-days: 14
+          if-no-files-found: ignore
