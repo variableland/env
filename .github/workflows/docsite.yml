@@ -1,0 +1,62 @@
+name: Docsite
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "docsite/**"
+      - ".github/workflows/docsite.yml"
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+    paths:
+      - "docsite/**"
+      - ".github/workflows/docsite.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  seo:
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    timeout-minutes: 8
+    env:
+      MISE_EXPERIMENTAL: "1"
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Setup mise
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+          experimental: true
+
+      - name: 📦 Install root workspace
+        run: pnpm install --frozen-lockfile
+
+      - name: 💾 Cache pnpm dlx (Lighthouse CI)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pnpm/dlx
+          key: pnpm-dlx-${{ runner.os }}-lhci-0.14.0
+
+      - name: 🌐 Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: 🔎 SEO audit (Lighthouse CI)
+        timeout-minutes: 5
+        run: pnpm --filter docsite check:seo
+
+      - name: 📤 Upload report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouseci-report
+          path: docsite/.lighthouseci/**
+          retention-days: 14
+          if-no-files-found: ignore

@@ -34,7 +34,7 @@ export function Close() {
           "
         >
           <a
-            href="/docs/getting-started/quickstart"
+            href={LANDING_META.docsHref}
             className="
               group inline-flex min-w-[168px] items-center justify-center gap-2.5
               rounded-lg border border-landing-accent bg-landing-accent

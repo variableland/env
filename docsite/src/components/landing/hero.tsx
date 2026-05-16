@@ -1,6 +1,6 @@
 import { ArrowRight, Check, Copy } from "lucide-react";
 import { useState } from "react";
-import { RUNTIMES } from "./data.ts";
+import { LANDING_META, RUNTIMES } from "./data.ts";
 import { HeroCodeCard } from "./hero-code-card.tsx";
 
 type Snippets = {
@@ -87,7 +87,7 @@ export function Hero({ snippets }: { snippets: Snippets }) {
           "
         >
           <a
-            href="/docs/getting-started/quickstart"
+            href={LANDING_META.docsHref}
             className="
               group inline-flex items-center justify-center gap-2.5
               rounded-lg border border-landing-accent bg-landing-accent

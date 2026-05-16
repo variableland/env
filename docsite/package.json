@@ -12,7 +12,8 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "vite build && wrangler deploy"
+    "deploy": "vite build && wrangler deploy",
+    "check:seo": "vite build && pnpm dlx @lhci/cli@0.14.0 autorun"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",
