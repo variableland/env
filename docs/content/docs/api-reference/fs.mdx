@@ -1,0 +1,29 @@
+---
+title: Filesystem
+description: Exports from the @vlandoss/env/fs entrypoint — file-based config loading for any Node-compatible runtime with a filesystem.
+icon: HardDrive
+---
+
+The `@vlandoss/env/fs` entrypoint is the file-system adapter. It auto-discovers per-environment config files on disk so you don't have to wire imports by hand.
+
+Works on any runtime that exposes a Node-compatible filesystem: **Node ≥20**, **Bun**, and **Deno** (via its Node-compat layer). It does **not** work on Workers, Edge, or any environment without a filesystem — those should resolve config at build time (see [`@vlandoss/env/vite`](/docs/api-reference/vite)) or pass it explicitly to `defineEnv`.
+
+## Exports
+
+| Export       | Kind     | Summary                                                                              |
+| ------------ | -------- | ------------------------------------------------------------------------------------ |
+| `loadConfig` | Function | Discover and load `[src/]config/<envName>.{ts,mts,js,mjs,json}` for the current env. |
+
+<Callout type="info">
+  Full signatures and option tables are coming soon. Until then, see
+  [Guides → Filesystem (`loadConfig`)](/docs/guides/fs-loadconfig) for the recipe.
+</Callout>
+
+<Callout type="warn">
+  Loading `.ts` / `.mts` files at runtime depends on the host runtime's TypeScript support: native in **Bun** and **Deno**, and in **Node ≥22.6** behind `--experimental-strip-types` (stable in 23.6). `.js` / `.mjs` / `.json` work everywhere.
+</Callout>
+
+## See also
+
+- [Guides → Filesystem (`loadConfig`)](/docs/guides/fs-loadconfig) — recipe and tradeoffs.
+- [Concepts → Resolution order](/docs/concepts/resolution) — where loaded config sits in the merge order.

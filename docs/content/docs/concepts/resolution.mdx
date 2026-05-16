@@ -7,8 +7,8 @@ icon: Layers
 For every leaf in the schema, `defineEnv` looks in this order. **Later sources win.**
 
 1. **`defaults`** — inline fallbacks passed to `defineEnv({ defaults: … })`.
-2. **`config`** — the loaded per-environment object (typically from `loadConfig` or the `#config` alias).
-3. **Environment variable** — read from `process.env` on the server or `window.__env` (set by `<ClientEnv />`) in the browser.
+2. **`config`** — the loaded per-environment object.
+3. **Environment variable** — the value pulled from `runtimeEnv` (see [below](#what-runtimeenv-is-for)). On the server that's `process.env`; in the browser it's `window.__env`, hydrated by `<EnvScript />`.
 
 ```ts
 defineEnv({
@@ -31,7 +31,7 @@ Schema-level defaults (`z.string().default(…)`) still apply normally; `default
 
 ## What `runtimeEnv` is for
 
-By default `runtimeEnv` is `process.env` (server) or `window.__env` (browser, populated by `<ClientEnv />` or `readEnv()`). Override it when you need to:
+By default `runtimeEnv` is `process.env` (server) or `window.__env` (browser, populated by `<EnvScript />` or `readEnv()`). Override it when you need to:
 
 - Inject a fixture in tests.
 - Read from a non-default global (e.g. `Deno.env.toObject()`).

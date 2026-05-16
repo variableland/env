@@ -1,0 +1,94 @@
+---
+title: Filesystem (loadConfig)
+description: Wire @vlandoss/env in a long-running server. Schema, per-environment config files on disk, and a typed env loaded at boot via loadConfig.
+icon: HardDrive
+---
+
+## When to use this
+
+- You're running a long-lived process with filesystem access (Node, Bun, Deno — HTTP server, worker, CLI).
+- Per-environment config lives as `.ts` / `.json` files in the repo.
+- Secrets come from real `process.env` at boot.
+
+## Reference example
+
+[`examples/backend-node/`](https://github.com/variableland/env/tree/main/examples/backend-node) — Node HTTP server (Hono via `@hono/node-server`) using Zod, the `@vlandoss/env/zod` primitives, and the short form of `loadConfig`.
+
+## Wiring
+
+```ts title="src/env/schema.ts"
+import { type Config, schema } from "@vlandoss/env";
+import * as e from "@vlandoss/env/zod";
+import * as z from "zod";
+
+export const Env = schema({
+  log: { LEVEL: e.logLevel },
+  server: { PORT: e.port, HOST: e.host },
+  db: {
+    URL: z.url(),
+    LOGGING: e.bool.default(false),
+  },
+});
+
+export type EnvConfig = Config<typeof Env>;
+```
+
+```ts title="src/config/development.ts"
+import type { EnvConfig } from "../env/schema.ts";
+
+export default {
+  log: { LEVEL: "debug" },
+  server: { PORT: 3001, HOST: "127.0.0.1" },
+  db: { URL: "postgres://localhost/dev", LOGGING: true },
+} satisfies EnvConfig;
+```
+
+```ts title="src/env/index.ts"
+import { defineEnv } from "@vlandoss/env";
+import { loadConfig } from "@vlandoss/env/fs";
+import { Env } from "./schema.ts";
+
+const config = await loadConfig(Env);
+
+export const env = defineEnv({
+  schema: Env,
+  config,
+  vars: {
+    db: { URL: "DATABASE_URL" },
+  },
+});
+```
+
+```ts title="anywhere in your app"
+import { env } from "./env/index.ts";
+
+server.listen(env.server.PORT, env.server.HOST);
+```
+
+## What each piece does
+
+- **`schema()`** is the contract. Leaves use Standard Schema validators (Zod here, but any Standard Schema lib works). The `@vlandoss/env/zod` primitives (`e.port`, `e.host`, `e.logLevel`, `e.bool`) are opinionated single-purpose schemas — see the [Zod primitives reference](/docs/api-reference/zod).
+- **`config/<envName>.ts`** is the typed, versioned default per environment. `satisfies EnvConfig` is what gives you compile-time errors on typos. **Secrets do not go here** — leave them out of `config/*` and put them in `process.env`.
+- **`loadConfig(Env)`** is the short form: it auto-discovers `[src/]config/<envName>.{ts,mts,js,mjs,json}` under `process.cwd()` and returns the first match (or `{}` if none).
+- **`defineEnv`** merges `defaults` (none here) → `config` → `process.env` and validates the result. See [Resolution order](/docs/concepts/resolution).
+- **`vars: { db: { URL: "DATABASE_URL" } }`** overrides the convention for one leaf. `db.URL` would default to `DB_URL`; here we map it to the conventional `DATABASE_URL`. See [Env-var naming](/docs/concepts/env-var-naming).
+
+## Choosing the explicit pattern
+
+If your config directory doesn't follow the convention, use the long form:
+
+```ts
+const config = await loadConfig({ schema: Env, pattern: "config/{env}.ts" });
+```
+
+The pattern **must** contain `{env}`, and it throws if the resolved file doesn't exist (the short form silently falls back to `{}`).
+
+## Loading a different env
+
+`loadConfig` always reads `envName()`. To load a non-current env, set `ENV=…` in the process env before calling — there's no `env` override on the function itself.
+
+## Tradeoffs
+
+- Requires a runtime with a filesystem — works on Node, Bun, and Deno; not on Workers/Edge. Use the [Vite plugin](/docs/api-reference/vite) for those instead.
+- Loading `.ts` / `.mts` config files depends on the host runtime's TypeScript support: native in Bun and Deno, behind `--experimental-strip-types` in Node ≥22.6 (stable in 23.6). `.js` / `.mjs` / `.json` work everywhere.
+- The startup is async because `loadConfig` is async. If you can't use top-level `await`, hoist the boot into an `async function main()` and call it from your entrypoint.

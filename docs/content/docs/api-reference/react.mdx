@@ -1,0 +1,23 @@
+---
+title: React
+description: Exports from the @vlandoss/env/react entrypoint — the React integration for server-rendered apps (SSR or SSG).
+icon: Atom
+---
+
+The `@vlandoss/env/react` entrypoint is the React integration for server-rendered apps — SSR (request-time) or SSG (build-time). Render `<EnvScript />` in your document and the resolved env shows up at `window.__env` before client code runs.
+
+## Exports
+
+| Export      | Kind       | Summary                                                                                |
+| ----------- | ---------- | -------------------------------------------------------------------------------------- |
+| `EnvScript` | Component  | Serializes the public branch of your resolved env into a `<script id="env">` element.  |
+
+<Callout type="info">
+  Full signatures and prop tables are coming soon. Until then, see
+  [Guides → SSR / SSG](/docs/guides/ssr) for the recipe.
+</Callout>
+
+## See also
+
+- [Guides → SSR / SSG](/docs/guides/ssr) — splitting public values from server-only secrets.
+- [Concepts → Resolution order](/docs/concepts/resolution) — how `window.__env` participates in resolution on the client.

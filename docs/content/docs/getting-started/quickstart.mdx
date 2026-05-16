@@ -18,14 +18,23 @@ src/
 
 ## 1. Define the schema
 
+The schema is the contract. Every variable your app expects is declared here, grouped into branches, and each leaf is a Standard Schema validator that runs at boot.
+
 ```ts title="src/env/schema.ts"
 import { schema, type Config } from "@vlandoss/env";
 import * as z from "zod";
 
 export const Env = schema({
-  log: { LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]) },
-  server: { PORT: z.coerce.number().int().positive(), HOST: z.string() },
-  db: { URL: z.string() },
+  log: {
+    LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"])
+  },
+  server: {
+    HOST: z.string(),
+    PORT: z.coerce.number().int().positive()
+  },
+  db: {
+    URL: z.string()
+  },
 });
 
 export type EnvConfig = Config<typeof Env>;
@@ -49,7 +58,7 @@ export default {
 
 ```ts title="src/env/index.ts"
 import { defineEnv } from "@vlandoss/env";
-import { loadConfig } from "@vlandoss/env/node";
+import { loadConfig } from "@vlandoss/env/fs";
 import { Env } from "./schema.ts";
 
 const config = await loadConfig(Env);
@@ -69,9 +78,11 @@ console.log(env.$name);        // "development" | "production" | …
 if (env.IS_PROD) { /* ... */ }
 ```
 
+The shape of `env` mirrors your schema exactly: `env.server.PORT` is `number` because `z.coerce.number()` ran during validation, `env.db.URL` is `string`. Any path that isn't in the schema (`env.cache.TTL`, `env.server.PROT`) is a compile error, so refactors and typos surface in the type checker before they reach a running app.
+
 ## Where to go next
 
-- [Concepts → Resolution order](/concepts/resolution) — how defaults, config files, and env vars combine.
-- [Concepts → Env-var naming](/concepts/env-var-naming) — the `SERVER_PORT` convention and how to override it.
-- [Guides → SPA / browser](/guides/spa-dynamic-import) — the same pattern without a file system.
-- [Guides → SSR](/guides/ssr) — splitting public values from server-only secrets.
+- **[Resolution order](/docs/concepts/resolution)** — how defaults, config files, and env vars combine.
+- **[Env-var naming](/docs/concepts/env-var-naming)** — the `SERVER_PORT` convention and how to override it.
+- **[SPA / browser](/docs/guides/spa-dynamic-import)** — the same pattern without a file system.
+- **[SSR](/docs/guides/ssr)** — splitting public values from server-only secrets.

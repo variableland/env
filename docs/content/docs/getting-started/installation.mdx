@@ -7,10 +7,18 @@ icon: Download
 ## Install the package
 
 ```bash title="terminal"
-pnpm add @vlandoss/env zod
+pnpm add @vlandoss/env
 ```
 
-Node `>=20` is required.
+## Pick a schema validator
+
+`@vlandoss/env` is **agnostic to the schema validator** — the core relies on [Standard Schema](https://github.com/standard-schema/standard-schema), so any Standard Schema–compatible validator works (Zod, Valibot, ArkType, …). Install the one you'll actually use; you don't need any of them if you're plugging in your own.
+
+The docs and the opt-in primitives at `@vlandoss/env/zod` are written against Zod, so it's the most common pick:
+
+```bash title="terminal"
+pnpm add zod
+```
 
 ## Peer dependencies
 
@@ -21,26 +29,20 @@ Peers are **optional** — install only the ones whose entrypoints you import:
 | `@vlandoss/env/zod`      | `zod@^4`                 |
 | `@vlandoss/env/vite`     | `vite@>=5`               |
 | `@vlandoss/env/react`    | `react@>=19`, `react-dom@>=19` |
-| `@vlandoss/env/node`     | _(none — Node built-ins)_ |
+| `@vlandoss/env/fs`       | _(none — Node-compat built-ins)_ |
 
 ## Available entrypoints
 
-| Entrypoint              | Use it from                                                                |
-| ----------------------- | -------------------------------------------------------------------------- |
-| `@vlandoss/env`         | Anywhere — `schema`, `defineEnv`, `envName`, `readEnv`, types              |
-| `@vlandoss/env/node`    | Node — `loadConfig` reads `[src/]config/<envName>.{ts,…}` from disk        |
-| `@vlandoss/env/vite`    | `vite.config.ts` — `envConfig()` plugin (`#config` alias + mode inject)    |
-| `@vlandoss/env/react`   | SSR / SSG render path — `<ClientEnv />` serializes env into HTML           |
-| `@vlandoss/env/zod`     | Anywhere — opinionated single-purpose Zod primitives                       |
+The package is split into a small set of entrypoints, each with its own page in the [API reference](/docs/api-reference) — signatures, options, return types, and examples:
 
-## Verify the install
-
-```bash title="terminal"
-pnpm exec tsc --noEmit
-```
-
-Types ship with the package, so type-checking works without extra setup.
+| Entrypoint              | Reference                              |
+| ----------------------- | -------------------------------------- |
+| `@vlandoss/env`         | [Core](/docs/api-reference/core)            |
+| `@vlandoss/env/fs`      | [Filesystem](/docs/api-reference/fs)        |
+| `@vlandoss/env/vite`    | [Vite](/docs/api-reference/vite)            |
+| `@vlandoss/env/react`   | [React](/docs/api-reference/react)          |
+| `@vlandoss/env/zod`     | [Zod primitives](/docs/api-reference/zod)   |
 
 ## Next
 
-Go to [Quickstart](/getting-started/quickstart) for a minimal Node example, or jump to [Concepts](/concepts/overview) for the mental model.
+Go to [Quickstart](/docs/getting-started/quickstart) for a minimal Node example, or jump to [Concepts](/docs/concepts/overview) for the mental model.

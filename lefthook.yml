@@ -1,4 +1,17 @@
-remotes:
-  - git_url: https://github.com/variableland/dx
-    configs:
-      - packages/config/src/lefthook/turborepo.yml
+pre-commit:
+  parallel: true
+  jobs:
+    - name: jscheck
+      run: pnpm rr jscheck --fix-staged
+      stage_fixed: true
+
+    - name: tscheck
+      run: pnpm rr tsc
+      glob:
+        - "{package,docs}/**/*.{ts,tsx}"
+        - "{package,docs}/tsconfig.json"
+
+pre-push:
+  jobs:
+    - name: test
+      run: pnpm --filter=@vlandoss/env test

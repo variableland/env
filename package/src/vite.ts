@@ -40,7 +40,7 @@ export type EnvConfigOptions = {
  *
  * 1. Resolves an alias (`#config` by default) to the config file matching
  *    Vite's `mode`. Discovery is `[src/]config/<mode>.{ts,mts,js,mjs,json}` —
- *    same algorithm as `loadConfig` in `@vlandoss/env/node`. Only the
+ *    same algorithm as `loadConfig` in `@vlandoss/env/fs`. Only the
  *    matched file enters the bundle.
  * 2. Injects `define: { __ENV_NAME__: JSON.stringify(mode) }`. The core's
  *    `envName()` reads this identifier so dynamic-import and alias patterns

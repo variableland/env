@@ -1,0 +1,30 @@
+---
+title: Core
+description: Exports from the @vlandoss/env entrypoint — the runtime-agnostic core where schemas are declared, env is resolved, and the current environment name is detected.
+icon: Box
+---
+
+The `@vlandoss/env` entrypoint is the only one you always import — it contains the runtime-agnostic core. Adapter entrypoints (`/node`, `/vite`, `/react`, `/zod`) build on top of it.
+
+## Exports
+
+| Export       | Kind     | Summary                                                                              |
+| ------------ | -------- | ------------------------------------------------------------------------------------ |
+| `schema`     | Function | Declare the contract — branches and Standard Schema leaves.                          |
+| `defineEnv`  | Function | Merge config + environment variables, validate, and return a typed `env` object.     |
+| `envName`    | Function | Detect the current environment name across runtimes — `development`, `production`, … |
+| `readEnv`    | Function | Read raw values from the active source (`process.env` on the server, `window.__env` in the browser). Returns `{}` on runtimes without `process` (Workers) — pass `runtimeEnv` to `defineEnv` instead. |
+| `Config`     | Type     | The input shape of per-environment config files for a given schema.                  |
+| `Env`        | Type     | The output shape of the resolved `env` object for a given schema.                    |
+
+<Callout type="info">
+  Full signatures and option tables are coming soon. Until then, see
+  [Concepts → Overview](/docs/concepts/overview) for the mental model and
+  [Quickstart](/docs/getting-started/quickstart) for a runnable example.
+</Callout>
+
+## See also
+
+- [Concepts → Resolution order](/docs/concepts/resolution) — how `defineEnv` merges sources.
+- [Concepts → Env-var naming](/docs/concepts/env-var-naming) — how schema paths map to env-var names.
+- [Concepts → `envName()`](/docs/concepts/env-name) — precedence and the Vite gotcha.

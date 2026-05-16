@@ -1,0 +1,25 @@
+---
+title: Vite
+description: Exports from the @vlandoss/env/vite entrypoint — the Vite plugin that aliases per-environment config and injects the build's env name.
+icon: Plug
+---
+
+The `@vlandoss/env/vite` entrypoint exposes a single Vite plugin. It does two things: it makes the per-environment config file importable through the `#config` alias, and it injects `__ENV_NAME__` so `envName()` returns the right value even when Vite forces `NODE_ENV="production"` at build time.
+
+## Exports
+
+| Export       | Kind     | Summary                                                                              |
+| ------------ | -------- | ------------------------------------------------------------------------------------ |
+| `envConfig`  | Function | Returns a Vite plugin. Adds the `#config` alias and the `__ENV_NAME__` define.       |
+
+<Callout type="info">
+  Full signatures and option tables are coming soon. Until then, see
+  [Guides → SPA — Vite plugin](/docs/guides/spa-vite-plugin) and
+  [Guides → Custom modes](/docs/guides/custom-modes) for the wiring.
+</Callout>
+
+## See also
+
+- [Guides → SPA — Vite plugin (`#config`)](/docs/guides/spa-vite-plugin) — recipe for the alias.
+- [Guides → Custom modes (`staging`, `qa`)](/docs/guides/custom-modes) — why the plugin is required for non-default modes.
+- [Concepts → `envName()`](/docs/concepts/env-name) — precedence chain and the Vite gotcha.

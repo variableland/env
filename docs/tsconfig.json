@@ -1,11 +1,7 @@
 {
   "extends": "@vlandoss/config/ts/react",
   "compilerOptions": {
-    "types": ["vite/client"],
-    "paths": {
-      "@/*": ["./src/*"],
-      "collections/*": ["./.source/*"]
-    }
+    "types": ["vite/client"]
   },
   "include": ["src/**/*", "vite.config.ts", "source.config.ts"]
 }

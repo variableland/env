@@ -8,7 +8,7 @@ export default defineConfig([
     dts: true,
   },
   {
-    entry: "src/node.ts",
+    entry: "src/fs.ts",
     platform: "node",
     format: "esm",
     dts: true,

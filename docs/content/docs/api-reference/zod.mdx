@@ -1,0 +1,28 @@
+---
+title: Zod
+description: Exports from the @vlandoss/env/zod entrypoint — opinionated single-purpose Zod schemas for common env-var shapes.
+icon: Zod
+---
+
+The `@vlandoss/env/zod` entrypoint is opinionated. It ships a handful of single-purpose Zod schemas for the env-var shapes we keep redefining — ports, hosts, booleans, secrets, and so on — so you can drop them straight into a schema.
+
+This entrypoint is **optional**: it's there because we wanted it ourselves, not because the core depends on it. Use it, replace it, or skip it.
+
+## Exports
+
+| Export    | Kind   | Summary                                                                        |
+| --------- | ------ | ------------------------------------------------------------------------------ |
+| `port`    | Schema | A valid TCP port (`1`–`65535`), coerced from string.                           |
+| `host`    | Schema | A non-empty hostname string.                                                   |
+| `bool`    | Schema | Loose boolean parser — accepts `"true"`/`"false"`/`"1"`/`"0"` and friends.     |
+| `secret`  | Schema | Non-empty string that gets redacted from console output and error messages.   |
+
+<Callout type="info">
+  Full signatures and behavioral notes are coming soon. Until then, treat these
+  as drop-in Zod schemas — they expose the standard Zod API.
+</Callout>
+
+## See also
+
+- [Quickstart](/docs/getting-started/quickstart) — the snippets use plain Zod, but each primitive can replace its long form.
+- [Concepts → Env-var naming](/docs/concepts/env-var-naming) — how leaves declared with these primitives still get the same `SERVER_PORT` treatment.

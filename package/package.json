@@ -25,7 +25,7 @@
   ],
   "exports": {
     ".": "./src/lib/index.ts",
-    "./node": "./src/node.ts",
+    "./fs": "./src/fs.ts",
     "./vite": "./src/vite.ts",
     "./react": "./src/react.tsx",
     "./zod": "./src/zod.ts"
@@ -40,12 +40,11 @@
     "build": "rr build:lib",
     "test": "vitest run",
     "test:browser": "vitest --browser.headless=false",
-    "prepublishOnly": "pnpm build",
-    "test:types": "rr tsc"
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@standard-schema/spec": "1.1.0",
-    "lodash.merge": "4.6.2",
+    "defu": "6.1.7",
     "type-fest": "5.4.4"
   },
   "publishConfig": {
@@ -55,9 +54,9 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
       },
-      "./node": {
-        "types": "./dist/node.d.mts",
-        "default": "./dist/node.mjs"
+      "./fs": {
+        "types": "./dist/fs.d.mts",
+        "default": "./dist/fs.mjs"
       },
       "./vite": {
         "types": "./dist/vite.d.mts",
@@ -77,11 +76,11 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
-    "@types/lodash.merge": "4.6.9",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitest/browser-playwright": "4.1.0",
+    "playwright": "1.59.1",
     "react": "catalog:",
     "react-dom": "catalog:",
     "vite": "catalog:",

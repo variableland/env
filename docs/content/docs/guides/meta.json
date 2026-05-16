@@ -4,7 +4,7 @@
   "pages": [
     "index",
     "---By runtime---",
-    "node-loadconfig",
+    "fs-loadconfig",
     "spa-dynamic-import",
     "spa-vite-plugin",
     "ssr",

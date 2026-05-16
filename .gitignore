@@ -95,6 +95,10 @@ web_modules/
 
 *.tgz
 
+# Local pack output (used by mise env:pack to feed examples)
+
+package/.local/
+
 # Yarn Integrity file
 
 .yarn-integrity

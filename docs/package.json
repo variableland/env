@@ -3,15 +3,22 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "imports": {
+    "#src/*": "./src/*",
+    "#collections/*": "./.source/*"
+  },
   "scripts": {
     "postinstall": "fumadocs-mdx",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "vite build && wrangler deploy",
-    "test:types": "rr tsc"
+    "deploy": "vite build && wrangler deploy"
   },
   "dependencies": {
+    "@fontsource-variable/geist": "^5.2.8",
+    "@fontsource-variable/geist-mono": "^5.2.7",
+    "@shikijs/langs": "^4.0.2",
+    "@shikijs/themes": "^4.0.2",
     "@tanstack/react-router": "1.169.2",
     "@tanstack/react-start": "1.167.65",
     "fumadocs-core": "16.8.10",
@@ -19,7 +26,8 @@
     "fumadocs-ui": "16.8.10",
     "lucide-react": "1.14.0",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "shiki": "^4.0.2"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.36.4",

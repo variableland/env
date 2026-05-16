@@ -10,7 +10,7 @@ icon: Boxes
 - You want **each build artifact to ship only its env's config** — other env files must not be present in the deployment at all.
 - You're OK with one `vite build --mode <env>` per environment.
 
-If a single multi-env build is acceptable, the simpler [dynamic-import pattern](/guides/spa-dynamic-import) is the default.
+If a single multi-env build is acceptable, the simpler [dynamic-import pattern](/docs/guides/spa-dynamic-import) is the default.
 
 ## Reference example
 
@@ -80,7 +80,7 @@ Each command produces a separate `dist/` whose bundle contains **only** the matc
 
 ## What each piece does
 
-- **`envConfig()` plugin** registers `resolve.alias["#config"]` pointing at `[src/]config/<mode>.{ts,mts,js,mjs,json}` (same discovery algorithm as `loadConfig`). It also injects `__ENV_NAME__ = JSON.stringify(mode)` so `envName()` returns the right mode in the browser — see [Custom modes](/guides/custom-modes).
+- **`envConfig()` plugin** registers `resolve.alias["#config"]` pointing at `[src/]config/<mode>.{ts,mts,js,mjs,json}` (same discovery algorithm as `loadConfig`). It also injects `__ENV_NAME__ = JSON.stringify(mode)` so `envName()` returns the right mode in the browser — see [Custom modes](/docs/guides/custom-modes).
 - **`#config.d.ts`** declares the type of the alias for TypeScript. Vite resolves the runtime import; this just stops `tsc` from complaining.
 - **`defineEnv({ schema, config })`** runs synchronously here — `config` is a plain object, not a Promise.
 
@@ -98,4 +98,4 @@ When no file matches the current mode, the alias resolves to a virtual module th
 ## Tradeoffs
 
 - **One build per env.** Your CI/CD needs to run `vite build --mode <env>` for every environment you ship, and produce a separate artifact for each.
-- **No runtime switching.** Once built, the artifact is locked to its env. If you need to swap envs without rebuilding, use the [dynamic-import pattern](/guides/spa-dynamic-import).
+- **No runtime switching.** Once built, the artifact is locked to its env. If you need to swap envs without rebuilding, use the [dynamic-import pattern](/docs/guides/spa-dynamic-import).

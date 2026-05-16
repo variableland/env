@@ -1,4 +1,4 @@
-import { CLIENT_ENV_GLOBAL_ID, CLIENT_ENV_SCRIPT_ID } from "./const.ts";
+import { ENV_GLOBAL_ID, ENV_SCRIPT_ID } from "./const.ts";
 import type { RuntimeEnv } from "./types.ts";
 
 declare const __ENV_NAME__: string | undefined;
@@ -11,6 +11,11 @@ declare const window: { [key: string]: unknown } | undefined;
 declare class HTMLScriptElement {
   readonly textContent: string | null;
 }
+
+// Cast `globalThis` so we can probe `process` without a declared global. On
+// Workers (no `nodejs_compat`) the bare identifier `process` would throw a
+// ReferenceError; property access on `globalThis` returns `undefined` instead.
+const globals = globalThis as { process?: { env?: Record<string, unknown> } };
 
 function buildTimeEnvName(): string | undefined {
   // The Vite plugin's `define` replaces this identifier with a literal at build time.
@@ -29,17 +34,23 @@ export function readEnv(): RuntimeEnv {
   const isServer = typeof window === "undefined";
 
   if (isServer) {
-    return process.env as RuntimeEnv;
+    // `process` is not defined on Cloudflare Workers (without the `nodejs_compat`
+    // flag) and some other isolate-based runtimes. Fall back to `{}` so callers
+    // can supply a `runtimeEnv` explicitly via `defineEnv({ runtimeEnv })`.
+    if (globals.process?.env) {
+      return globals.process.env;
+    }
+    return {};
   }
 
   const win = window as { [key: string]: unknown };
-  const globalEnv = win[CLIENT_ENV_GLOBAL_ID];
+  const globalEnv = win[ENV_GLOBAL_ID];
 
   if (isPlainObject(globalEnv)) {
     return globalEnv;
   }
 
-  const fromScript = win[CLIENT_ENV_SCRIPT_ID];
+  const fromScript = win[ENV_SCRIPT_ID];
 
   if (isPlainObject(fromScript)) {
     return fromScript;
@@ -52,7 +63,7 @@ export function readEnv(): RuntimeEnv {
       if (!isPlainObject(parsed)) {
         throw new TypeError("Invalid `env` content, it must be a plain object");
       }
-      win[CLIENT_ENV_GLOBAL_ID] = parsed;
+      win[ENV_GLOBAL_ID] = parsed;
       return parsed;
     }
   }

@@ -1,55 +1,56 @@
-# env
+<p align="center">
+  <img src="./docs/public/lockup/lockup-stacked-dark.svg" width="220" alt="{e} @vlandoss/env">
+</p>
 
 [![npm version](https://img.shields.io/npm/v/@vlandoss/env?label=%40vlandoss%2Fenv&color=blue)](https://www.npmjs.com/package/@vlandoss/env)
 [![CI](https://github.com/variableland/env/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/variableland/env/actions/workflows/ci.yml)
 [![changesets](https://img.shields.io/badge/maintained%20with-changesets-176de3.svg)](https://github.com/changesets/changesets)
 
-🌱 Contract-first environment configuration with typed schemas and per-runtime entrypoints.
-
-> Monorepo home for [`@vlandoss/env`](./package), its [examples](./examples), and the [documentation site](./docs).
+Contract-first environment configuration with typed schemas — runtime-agnostic core (Node, Bun, Deno, browser, Workers, Edge) with opt-in adapters for Node, Vite, and React (SSR).
 
 ```bash
 pnpm add @vlandoss/env
 ```
 
-## Development
+📚 **[env.oss.variable.land](https://env.oss.variable.land)** — full docs
 
-Tooling expected:
+## Repository
 
-- [Node.js](https://nodejs.org) >= 24.0.0
-- [pnpm](https://pnpm.io) >= 10.0.0
-- [mise](https://mise.jdx.dev) >= 2025.3.3 <sup>(optional)</sup>
+This is the monorepo. Three things live here:
 
-### Setup
+| Path                       | What it is                                                                                            |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [`package/`](./package)    | The [`@vlandoss/env`](./package) library — published to npm                                           |
+| [`docs/`](./docs)          | The Fumadocs site behind [env.oss.variable.land](https://env.oss.variable.land), on Cloudflare Workers |
+| [`examples/`](./examples)  | 9 runtime-isolated demos (Node, Bun, Deno, Workers, Edge, Vite SPA, SSR) — each one is a real consumer of the published tarball |
 
-```bash
-git clone git@github.com:variableland/env.git
-cd env
-pnpm install
-pnpm test
-```
+## Working on it
 
-### Commands
-
-This monorepo uses [Turborepo](https://turbo.build/repo/docs):
-
-- `pnpm test` — run unit tests
-- `pnpm test:e2e` — run end-to-end tests (Playwright)
-- `pnpm test:types` — js & ts checks
-- `pnpm docs` — start the documentation site locally
-
-It also uses [run-run](https://github.com/variableland/dx/blob/main/packages/run-run/README.md) 🦊:
-
-- `pnpm rr` — run the `run-run` CLI
-
-With [mise](https://mise.jdx.dev) installed, `rr` is available directly.
-
-### Release
-
-Releases are managed by [Changesets](https://github.com/changesets/changesets). The [Changesets bot](https://github.com/changesets/bot) is installed in the repository.
-
-**Preview release**: PRs branched as `feat/*` or `fix/*` trigger a preview publish to npm under the `pr-<PR_NUMBER>` dist-tag:
+The whole thing is orchestrated with [mise](https://mise.jdx.dev). Get the runtimes, install, run the e2e suites:
 
 ```bash
-pnpm install @vlandoss/env@pr-123
+mise install        # installs node + pnpm; bun/deno added on demand by examples
+mise run setup      # root deps + pack the library + install every example + Playwright browsers
+mise run test:e2e   # runs the e2e suite of every example
 ```
+
+Day-to-day:
+
+```bash
+mise run docs        # docs site dev server
+mise run lib:test    # unit tests for @vlandoss/env
+mise run lib:build   # build @vlandoss/env
+mise run test:static # JS & TS check across package + docs
+```
+
+Run `mise tasks` for the full list.
+
+For everything else — the per-task reference, the per-example layout, how to iterate on the library while seeing changes in the examples, troubleshooting — see [DEVELOPMENT.md](./DEVELOPMENT.md).
+
+## Contributing
+
+Issues, ideas, and PRs welcome. Read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a PR — it covers the branch / commit / changeset conventions and the release flow.
+
+## License
+
+[MIT](./LICENSE) © [Variableland](https://variable.land)

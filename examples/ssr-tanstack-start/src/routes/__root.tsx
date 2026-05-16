@@ -1,6 +1,6 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { ClientEnv } from "@vlandoss/env/react";
+import { EnvScript } from "@vlandoss/env/react";
 
 const getPublicEnv = createServerFn({ method: "GET" }).handler(async () => {
   const { env } = await import("../env/env.server.ts");
@@ -31,7 +31,7 @@ function RootComponent() {
         <HeadContent />
       </head>
       <body>
-        <ClientEnv runtimeEnv={runtimeEnv} />
+        <EnvScript runtimeEnv={runtimeEnv} />
         <Outlet />
         <Scripts />
       </body>

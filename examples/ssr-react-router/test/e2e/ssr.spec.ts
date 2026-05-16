@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("SSR HTML contains ClientEnv script with the public env JSON", async ({ request }) => {
+test("SSR HTML contains EnvScript with the public env JSON", async ({ request }) => {
   const res = await request.get("/");
   expect(res.ok()).toBe(true);
   const html = await res.text();
