@@ -68,9 +68,9 @@ description = "JS & TS check across every example"
 depends = ["env:pack"]
 run = "for d in examples/*/; do mise -C \"$d\" run test:static || exit 1; done"
 
-[tasks.docs]
+[tasks.docsite]
 description = "Start the docs site dev server"
-run = "pnpm --filter=docs dev"
+run = "pnpm --filter=docsite dev"
 
 [tasks."lib:test"]
 description = "Unit tests for @vlandoss/env"
@@ -81,5 +81,5 @@ description = "Build @vlandoss/env"
 run = "pnpm --filter=@vlandoss/env build"
 
 [tasks."test:static"]
-description = "JS & TS check across the workspace (package + docs)"
+description = "JS & TS check across the workspace (package + docsite)"
 run = "rr test:static"

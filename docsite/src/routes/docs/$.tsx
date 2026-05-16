@@ -37,7 +37,7 @@ const clientLoader = browserCollections.docs.createClientLoader({
   component({ toc, frontmatter, default: MDX }, props: { url: string }) {
     const slug = props.url === "/docs" ? "/index" : props.url.replace(/^\/docs/, "");
     const markdownUrl = `${props.url}.mdx`;
-    const githubUrl = `https://github.com/variableland/env/blob/main/docs/content/docs${slug}.mdx`;
+    const githubUrl = `https://github.com/variableland/env/blob/main/docsite/content/docs${slug}.mdx`;
 
     return (
       <DocsPage toc={toc}>

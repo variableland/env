@@ -6,7 +6,7 @@ Thanks for taking the time to contribute. This document covers the conventions w
 
 - **Report a bug.** Open an issue with a minimal repro and the actual vs. expected behavior. Include runtime (Node / Bun / Deno / Workers / Edge), `@vlandoss/env` version, and the schema validator you use.
 - **Propose a feature.** Open an issue first so we can align on scope before you spend time on a PR. We bias toward small, composable APIs.
-- **Improve the docs.** Even one-paragraph corrections are welcome. Docs live in [`docs/content/docs/`](./docs/content/docs).
+- **Improve the docs.** Even one-paragraph corrections are welcome. Docs live in [`docsite/content/docs/`](../docsite/content/docs).
 - **Add an example.** Demos that exercise a runtime or framework we don't cover yet are great PRs. See [adding a new example](#adding-a-new-example) below.
 - **Send a fix or feature PR.** Read the rest of this document first.
 
@@ -64,7 +64,7 @@ It writes a markdown file under `.changeset/` — commit it with the rest of you
 
 **You don't need a changeset when:**
 
-- Only `docs/`, `examples/`, CI files, or other non-published files changed.
+- Only `docsite/`, `examples/`, CI files, or other non-published files changed.
 - The PR is a pure `chore/*` that doesn't touch `package/src/`.
 
 Don't bump versions or edit `CHANGELOG.md` by hand — Changesets does both during release.
@@ -83,8 +83,8 @@ Don't bump versions or edit `CHANGELOG.md` by hand — Changesets does both duri
 
 Two workflows run on every PR:
 
-- **CI** ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml)) — static checks, unit tests, and library build inside the small pnpm workspace (`package` + `docs`).
-- **E2E** ([`.github/workflows/e2e.yml`](./.github/workflows/e2e.yml)) — a matrix job per example, each provisioning its own runtime via [`jdx/mise-action`](https://github.com/jdx/mise-action).
+- **CI** ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) — static checks, unit tests, and library build inside the small pnpm workspace (`package` + `docsite`).
+- **E2E** ([`.github/workflows/e2e.yml`](../.github/workflows/e2e.yml)) — a matrix job per example, each provisioning its own runtime via [`jdx/mise-action`](https://github.com/jdx/mise-action).
 
 Both must be green to merge.
 
@@ -99,9 +99,9 @@ Examples are runtime-isolated demos. Each one is a real consumer of the publishe
    ```
 3. Add a `mise.toml` with the runtime tools (`node` / `bun` / `deno` / `pnpm`) and the standard tasks (`install`, `start`, `test:e2e`, `test:types`, `test:static`). Use any of the existing examples as a template — pick the one with the closest runtime.
 4. Add a `biome.json` extending `@vlandoss/config/biome` (skip this for Deno-only examples).
-5. Add the path to `[monorepo].config_roots` in the root [`mise.toml`](./mise.toml).
-6. Add a row to the matrix in [`.github/workflows/e2e.yml`](./.github/workflows/e2e.yml).
-7. Update the table in [`examples/README.md`](./examples/README.md).
+5. Add the path to `[monorepo].config_roots` in the root [`mise.toml`](../mise.toml).
+6. Add a row to the matrix in [`.github/workflows/e2e.yml`](../.github/workflows/e2e.yml).
+7. Update the table in [`examples/README.md`](../examples/README.md).
 8. Run the install + e2e and commit the generated lockfile.
 
 The detailed setup mechanics — which package manager fits which runtime, why Deno needs `nodeModulesDir: "manual"`, the depends-on-`//:env:pack` rule — are documented in [DEVELOPMENT.md](./DEVELOPMENT.md#working-on-the-examples-examples).
@@ -118,7 +118,7 @@ The preview is republished on every push to the PR.
 
 ## Release flow
 
-When PRs with changesets land on `main`, the [Changesets bot](https://github.com/changesets/bot) opens a "Version Packages" PR. Merging that PR triggers the [release job](./.github/workflows/ci.yml) to publish the new versions to npm and tag the release on GitHub.
+When PRs with changesets land on `main`, the [Changesets bot](https://github.com/changesets/bot) opens a "Version Packages" PR. Merging that PR triggers the [release job](../.github/workflows/ci.yml) to publish the new versions to npm and tag the release on GitHub.
 
 Maintainers don't need to manually bump versions or edit `CHANGELOG.md` — both are generated.
 

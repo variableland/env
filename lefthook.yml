@@ -8,8 +8,8 @@ pre-commit:
     - name: tscheck
       run: pnpm rr tsc
       glob:
-        - "{package,docs}/**/*.{ts,tsx}"
-        - "{package,docs}/tsconfig.json"
+        - "{package,docsite}/**/*.{ts,tsx}"
+        - "{package,docsite}/tsconfig.json"
 
 pre-push:
   jobs:
