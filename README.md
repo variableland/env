@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./docs/public/lockup/lockup-stacked-dark.svg" width="220" alt="{e} @vlandoss/env">
+  <img src="./docsite/public/lockup/lockup-stacked-dark.svg" width="220" alt="{e} @vlandoss/env">
 </p>
 
 [![npm version](https://img.shields.io/npm/v/@vlandoss/env?label=%40vlandoss%2Fenv&color=blue)](https://www.npmjs.com/package/@vlandoss/env)
@@ -21,7 +21,7 @@ This is the monorepo. Three things live here:
 | Path                       | What it is                                                                                            |
 | -------------------------- | ----------------------------------------------------------------------------------------------------- |
 | [`package/`](./package)    | The [`@vlandoss/env`](./package) library — published to npm                                           |
-| [`docs/`](./docs)          | The Fumadocs site behind [env.oss.variable.land](https://env.oss.variable.land), on Cloudflare Workers |
+| [`docsite/`](./docsite)    | The Fumadocs site behind [env.oss.variable.land](https://env.oss.variable.land), on Cloudflare Workers |
 | [`examples/`](./examples)  | 9 runtime-isolated demos (Node, Bun, Deno, Workers, Edge, Vite SPA, SSR) — each one is a real consumer of the published tarball |
 
 ## Working on it
@@ -37,10 +37,10 @@ mise run test:e2e   # runs the e2e suite of every example
 Day-to-day:
 
 ```bash
-mise run docs        # docs site dev server
+mise run docsite     # docs site dev server
 mise run lib:test    # unit tests for @vlandoss/env
 mise run lib:build   # build @vlandoss/env
-mise run test:static # JS & TS check across package + docs
+mise run test:static # JS & TS check across package + docsite
 ```
 
 Run `mise tasks` for the full list.

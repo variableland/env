@@ -7,17 +7,17 @@ How to set up, work in, and ship from this monorepo. For contribution convention
 ```
 env/
 ├── package/             # @vlandoss/env library — published to npm
-├── docs/                # Fumadocs site → env.oss.variable.land (Cloudflare Workers)
+├── docsite/             # Fumadocs site → env.oss.variable.land (Cloudflare Workers)
 ├── examples/            # 9 runtime-isolated demos (Node, Bun, Deno, Workers, Edge, Vite, SSR)
 ├── mise.toml            # Tool versions + task orchestration
-├── pnpm-workspace.yaml  # Workspace for `package` + `docs` only
+├── pnpm-workspace.yaml  # Workspace for `package` + `docsite` only
 ├── lefthook.yml         # Git hooks (jscheck on commit, tests on push)
 └── biome.json           # Root biome config (excludes examples/**)
 ```
 
 There are two layers, by design:
 
-- **The pnpm workspace** (`package` + `docs`) — these two are siblings and share the catalog'd dependency versions.
+- **The pnpm workspace** (`package` + `docsite`) — these two are siblings and share the catalog'd dependency versions.
 - **The runtime-isolated examples** (`examples/*`) — each one declares its own runtime, brings its own package manager (pnpm / bun / deno), has its own lockfile, and consumes `@vlandoss/env` from a packed tarball. They are **not** part of the pnpm workspace; they're orchestrated by mise.
 
 This split is intentional: the library promises runtime-agnosticism, and the examples have to prove that. An example that secretly resolves through a shared pnpm workspace doesn't actually demonstrate it works in Bun or Deno.
@@ -48,7 +48,7 @@ mise run setup      # ↓ runs the bootstrap chain
 
 1. `mise install` — installs the root tools.
 2. `for d in examples/*/; do mise install -C "$d"; done` — installs each example's runtime (bun, deno, etc.).
-3. `pnpm install` — workspace deps for `package` + `docs`.
+3. `pnpm install` — workspace deps for `package` + `docsite`.
 4. `mise run env:pack` — builds `@vlandoss/env` and packs it into `package/.local/vlandoss-env.tgz`.
 5. `for d in examples/*/; do mise -C "$d" run install; done` — installs each example.
 6. `mise run playwright:install` — fetches Chromium for the SPA / SSR e2e suites.
@@ -62,7 +62,7 @@ The library uses [tsdown](https://tsdown.dev) for the build and [vitest](https:/
 ```sh
 mise run lib:test       # unit tests
 mise run lib:build      # emits dist/
-mise run test:static    # JS & TS check across package + docs
+mise run test:static    # JS & TS check across package + docsite
 ```
 
 If you're hacking inside `package/`, the library's own `package.json` exposes the underlying scripts — those are what `mise run lib:*` and `mise run test:static` ultimately call.
@@ -93,17 +93,17 @@ mise run //examples/backend-node:start
 
 `env:watch` runs `tsdown --watch` plus a chokidar that pipes into `env:pack` + `examples:bump`.
 
-## Working on the docs (`docs/`)
+## Working on the docs (`docsite/`)
 
 The docs are a [TanStack Start](https://tanstack.com/start) + [Fumadocs](https://fumadocs.dev) app deployed to Cloudflare Workers.
 
 ```sh
-mise run docs           # local dev server
+mise run docsite        # local dev server
 ```
 
-Anything beyond dev (production build, deploy, preview) lives as `pnpm` scripts inside `docs/package.json` — `cd docs && pnpm build` / `pnpm deploy` / `pnpm preview`. Those are docs-specific deployment workflows; we haven't promoted them to mise tasks because they don't cross repo boundaries.
+Anything beyond dev (production build, deploy, preview) lives as `pnpm` scripts inside `docsite/package.json` — `cd docsite && pnpm build` / `pnpm deploy` / `pnpm preview`. Those are docs-specific deployment workflows; we haven't promoted them to mise tasks because they don't cross repo boundaries.
 
-Content lives in `docs/content/docs/` as MDX. Read [`docs/README.md`](./docs/README.md) for the full layout (routes, llms.txt endpoints, the `*.mdx` content negotiation trick, etc.).
+Content lives in `docsite/content/docs/` as MDX. Read [`docsite/README.md`](./docsite/README.md) for the full layout (routes, llms.txt endpoints, the `*.mdx` content negotiation trick, etc.).
 
 ## Working on the examples (`examples/*`)
 
@@ -177,7 +177,7 @@ Run `mise tasks` from anywhere in the repo to see what's available. The core one
 | `playwright:install`        | Install Chromium for Playwright (one-time, idempotent).                       |
 | `lib:test`                  | Unit tests for `@vlandoss/env`.                                               |
 | `lib:build`                 | Build `@vlandoss/env`.                                                        |
-| `test:static`               | JS & TS check across the workspace (`package` + `docs`).                      |
+| `test:static`               | JS & TS check across the workspace (`package` + `docsite`).                   |
 | `test:e2e`                  | Run e2e for every example.                                                    |
 | `examples:test:static`      | JS & TS check across every example.                                           |
 | `examples:bump`             | `reinstall` the tarball in every example.                                     |

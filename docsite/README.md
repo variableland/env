@@ -1,4 +1,4 @@
-# `@vlandoss/env` docs
+# `@vlandoss/env` docsite
 
 The Fumadocs-powered docs for [`@vlandoss/env`](../package), published at **[env.oss.variable.land](https://env.oss.variable.land)**.
 
@@ -22,7 +22,7 @@ Built with [TanStack Start](https://tanstack.com/start) + [Fumadocs](https://fum
 From the repo root (after `mise install && mise run setup` — see [DEVELOPMENT.md](../DEVELOPMENT.md)):
 
 ```sh
-pnpm docs            # alias for `pnpm --filter=docs dev`
+mise run docsite     # alias for `pnpm --filter=docsite dev`
 ```
 
 Or directly inside this workspace:
@@ -35,7 +35,7 @@ pnpm deploy          # build + wrangler deploy
 pnpm test:types      # typechecks
 ```
 
-`docs/` lives in the small pnpm workspace alongside [`package/`](../package). It is **not** runtime-isolated like the [`examples/`](../examples) — those each declare their own runtime via mise and use a packed tarball of `@vlandoss/env`.
+`docsite/` lives in the small pnpm workspace alongside [`package/`](../package). It is **not** runtime-isolated like the [`examples/`](../examples) — those each declare their own runtime via mise and use a packed tarball of `@vlandoss/env`.
 
 ## Notes
 

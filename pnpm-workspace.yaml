@@ -1,6 +1,6 @@
 packages:
   - package
-  - docs
+  - docsite
 
 catalog:
   "@types/node": 24.12.4

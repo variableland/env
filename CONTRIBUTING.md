@@ -6,7 +6,7 @@ Thanks for taking the time to contribute. This document covers the conventions w
 
 - **Report a bug.** Open an issue with a minimal repro and the actual vs. expected behavior. Include runtime (Node / Bun / Deno / Workers / Edge), `@vlandoss/env` version, and the schema validator you use.
 - **Propose a feature.** Open an issue first so we can align on scope before you spend time on a PR. We bias toward small, composable APIs.
-- **Improve the docs.** Even one-paragraph corrections are welcome. Docs live in [`docs/content/docs/`](./docs/content/docs).
+- **Improve the docs.** Even one-paragraph corrections are welcome. Docs live in [`docsite/content/docs/`](./docsite/content/docs).
 - **Add an example.** Demos that exercise a runtime or framework we don't cover yet are great PRs. See [adding a new example](#adding-a-new-example) below.
 - **Send a fix or feature PR.** Read the rest of this document first.
 
@@ -64,7 +64,7 @@ It writes a markdown file under `.changeset/` — commit it with the rest of you
 
 **You don't need a changeset when:**
 
-- Only `docs/`, `examples/`, CI files, or other non-published files changed.
+- Only `docsite/`, `examples/`, CI files, or other non-published files changed.
 - The PR is a pure `chore/*` that doesn't touch `package/src/`.
 
 Don't bump versions or edit `CHANGELOG.md` by hand — Changesets does both during release.
@@ -83,7 +83,7 @@ Don't bump versions or edit `CHANGELOG.md` by hand — Changesets does both duri
 
 Two workflows run on every PR:
 
-- **CI** ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml)) — static checks, unit tests, and library build inside the small pnpm workspace (`package` + `docs`).
+- **CI** ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml)) — static checks, unit tests, and library build inside the small pnpm workspace (`package` + `docsite`).
 - **E2E** ([`.github/workflows/e2e.yml`](./.github/workflows/e2e.yml)) — a matrix job per example, each provisioning its own runtime via [`jdx/mise-action`](https://github.com/jdx/mise-action).
 
 Both must be green to merge.
