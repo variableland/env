@@ -1,16 +1,19 @@
 import { createServerFn } from "@tanstack/react-start";
-import { highlight } from "fumadocs-core/highlight";
-import { renderToString } from "react-dom/server";
+import { createHighlighterCore } from "shiki/core";
+import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
 import { OVERRIDE_CODE, SCHEMA_CODE, WIRE_CODE } from "./data.ts";
 
 const THEME = "vitesse-dark";
 
+const highlighterPromise = createHighlighterCore({
+  themes: [import("@shikijs/themes/vitesse-dark")],
+  langs: [import("@shikijs/langs/typescript")],
+  engine: createJavaScriptRegexEngine(),
+});
+
 async function toHtml(code: string): Promise<string> {
-  const node = await highlight(code, {
-    lang: "typescript",
-    themes: { light: THEME, dark: THEME },
-  });
-  return renderToString(node);
+  const highlighter = await highlighterPromise;
+  return highlighter.codeToHtml(code, { lang: "typescript", theme: THEME });
 }
 
 export const getLandingSnippets = createServerFn({ method: "GET" }).handler(async () => {

@@ -76,18 +76,11 @@ You import the adapter that matches where the code runs. Pure SPA? No `/fs`. No 
 
 ## How the pieces fit
 
-<Mermaid
-  chart={`flowchart LR
-  S["schema()"]
-  C["config/&lt;envName&gt;"]
-  V["Environment variables"]
-  D(["defineEnv()"])
-  E[["env<br/>(typed, validated)"]]
-  S --> D
-  C --> D
-  V --> D
-  D --> E`}
-/>
+```text
+  schema()             ─┐
+  config/<envName>     ─┼──▶  defineEnv()  ──▶  env  (typed, validated)
+  environment vars     ─┘
+```
 
 - **`schema()`** — the contract. Every variable, branch, and Standard Schema validator your app expects.
 - **`config/<envName>`** — versioned defaults for the active environment, type-checked against the schema.
