@@ -6,10 +6,10 @@ pre-commit:
       stage_fixed: true
 
     - name: tscheck
-      run: pnpm --filter=@vlandoss/env exec rr tsc
+      run: pnpm rr tsc
       glob:
-        - "package/**/*.{ts,tsx}"
-        - "package/tsconfig.json"
+        - "{package,docs}/**/*.{ts,tsx}"
+        - "{package,docs}/tsconfig.json"
 
 pre-push:
   jobs:

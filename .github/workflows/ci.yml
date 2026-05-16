@@ -35,6 +35,9 @@ jobs:
       - name: 💅 Test static (biome + tsc)
         run: mise run test:static
 
+      - name: 🎭 Install Playwright browser (lib browser tests)
+        run: mise run playwright:install
+
       - name: 🧪 Test unit (lib)
         run: mise run lib:test
 
