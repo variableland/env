@@ -1,5 +1,11 @@
 # @vlandoss/env
 
+## 0.2.1
+
+### Patch Changes
+
+- [#11](https://github.com/variableland/env/pull/11) [`91534e9`](https://github.com/variableland/env/commit/91534e97f2995602c8b48e36cddb67a76874c73a) Thanks [@rqbazan](https://github.com/rqbazan)! - Drop the `type-fest` dependency. `PartialDeep` is now defined locally in `src/lib/types.ts` with an equivalent shape, so the public surface of `Config<S>` and `Defaults<S>` is unchanged. One fewer transitive dep for consumers.
+
 ## 0.2.0
 
 ### Minor Changes
