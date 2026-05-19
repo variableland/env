@@ -5,34 +5,30 @@ node = "24"  # for `rr` and `playwright` (node-based tooling)
 [env]
 _.path = ["{{config_root}}/node_modules/.bin"]
 
-[tasks.install]
-description = "Install deps (bun)"
+[tasks.setup]
+description = "Pack env + install deps (bun)"
+depends = ["//:env:pack"]
 sources = [
   "package.json",
   "bun.lock",
   "{{config_root}}/../../package/.local/vlandoss-env.tgz",
 ]
-run = [
-  "mise run //:env:pack",
-  "bun install",
-]
+run = "bun install"
 
 [tasks.reinstall]
 description = "Force-reinstall the env tarball"
-run = [
-  "mise run //:env:pack",
-  "bun install --force",
-]
+depends = ["//:env:pack"]
+run = "bun install --force"
 
 [tasks.start]
-depends = ["install"]
+depends = ["setup"]
 run = "bun src/server.ts"
 
 [tasks."test:e2e"]
-depends = ["install"]
+depends = ["setup"]
 run = "playwright test"
 
 [tasks.check]
 description = "JS & TS check"
-depends = ["install"]
+depends = ["setup"]
 run = "rr check"

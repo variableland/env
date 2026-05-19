@@ -28,8 +28,7 @@ run = [
   "mise install",
   "for d in examples/*/; do mise install -C \"$d\"; done",
   "pnpm install",
-  "mise run env:pack",
-  "for d in examples/*/; do mise -C \"$d\" run install || exit 1; done",
+  "mise run \"//examples/...:setup\"",
   "mise run playwright:install",
 ]
 
@@ -52,7 +51,7 @@ run = "pnpm dlx chokidar-cli 'src/**/*' --ignore 'dist/**' -c 'mise run env:pack
 
 [tasks."examples:bump"]
 description = "Reinstall the local env tarball in every example"
-run = "for d in examples/*/; do mise -C \"$d\" run reinstall || exit 1; done"
+run = "mise run \"//examples/...:reinstall\""
 
 [tasks."playwright:install"]
 description = "Install Playwright chromium browser globally (one-time, idempotent)"
@@ -61,12 +60,12 @@ run = "pnpm dlx playwright@1.59.1 install --with-deps chromium"
 [tasks."test:e2e"]
 description = "Run e2e suites for every example"
 depends = ["env:pack"]
-run = "for d in examples/*/; do mise -C \"$d\" run test:e2e || exit 1; done"
+run = "mise run \"//examples/...:test:e2e\""
 
 [tasks."examples:check"]
 description = "JS & TS check across every example"
 depends = ["env:pack"]
-run = "for d in examples/*/; do mise -C \"$d\" run check || exit 1; done"
+run = "mise run \"//examples/...:check\""
 
 [tasks.docsite]
 description = "Start the docs site dev server"

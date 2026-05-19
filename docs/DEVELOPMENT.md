@@ -48,11 +48,10 @@ mise run setup      # ↓ runs the bootstrap chain
 `mise run setup` runs the following steps in order:
 
 1. `mise install` — installs the root tools.
-2. `for d in examples/*/; do mise install -C "$d"; done` — installs each example's runtime (bun, deno, etc.).
+2. `for d in examples/*/; do mise install -C "$d"; done` — installs each example's runtime (bun, deno, etc.). `mise install` doesn't accept monorepo globs, so the loop stays.
 3. `pnpm install` — workspace deps for `package` + `docsite`.
-4. `mise run env:pack` — builds `@vlandoss/env` and packs it into `package/.local/vlandoss-env.tgz`.
-5. `for d in examples/*/; do mise -C "$d" run install; done` — installs each example.
-6. `mise run playwright:install` — fetches Chromium for the SPA / SSR e2e suites.
+4. `mise run "//examples/...:setup"` — runs each example's `setup` task in parallel (resolved via `[monorepo].config_roots`). Each `setup` declares `depends = ["//:env:pack"]`, so mise dedupes `env:pack` to a single execution before the example installs.
+5. `mise run playwright:install` — fetches Chromium for the SPA / SSR e2e suites.
 
 End state: every example has its own `node_modules/`, its own lockfile, and a freshly installed copy of `@vlandoss/env` extracted from the tarball.
 
@@ -77,7 +76,7 @@ mise run env:pack              # rebuild + repack the tarball
 mise run examples:bump         # reinstall the tarball in every example
 ```
 
-Each example's `install` task prepends `mise run //:env:pack` (with `sources` / `outputs` declared on `env:pack` itself), so any of these will pull in the latest tarball automatically:
+Each example's `setup` task declares `depends = ["//:env:pack"]` (with `sources` / `outputs` declared on `env:pack` itself), so any of these will pull in the latest tarball automatically:
 
 ```sh
 mise run //examples/backend-node:test:e2e
@@ -111,7 +110,7 @@ Content lives in `docsite/content/docs/` as MDX. Read [`docsite/README.md`](../d
 Every example has the same task vocabulary, so you can `cd` into any of them and run:
 
 ```sh
-mise run install        # install deps (uses the example's native PM)
+mise run setup          # pack env + install deps (uses the example's native PM)
 mise run reinstall      # force-reinstall the env tarball
 mise run start          # run the server / dev server
 mise run test:e2e       # Playwright
@@ -162,7 +161,7 @@ The full step-by-step is in [CONTRIBUTING.md](./CONTRIBUTING.md#adding-a-new-exa
 5. Add the path to `[monorepo].config_roots` in the root [`mise.toml`](../mise.toml).
 6. Add a row to the matrix in [`.github/workflows/e2e.yml`](../.github/workflows/e2e.yml).
 7. Update the table in [`examples/README.md`](../examples/README.md).
-8. `mise run install` from the new dir — commit the generated lockfile.
+8. `mise run setup` from the new dir — commit the generated lockfile.
 
 ## mise tasks reference
 
@@ -187,7 +186,7 @@ Run `mise tasks` from anywhere in the repo to see what's available. The core one
 
 | Task          | What it does                                                              |
 | ------------- | ------------------------------------------------------------------------- |
-| `install`     | Install deps with the example's native PM. Prepends `mise run //:env:pack`. |
+| `setup`       | Pack env + install deps with the example's native PM (depends on `//:env:pack`).            |
 | `reinstall`   | Force-reinstall the env tarball.                                            |
 | `start`       | Run the server (or `dev` / `build` / `preview` for the Vite-based ones).    |
 | `test:e2e`    | Playwright.                                                                 |
@@ -244,21 +243,19 @@ depends = ["//:env:pack"]
 
 If you're writing a new task and hit this error, use the `//:` prefix.
 
-### `task not found: env:pack` (when running across examples)
+### Fanning out a task across every example
 
-If you write a root task that loops over examples, use `mise -C path run task` rather than `cd path && mise run task`. The latter inherits a stale shell context that can confuse the resolver:
+Use mise's monorepo glob — it resolves against `[monorepo].config_roots` and runs in parallel (controlled by `MISE_JOBS`):
 
 ```toml
-# good
-run = "for d in examples/*/; do mise -C \"$d\" run test:e2e || exit 1; done"
-
-# bad — fails inside the orchestrator task context
-run = "for d in examples/*/; do (cd \"$d\" && mise run test:e2e) || exit 1; done"
+run = "mise run \"//examples/...:test:e2e\""
 ```
+
+Avoid `for d in examples/*/; do ...; done` — it's sequential and predates this feature. The one place a bash loop still makes sense is `mise install -C "$d"` for per-example tool installs (bun, deno, etc.), since `mise install` doesn't accept the monorepo glob.
 
 ### pnpm tries to install across the whole monorepo from inside an example
 
-Because the example dirs sit *inside* the same directory tree as `pnpm-workspace.yaml`, pnpm thinks they're workspace members. They're not — but pnpm needs an explicit `--ignore-workspace` to honor that. The 6 pnpm-based examples already pass it in their `install` tasks; if you're adding a new pnpm-based example, do the same.
+Because the example dirs sit *inside* the same directory tree as `pnpm-workspace.yaml`, pnpm thinks they're workspace members. They're not — but pnpm needs an explicit `--ignore-workspace` to honor that. The 6 pnpm-based examples already pass it in their `setup` tasks; if you're adding a new pnpm-based example, do the same.
 
 ### Deno can't import `@vlandoss/env` from the tarball
 
