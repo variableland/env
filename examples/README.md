@@ -57,7 +57,7 @@ mise run start
 
 ## Iterating on `package/` while developing
 
-Each example's `install` task `depends = ["env:pack"]`, and `env:pack` declares `sources` / `outputs` so it skips when nothing changed. So a regular `mise run //examples/<name>:test:e2e` already does the right thing from cold.
+Each example's `setup` task depends on `//:env:pack`, and `env:pack` declares `sources` / `outputs` so it skips when nothing changed. So a regular `mise run //examples/<name>:test:e2e` already does the right thing from cold.
 
 For an active edit loop:
 

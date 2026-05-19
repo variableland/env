@@ -18,11 +18,11 @@ pnpm add @vlandoss/env
 
 This is the monorepo. Three things live here:
 
-| Path                       | What it is                                                                                            |
-| -------------------------- | ----------------------------------------------------------------------------------------------------- |
-| [`package/`](./package)    | The [`@vlandoss/env`](./package) library — published to npm                                           |
-| [`docsite/`](./docsite)    | The Fumadocs site behind [env.oss.variable.land](https://env.oss.variable.land), on Cloudflare Workers |
-| [`examples/`](./examples)  | 9 runtime-isolated demos (Node, Bun, Deno, Workers, Edge, Vite SPA, SSR) — each one is a real consumer of the published tarball |
+| Path                      | What it is                                                                                                                      |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [`package/`](./package)   | The [`@vlandoss/env`](./package) library — published to npm                                                                     |
+| [`docsite/`](./docsite)   | The Fumadocs site behind [env.oss.variable.land](https://env.oss.variable.land), on Cloudflare Workers                          |
+| [`examples/`](./examples) | 9 runtime-isolated demos (Node, Bun, Deno, Workers, Edge, Vite SPA, SSR) — each one is a real consumer of the published tarball |
 
 ## Working on it
 
@@ -40,7 +40,7 @@ Day-to-day:
 mise run docsite     # docs site dev server
 mise run lib:test    # unit tests for @vlandoss/env
 mise run lib:build   # build @vlandoss/env
-mise run test:static # JS & TS check across package + docsite
+mise run check       # JS & TS check across package + docsite
 ```
 
 Run `mise tasks` for the full list.
@@ -53,4 +53,4 @@ Issues, ideas, and PRs welcome. Read [CONTRIBUTING.md](./docs/CONTRIBUTING.md) b
 
 ## License
 
-[MIT](./LICENSE) © [Variableland](https://variable.land)
+[MIT](./LICENSE) © [Variable Land](https://variable.land)

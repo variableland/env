@@ -21,9 +21,9 @@ export function LandingNav() {
       className="
         relative z-10 flex items-center justify-between
         gap-3 border-b border-landing-border
-        px-16 py-[26px]
-        @max-[1100px]/dirA:px-10 @max-[1100px]/dirA:py-[22px]
-        @max-[760px]/dirA:px-7 @max-[760px]/dirA:py-[18px]
+        px-16 py-6.5
+        @max-[1100px]/dirA:px-10 @max-[1100px]/dirA:py-5.5
+        @max-[760px]/dirA:px-7 @max-[760px]/dirA:py-4.5
         @max-[480px]/dirA:px-5 @max-[480px]/dirA:py-4
       "
     >
@@ -32,21 +32,21 @@ export function LandingNav() {
         <span className="text-[15px] font-semibold tracking-[-0.01em] text-landing-text">
           @vlandoss<span className="mx-px text-landing-dim-2">/</span>env
         </span>
-        <span
-          className="
-            ml-1.5 rounded-[4px] border border-landing-border-strong
-            px-[7px] py-[3px] font-landing-mono text-[11px] text-landing-dim
-            @max-[480px]/dirA:hidden
-          "
-        >
-          {LANDING_META.version}
-        </span>
+        <a href={LANDING_META.npmUrl} target="_blank" rel="noreferrer">
+          <span
+            className="ml-1.5 rounded-sm border border-landing-border-strong
+            px-1.75 py-0.75 font-landing-mono text-[11px] text-landing-dim transition-colors hover:text-landing-accent
+            @max-[480px]/dirA:hidden hover:border-landing-accent"
+          >
+            {LANDING_META.version}
+          </span>
+        </a>
       </div>
 
       <nav
         className="
           flex items-center gap-7
-          @max-[760px]/dirA:gap-[18px]
+          @max-[760px]/dirA:gap-4.5
           @max-[480px]/dirA:hidden
         "
       >

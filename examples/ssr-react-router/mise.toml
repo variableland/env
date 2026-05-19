@@ -5,8 +5,9 @@ pnpm = "10.30.3"
 [env]
 _.path = ["{{config_root}}/node_modules/.bin"]
 
-[tasks.install]
-description = "Install deps (pnpm) + generate React Router route types"
+[tasks.setup]
+description = "Pack env + install deps (pnpm) + generate React Router route types"
+depends = ["//:env:pack"]
 sources = [
   "package.json",
   "pnpm-lock.yaml",
@@ -14,36 +15,35 @@ sources = [
 ]
 outputs = ["node_modules/.modules.yaml"]
 run = [
-  "mise run //:env:pack",
   "pnpm install --ignore-workspace --no-frozen-lockfile",
   "react-router typegen",
 ]
 
 [tasks.reinstall]
 description = "Force-reinstall the env tarball"
+depends = ["//:env:pack"]
 run = [
-  "mise run //:env:pack",
   "pnpm install --ignore-workspace --no-frozen-lockfile --force",
   "react-router typegen",
 ]
 
 [tasks.dev]
-depends = ["install"]
+depends = ["setup"]
 run = "react-router dev"
 
 [tasks.build]
-depends = ["install"]
+depends = ["setup"]
 run = "react-router build"
 
 [tasks.start]
-depends = ["install"]
+depends = ["setup"]
 run = "react-router-serve build/server/index.js"
 
 [tasks."test:e2e"]
-depends = ["install"]
+depends = ["setup"]
 run = "playwright test"
 
-[tasks."test:static"]
+[tasks.check]
 description = "JS & TS check"
-depends = ["install"]
-run = "rr test:static"
+depends = ["setup"]
+run = "rr check"

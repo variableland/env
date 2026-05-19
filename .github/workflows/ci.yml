@@ -32,8 +32,8 @@ jobs:
       - name: 📦 Install root workspace
         run: pnpm install --frozen-lockfile
 
-      - name: 💅 Test static (biome + tsc)
-        run: mise run test:static
+      - name: 💅 Check (biome + tsc)
+        run: mise run check
 
       - name: 🎭 Install Playwright browser (lib browser tests)
         run: mise run playwright:install
@@ -92,3 +92,26 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           LEFTHOOK: 0
+
+  preview:
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.head_ref, 'feat') || startsWith(github.head_ref, 'fix') || contains(github.event.pull_request.labels.*.name, 'preview') }}
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+
+      - name: ⌛ Setup CI
+        uses: variableland/gh-actions/actions/setup-pnpm@main
+
+      - name: 🚀 Preview release
+        uses: variableland/gh-actions/actions/monorepo-preview-release@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

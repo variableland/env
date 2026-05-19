@@ -71,7 +71,7 @@ export function Close() {
           <span className="text-landing-border-strong">·</span>
           <span>made at</span>
           <a
-            href="https://variable.land"
+            href={LANDING_META.vlandUrl}
             target="_blank"
             rel="noreferrer"
             className="text-landing-dim-2 transition-colors hover:text-landing-accent"
@@ -79,7 +79,14 @@ export function Close() {
             Variable Land
           </a>
           <span className="text-landing-border-strong">·</span>
-          <span>{LANDING_META.version}</span>
+          <a
+            href={LANDING_META.npmUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-landing-dim-2 transition-colors hover:text-landing-accent"
+          >
+            {LANDING_META.version}
+          </a>
           <span className="text-landing-border-strong">·</span>
           <span>{LANDING_META.publishDate}</span>
         </div>
