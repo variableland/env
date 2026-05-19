@@ -2,7 +2,7 @@
 
 🌱 Contract-first environment configuration with typed schemas. Define your env once with [Standard Schema](https://github.com/standard-schema/standard-schema) (Zod, Valibot, ArkType…), get a fully typed `env` object that merges per-environment config with your environment variables.
 
-Runtime-agnostic core — Node, Bun, Deno, browser, Workers, Edge. Opt-in adapters for Node, Vite, React (SSR), and a curated set of Zod-based environment schema primitives.
+Runtime-agnostic core — Node, Bun, Deno, browser, Workers, Edge. Opt-in entry points: a filesystem-based config loader (works on Node, Bun, and Deno), a Vite plugin, a React `<EnvScript />` helper for hydrating runtime env across SSR or CSR, and a curated set of Zod-based schema primitives.
 
 ## Installation
 
