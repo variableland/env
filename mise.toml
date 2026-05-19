@@ -63,10 +63,10 @@ description = "Run e2e suites for every example"
 depends = ["env:pack"]
 run = "for d in examples/*/; do mise -C \"$d\" run test:e2e || exit 1; done"
 
-[tasks."examples:test:static"]
+[tasks."examples:check"]
 description = "JS & TS check across every example"
 depends = ["env:pack"]
-run = "for d in examples/*/; do mise -C \"$d\" run test:static || exit 1; done"
+run = "for d in examples/*/; do mise -C \"$d\" run check || exit 1; done"
 
 [tasks.docsite]
 description = "Start the docs site dev server"
@@ -80,6 +80,6 @@ run = "pnpm --filter=@vlandoss/env test"
 description = "Build @vlandoss/env"
 run = "pnpm --filter=@vlandoss/env build"
 
-[tasks."test:static"]
+[tasks.check]
 description = "JS & TS check across the workspace (package + docsite)"
-run = "rr test:static"
+run = "rr check"

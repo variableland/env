@@ -74,7 +74,7 @@ Don't bump versions or edit `CHANGELOG.md` by hand — Changesets does both duri
 - [ ] Branch named `feat/*`, `fix/*`, `docs/*`, `chore/*`, or `test/*`
 - [ ] PR title follows Conventional Commits
 - [ ] Tests cover the change (unit in `package/src/__tests__/`, e2e in `examples/<name>/test/e2e/` if relevant)
-- [ ] `mise run lib:test` and `mise run test:static` pass locally (JS & TS check)
+- [ ] `mise run lib:test` and `mise run check` pass locally (JS & TS check)
 - [ ] `mise run test:e2e` passes locally for affected examples
 - [ ] Changeset added (if the published `@vlandoss/env` changed)
 - [ ] Docs updated (if public API or behavior changed)
@@ -97,7 +97,7 @@ Examples are runtime-isolated demos. Each one is a real consumer of the publishe
    ```jsonc
    "@vlandoss/env": "file:../../package/.local/vlandoss-env.tgz"
    ```
-3. Add a `mise.toml` with the runtime tools (`node` / `bun` / `deno` / `pnpm`) and the standard tasks (`install`, `start`, `test:e2e`, `test:types`, `test:static`). Use any of the existing examples as a template — pick the one with the closest runtime.
+3. Add a `mise.toml` with the runtime tools (`node` / `bun` / `deno` / `pnpm`) and the standard tasks (`install`, `start`, `test:e2e`, `check`). Use any of the existing examples as a template — pick the one with the closest runtime.
 4. Add a `biome.json` extending `@vlandoss/config/biome` (skip this for Deno-only examples).
 5. Add the path to `[monorepo].config_roots` in the root [`mise.toml`](../mise.toml).
 6. Add a row to the matrix in [`.github/workflows/e2e.yml`](../.github/workflows/e2e.yml).

@@ -40,7 +40,7 @@ Day-to-day:
 mise run docsite     # docs site dev server
 mise run lib:test    # unit tests for @vlandoss/env
 mise run lib:build   # build @vlandoss/env
-mise run test:static # JS & TS check across package + docsite
+mise run check       # JS & TS check across package + docsite
 ```
 
 Run `mise tasks` for the full list.

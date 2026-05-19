@@ -41,7 +41,7 @@ run = "next start --port 3004"
 depends = ["install"]
 run = "playwright test"
 
-[tasks."test:static"]
+[tasks.check]
 description = "JS & TS check"
 depends = ["install"]
-run = "rr test:static"
+run = "rr check"

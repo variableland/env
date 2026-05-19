@@ -63,10 +63,10 @@ The library uses [tsdown](https://tsdown.dev) for the build and [vitest](https:/
 ```sh
 mise run lib:test       # unit tests
 mise run lib:build      # emits dist/
-mise run test:static    # JS & TS check across package + docsite
+mise run check          # JS & TS check across package + docsite
 ```
 
-If you're hacking inside `package/`, the library's own `package.json` exposes the underlying scripts — those are what `mise run lib:*` and `mise run test:static` ultimately call.
+If you're hacking inside `package/`, the library's own `package.json` exposes the underlying scripts — those are what `mise run lib:*` and `mise run check` ultimately call.
 
 ### Iterating with the examples
 
@@ -115,7 +115,7 @@ mise run install        # install deps (uses the example's native PM)
 mise run reinstall      # force-reinstall the env tarball
 mise run start          # run the server / dev server
 mise run test:e2e       # Playwright
-mise run test:static    # JS & TS check
+mise run check          # JS & TS check
 ```
 
 Or invoke from the repo root with the `//path:task` syntax:
@@ -178,9 +178,9 @@ Run `mise tasks` from anywhere in the repo to see what's available. The core one
 | `playwright:install`        | Install Chromium for Playwright (one-time, idempotent).                       |
 | `lib:test`                  | Unit tests for `@vlandoss/env`.                                               |
 | `lib:build`                 | Build `@vlandoss/env`.                                                        |
-| `test:static`               | JS & TS check across the workspace (`package` + `docsite`).                   |
+| `check`                     | JS & TS check across the workspace (`package` + `docsite`).                   |
 | `test:e2e`                  | Run e2e for every example.                                                    |
-| `examples:test:static`      | JS & TS check across every example.                                           |
+| `examples:check`            | JS & TS check across every example.                                           |
 | `examples:bump`             | `reinstall` the tarball in every example.                                     |
 
 ### Per-example tasks (uniform across every `examples/*/mise.toml`)
@@ -191,7 +191,7 @@ Run `mise tasks` from anywhere in the repo to see what's available. The core one
 | `reinstall`   | Force-reinstall the env tarball.                                            |
 | `start`       | Run the server (or `dev` / `build` / `preview` for the Vite-based ones).    |
 | `test:e2e`    | Playwright.                                                                 |
-| `test:static` | JS & TS check.                                                              |
+| `check`       | JS & TS check.                                                              |
 
 ## Why mise is the only API
 

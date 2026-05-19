@@ -32,8 +32,8 @@ jobs:
       - name: 📦 Install root workspace
         run: pnpm install --frozen-lockfile
 
-      - name: 💅 Test static (biome + tsc)
-        run: mise run test:static
+      - name: 💅 Check (biome + tsc)
+        run: mise run check
 
       - name: 🎭 Install Playwright browser (lib browser tests)
         run: mise run playwright:install
