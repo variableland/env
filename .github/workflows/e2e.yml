@@ -4,10 +4,24 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "examples/**"
+      - "package/**"
+      - ".github/workflows/e2e.yml"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "mise.toml"
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - main
+    paths:
+      - "examples/**"
+      - "package/**"
+      - ".github/workflows/e2e.yml"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "mise.toml"
 
 jobs:
   test:
