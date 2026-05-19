@@ -1,5 +1,22 @@
 import type { StandardSchemaV1 } from "@standard-schema/spec";
-import type { PartialDeep } from "type-fest";
+
+type Primitive = string | number | bigint | boolean | symbol | null | undefined;
+
+type PartialDeep<T> = T extends Primitive
+  ? T
+  : T extends ReadonlyArray<infer U>
+    ? T extends unknown[]
+      ? PartialDeep<U>[]
+      : ReadonlyArray<PartialDeep<U>>
+    : T extends ReadonlyMap<infer K, infer V>
+      ? ReadonlyMap<K, PartialDeep<V>>
+      : T extends ReadonlySet<infer U>
+        ? ReadonlySet<PartialDeep<U>>
+        : T extends (...args: never[]) => unknown
+          ? T
+          : T extends object
+            ? { [K in keyof T]?: PartialDeep<T[K]> }
+            : T;
 
 export type StandardSchema = StandardSchemaV1;
 

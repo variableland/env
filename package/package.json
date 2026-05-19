@@ -1,7 +1,7 @@
 {
   "name": "@vlandoss/env",
   "version": "0.2.0",
-  "description": "A simple helper to define environment-based configuration",
+  "description": "Contract-first environment configuration with typed schemas",
   "homepage": "https://github.com/variableland/env/tree/main/package#readme",
   "bugs": {
     "url": "https://github.com/variableland/env/issues"
@@ -44,8 +44,7 @@
   },
   "dependencies": {
     "@standard-schema/spec": "1.1.0",
-    "defu": "6.1.7",
-    "type-fest": "5.4.4"
+    "defu": "6.1.7"
   },
   "publishConfig": {
     "access": "public",
