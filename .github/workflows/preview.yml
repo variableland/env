@@ -19,9 +19,7 @@ jobs:
     if: ${{ startsWith(github.head_ref, 'feat') || startsWith(github.head_ref, 'fix') || contains(github.event.pull_request.labels.*.name, 'preview') }}
     permissions:
       id-token: write
-      contents: write
-      packages: write
-      pull-requests: write
+      contents: read
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
@@ -32,7 +30,7 @@ jobs:
           node-version-file: .node-version
 
       - name: ⌛ Setup CI
-        uses: variableland/gh-actions/actions/setup-pnpm-bun@main
+        uses: variableland/gh-actions/actions/setup-pnpm@main
 
       - name: 🚀 Preview release
         uses: variableland/gh-actions/actions/monorepo-preview-release@main
