@@ -116,10 +116,10 @@ export const WHY_POINTS = [
 ] as const;
 
 export const LANDING_META = {
-  version: "v0.2.0",
+  version: "v0.2.1",
   vlandUrl: "https://variable.land",
   githubUrl: "https://github.com/variableland/env",
-  npmUrl: "https://npmx.dev/package/@vlandoss/env",
+  npmUrl: "https://www.npmjs.com/package/@vlandoss/env",
   docsHref: "/docs",
   publishDate: "2026",
 } as const;
