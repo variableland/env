@@ -11,7 +11,12 @@ export default defineConfig({
     tailwindcss(),
     mdx(),
     tanstackStart({
-      pages: [{ path: "/sitemap.xml", prerender: { enabled: true } }],
+      prerender: {
+        enabled: true,
+        crawlLinks: true,
+        filter: (page) => !page.path.startsWith("/api/") && !page.path.includes("#"),
+      },
+      pages: [{ path: "/" }, { path: "/sitemap.xml" }, { path: "/llms.txt" }, { path: "/llms-full.txt" }],
     }),
     react(),
   ],
