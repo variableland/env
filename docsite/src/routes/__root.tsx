@@ -22,6 +22,15 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "preload", as: "font", type: "font/woff2", href: "/fonts/geist-latin-wght-normal.woff2", crossOrigin: "anonymous" },
+      { rel: "preload", as: "font", type: "font/woff2", href: "/fonts/geist-latin-wght-italic.woff2", crossOrigin: "anonymous" },
+      {
+        rel: "preload",
+        as: "font",
+        type: "font/woff2",
+        href: "/fonts/geist-mono-latin-wght-normal.woff2",
+        crossOrigin: "anonymous",
+      },
       { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon/favicon-16.png" },
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon/favicon-32.png" },
       { rel: "icon", type: "image/png", sizes: "48x48", href: "/favicon/favicon-48.png" },
