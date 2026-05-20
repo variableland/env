@@ -6,5 +6,13 @@ import mdx from "fumadocs-mdx/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [cloudflare({ viteEnvironment: { name: "ssr" } }), tailwindcss(), mdx(), tanstackStart(), react()],
+  plugins: [
+    cloudflare({ viteEnvironment: { name: "ssr" } }),
+    tailwindcss(),
+    mdx(),
+    tanstackStart({
+      pages: [{ path: "/sitemap.xml", prerender: { enabled: true } }],
+    }),
+    react(),
+  ],
 });
