@@ -1,9 +1,8 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { RootProvider } from "fumadocs-ui/provider/tanstack";
 import type * as React from "react";
+import { SITE_URL } from "#src/components/landing/data.ts";
 import appCss from "#src/styles/app.css?url";
-
-const SITE_URL = "https://env.oss.variable.land";
 
 export const Route = createRootRoute({
   head: () => ({

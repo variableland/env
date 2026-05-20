@@ -2,23 +2,10 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const SITE = "http://127.0.0.1:4173";
-const DOCS_ROOT = path.join(__dirname, "content/docs");
+const SITEMAP = path.join(__dirname, "dist/client/sitemap.xml");
 
-function collectDocUrls(dir, urlPrefix = "/docs") {
-  const urls = [];
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      urls.push(...collectDocUrls(full, `${urlPrefix}/${entry.name}`));
-    } else if (entry.name.endsWith(".mdx")) {
-      const slug = entry.name.replace(/\.mdx$/, "");
-      urls.push(slug === "index" ? urlPrefix : `${urlPrefix}/${slug}`);
-    }
-  }
-  return urls;
-}
-
-const urls = ["/", ...collectDocUrls(DOCS_ROOT)].map((p) => `${SITE}${p}`);
+const xml = fs.readFileSync(SITEMAP, "utf8");
+const urls = Array.from(xml.matchAll(/<loc>([^<]+)<\/loc>/g), (m) => m[1].replace(/^https?:\/\/[^/]+/, SITE));
 
 module.exports = {
   ci: {

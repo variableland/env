@@ -123,3 +123,5 @@ export const LANDING_META = {
   docsHref: "/docs",
   publishDate: "2026",
 } as const;
+
+export const SITE_URL = "https://env.oss.variable.land";
