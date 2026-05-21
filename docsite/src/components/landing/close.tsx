@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { GithubIcon } from "#src/components/github-icon.tsx";
 import { LANDING_META } from "./data.ts";
@@ -33,8 +34,8 @@ export function Close() {
             @max-[480px]/dirA:flex-col @max-[480px]/dirA:items-stretch @max-[480px]/dirA:gap-2.5
           "
         >
-          <a
-            href={LANDING_META.docsHref}
+          <Link
+            to={LANDING_META.docsHref}
             className="
               group inline-flex min-w-[168px] items-center justify-center gap-2.5
               rounded-lg border border-landing-accent bg-landing-accent
@@ -44,7 +45,7 @@ export function Close() {
           >
             Read the docs
             <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" aria-hidden />
-          </a>
+          </Link>
           <a
             href={LANDING_META.githubUrl}
             target="_blank"
