@@ -1,5 +1,5 @@
 {
-  "extends": "@vlandoss/config/ts/react",
+  "extends": "@rrlab/ts-config/react",
   "compilerOptions": {
     "jsx": "preserve",
     "module": "esnext",

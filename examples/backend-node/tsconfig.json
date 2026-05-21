@@ -1,4 +1,4 @@
 {
-  "extends": "@vlandoss/config/ts/no-dom/app",
+  "extends": "@rrlab/ts-config/no-dom/app",
   "include": ["src", "test", "playwright.config.ts"]
 }

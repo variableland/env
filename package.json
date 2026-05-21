@@ -5,10 +5,19 @@
   "dependencies": {
     "@changesets/changelog-github": "0.5.2",
     "@changesets/cli": "2.29.8",
-    "@vlandoss/config": "0.2.0",
-    "@vlandoss/run-run": "0.6.1",
+    "@rrlab/cli": "0.0.3",
     "lefthook": "2.1.1",
     "vitest": "4.1.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.15",
+    "@rrlab/biome-config": "^0.0.2",
+    "@rrlab/biome-plugin": "^0.1.1",
+    "@rrlab/ts-config": "^0.0.2",
+    "@rrlab/ts-plugin": "^0.1.1",
+    "@rrlab/tsdown-plugin": "^0.1.1",
+    "tsdown": "^0.22.0",
+    "typescript": "^6.0.3"
   },
   "packageManager": "pnpm@10.30.3"
 }

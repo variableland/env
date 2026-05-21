@@ -9,12 +9,15 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.4",
+    "@biomejs/biome": "^2.0.0",
     "@playwright/test": "1.59.1",
+    "@rrlab/biome-config": "^0.0.2",
+    "@rrlab/biome-plugin": "^0.1.1",
+    "@rrlab/cli": "0.0.3",
+    "@rrlab/ts-config": "^0.0.2",
+    "@rrlab/ts-plugin": "^0.1.1",
     "@types/bun": "1.3.14",
-    "@vlandoss/config": "0.2.0",
-    "@vlandoss/run-run": "0.5.3",
     "playwright": "1.59.1",
-    "typescript": "6.0.3"
+    "typescript": "^6.0.0"
   }
 }
