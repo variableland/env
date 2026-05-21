@@ -1,4 +1,4 @@
-import { defineConfig } from "@vlandoss/run-run/tools/tsdown";
+import { defineConfig } from "tsdown";
 
 export default defineConfig([
   {

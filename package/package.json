@@ -37,7 +37,7 @@
     "!src/**/*.test.*"
   ],
   "scripts": {
-    "build": "rr build:lib",
+    "build": "rr pack",
     "test": "vitest run",
     "test:browser": "vitest --browser.headless=false",
     "prepublishOnly": "pnpm build"
