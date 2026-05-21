@@ -1,14 +1,17 @@
+import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { BrandMark } from "#src/components/brand-mark.tsx";
 import { GithubIcon } from "#src/components/github-icon.tsx";
 import { LANDING_META } from "./data.ts";
 
-const LINKS = [
-  { label: "Docs", href: "/docs" },
-  { label: "API", href: "/docs/api-reference" },
-  { label: "Guides", href: "/docs/guides" },
-  { label: "Changelog", href: `${LANDING_META.githubUrl}/releases` },
+type NavLink = { label: string; href: string; external?: boolean };
+
+const LINKS: readonly NavLink[] = [
+  { label: "Docs", href: "/docs/" },
+  { label: "API", href: "/docs/api-reference/" },
+  { label: "Guides", href: "/docs/guides/" },
+  { label: "Changelog", href: `${LANDING_META.githubUrl}/releases`, external: true },
 ] as const;
 
 export function LandingNav() {
@@ -50,21 +53,30 @@ export function LandingNav() {
           @max-[480px]/dirA:hidden
         "
       >
-        {LINKS.map((link, i) => (
-          <a
-            key={link.label}
-            href={link.href}
-            data-nav-link
-            data-link-index={i}
-            className="
+        {LINKS.map((link, i) => {
+          const className = `
               text-sm text-landing-dim no-underline transition-colors hover:text-landing-text
               @max-[760px]/dirA:data-[link-index='2']:hidden
               @max-[760px]/dirA:data-[link-index='3']:hidden
-            "
-          >
-            {link.label}
-          </a>
-        ))}
+            `;
+          return link.external ? (
+            <a
+              key={link.label}
+              href={link.href}
+              target="_blank"
+              rel="noreferrer"
+              data-nav-link
+              data-link-index={i}
+              className={className}
+            >
+              {link.label}
+            </a>
+          ) : (
+            <Link key={link.label} to={link.href} data-nav-link data-link-index={i} className={className}>
+              {link.label}
+            </Link>
+          );
+        })}
         <a
           href={LANDING_META.githubUrl}
           target="_blank"
@@ -111,21 +123,31 @@ export function LandingNav() {
           @max-[480px]/dirA:flex
         "
       >
-        {LINKS.map((link) => (
-          <a
-            key={link.label}
-            href={link.href}
-            onClick={() => setOpen(false)}
-            className="
+        {LINKS.map((link) => {
+          const className = `
               flex items-center justify-between border-b border-landing-border
               px-1 py-4 text-base tracking-[-0.005em] text-landing-text no-underline
               last:border-b-0
-            "
-          >
-            <span>{link.label}</span>
-            <span className="text-sm text-landing-dim-2">→</span>
-          </a>
-        ))}
+            `;
+          return link.external ? (
+            <a
+              key={link.label}
+              href={link.href}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setOpen(false)}
+              className={className}
+            >
+              <span>{link.label}</span>
+              <span className="text-sm text-landing-dim-2">→</span>
+            </a>
+          ) : (
+            <Link key={link.label} to={link.href} onClick={() => setOpen(false)} className={className}>
+              <span>{link.label}</span>
+              <span className="text-sm text-landing-dim-2">→</span>
+            </Link>
+          );
+        })}
         <a
           href={LANDING_META.githubUrl}
           target="_blank"

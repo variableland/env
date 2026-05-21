@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Copy } from "lucide-react";
 import { useState } from "react";
 import { LANDING_META, RUNTIMES } from "./data.ts";
@@ -86,8 +87,8 @@ export function Hero({ snippets }: { snippets: Snippets }) {
             @max-[760px]/dirA:flex-col @max-[760px]/dirA:items-stretch
           "
         >
-          <a
-            href={LANDING_META.docsHref}
+          <Link
+            to={LANDING_META.docsHref}
             className="
               group inline-flex items-center justify-center gap-2.5
               rounded-lg border border-landing-accent bg-landing-accent
@@ -97,7 +98,7 @@ export function Hero({ snippets }: { snippets: Snippets }) {
           >
             Read the docs
             <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" aria-hidden />
-          </a>
+          </Link>
           <button
             type="button"
             onClick={onCopy}
