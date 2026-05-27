@@ -2,6 +2,7 @@ export { ENV_GLOBAL_ID, ENV_SCRIPT_ID } from "./const.ts";
 export { defineEnv } from "./define-env.ts";
 export { envName, readEnv } from "./runtime.ts";
 export { schema } from "./schema.ts";
+export { selectConfig } from "./select-config.ts";
 
 export type {
   AssertEnvVarNames,

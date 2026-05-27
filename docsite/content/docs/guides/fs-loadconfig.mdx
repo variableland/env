@@ -87,8 +87,30 @@ The pattern **must** contain `{env}`, and it throws if the resolved file doesn't
 
 `loadConfig` always reads `envName()`. To load a non-current env, set `ENV=…` in the process env before calling — there's no `env` override on the function itself.
 
+## Config files that can't use top-level `await` (`selectConfig`)
+
+`loadConfig` is async — it uses dynamic `import()` under the hood, which is irreducibly asynchronous. That's fine in app code, but it breaks in **config files that tooling loads synchronously** — files pulled in via `require()` or bundled to CJS, where a top-level `await` is rejected (`ERR_REQUIRE_ASYNC_MODULE`, or a build-time _"top-level await is not supported with the cjs output format"_). Some database/ORM tooling configs fall in this bucket.
+
+There's no runtime-agnostic way to make `loadConfig` synchronous — a sync module load means `require()`, which only exists on CJS-capable runtimes and can't load `.ts` without a transpile hook. So for these files, use **`selectConfig`** instead: the synchronous, runtime-agnostic counterpart. Pair it with **static `import`s** so the runtime/bundler resolves and transpiles each config at parse time — no dynamic import, no `await`:
+
+```ts title="src/env/index.ts (imported by the tool's config file)"
+import { defineEnv, selectConfig } from "@vlandoss/env";
+import development from "./config/development.ts";
+import production from "./config/production.ts";
+import { Env } from "./env/schema.ts";
+
+export const env = defineEnv({
+  schema: Env,
+  config: selectConfig({ development, production }),
+});
+```
+
+`selectConfig` picks the entry matching `envName()` and **throws** if there's none (the map is explicit, so a miss is almost always a typo). Like `loadConfig`, it has no `env` override — set `ENV=…` first to select a non-current env.
+
+See the [`config-cjs` example](https://github.com/variableland/env/tree/main/examples/config-cjs) for a runnable reproduction (it asserts the `loadConfig` + top-level await variant throws under `require()`, and the `selectConfig` variant loads).
+
 ## Tradeoffs
 
 - Requires a runtime with a filesystem — works on Node, Bun, and Deno; not on Workers/Edge. Use the [Vite plugin](/docs/api-reference/vite) for those instead.
 - Loading `.ts` / `.mts` config files depends on the host runtime's TypeScript support: native in Bun and Deno, behind `--experimental-strip-types` in Node ≥22.6 (stable in 23.6). `.js` / `.mjs` / `.json` work everywhere.
-- The startup is async because `loadConfig` is async. If you can't use top-level `await`, hoist the boot into an `async function main()` and call it from your entrypoint.
+- The startup is async because `loadConfig` is async. If you can't use top-level `await`, hoist the boot into an `async function main()` and call it from your entrypoint — or, for config files loaded synchronously by tooling, use [`selectConfig`](#config-files-that-cant-use-top-level-await-selectconfig) with static imports.

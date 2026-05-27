@@ -12,6 +12,7 @@ The `@vlandoss/env` entrypoint is the only one you always import — it contains
 | ------------ | -------- | ------------------------------------------------------------------------------------ |
 | `schema`     | Function | Declare the contract — branches and Standard Schema leaves.                          |
 | `defineEnv`  | Function | Merge config + environment variables, validate, and return a typed `env` object.     |
+| `selectConfig` | Function | Synchronously pick the current env's config from a map of statically-imported configs. The no-`await` counterpart to `loadConfig` for config files that tooling loads via `require()` or bundles to CJS. |
 | `envName`    | Function | Detect the current environment name across runtimes — `development`, `production`, … |
 | `readEnv`    | Function | Read raw values from the active source (`process.env` on the server, `window.__env` in the browser). Returns `{}` on runtimes without `process` (Workers) — pass `runtimeEnv` to `defineEnv` instead. |
 | `Config`     | Type     | The input shape of per-environment config files for a given schema.                  |

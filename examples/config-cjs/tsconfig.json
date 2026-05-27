@@ -1,0 +1,4 @@
+{
+  "extends": "@rrlab/ts-config/no-dom/app",
+  "include": ["src", "test", "config", "db.config.mts", "db.config.broken.mts"]
+}

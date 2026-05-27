@@ -1,7 +1,7 @@
 import { assertType, describe, expectTypeOf, test } from "vitest";
 import * as z from "zod";
 import type { AssertEnvVarNames, Config, Defaults, Env, Vars } from "../lib/index.ts";
-import { defineEnv, schema } from "../lib/index.ts";
+import { defineEnv, schema, selectConfig } from "../lib/index.ts";
 
 const S = schema({
   server: { PORT: z.coerce.number(), HOST: z.string() },
@@ -134,5 +134,20 @@ describe("defineEnv() return type overloads", () => {
   test("rejects string config at compile time (use @vlandoss/env/fs loadConfig instead)", () => {
     // @ts-expect-error config must be an object, module namespace, or Promise
     defineEnv({ schema: S, config: "src/config/*.ts" });
+  });
+});
+
+describe("selectConfig()", () => {
+  const development: Config<typeof S> = { server: { PORT: 3000, HOST: "x" } };
+  const production: Config<typeof S> = { server: { PORT: 8080, HOST: "y" } };
+
+  test("returns the map's value type (T), never `T | undefined`", () => {
+    const config = selectConfig({ development, production });
+    expectTypeOf(config).toEqualTypeOf<Config<typeof S>>();
+  });
+
+  test("result pipes into defineEnv as a sync config -> Env<S>", () => {
+    const env = defineEnv({ schema: S, config: selectConfig({ development, production }) });
+    expectTypeOf(env).toEqualTypeOf<Env<typeof S>>();
   });
 });

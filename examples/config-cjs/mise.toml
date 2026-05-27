@@ -1,0 +1,37 @@
+# Pinned to 22.22.3 on purpose: this example reproduces a `require()`-time
+# failure that only surfaces with `require(esm)` (default since 22.12) AND native
+# TypeScript stripping (default since 22.18). An older 22.x would either resolve
+# the .mts as plain JS (syntax error) or report a different error code.
+[tools]
+node = "22.22.3"
+pnpm = "10.30.3"
+
+[env]
+_.path = ["{{config_root}}/node_modules/.bin"]
+
+[tasks.setup]
+description = "Pack env + install deps (pnpm)"
+depends = ["//:env:pack"]
+sources = [
+  "package.json",
+  "pnpm-lock.yaml",
+  "{{config_root}}/../../package/.local/vlandoss-env.tgz",
+]
+outputs = ["node_modules/.modules.yaml"]
+run = "pnpm install --ignore-workspace --no-frozen-lockfile"
+
+[tasks.reinstall]
+description = "Force-reinstall the env tarball"
+depends = ["//:env:pack"]
+run = "pnpm install --ignore-workspace --no-frozen-lockfile --force"
+
+[tasks."test:e2e"]
+description = "Assert the config loads under require() (selectConfig) and that the loadConfig+TLA variant is rejected"
+depends = ["setup"]
+env = { ENV = "development" }
+run = "node --test test/loader.test.ts"
+
+[tasks.check]
+description = "JS & TS check"
+depends = ["setup"]
+run = "rr check"
