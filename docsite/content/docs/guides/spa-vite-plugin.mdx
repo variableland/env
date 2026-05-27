@@ -80,7 +80,7 @@ Each command produces a separate `dist/` whose bundle contains **only** the matc
 
 ## What each piece does
 
-- **`envConfig()` plugin** registers `resolve.alias["#config"]` pointing at `[src/]config/<mode>.{ts,mts,js,mjs,json}` (same discovery algorithm as `loadConfig`). It also injects `__ENV_NAME__ = JSON.stringify(mode)` so `envName()` returns the right mode in the browser — see [Custom modes](/docs/guides/custom-modes).
+- **`envConfig()` plugin** registers `resolve.alias["#config"]` pointing at `[src/]config/<mode>.{ts,mts,cts,js,mjs,cjs,json}` (same discovery algorithm as `loadConfig`). It also injects `__ENV_NAME__ = JSON.stringify(mode)` so `envName()` returns the right mode in the browser — see [Custom modes](/docs/guides/custom-modes).
 - **`#config.d.ts`** declares the type of the alias for TypeScript. Vite resolves the runtime import; this just stops `tsc` from complaining.
 - **`defineEnv({ schema, config })`** runs synchronously here — `config` is a plain object, not a Promise.
 

@@ -48,7 +48,7 @@ import { defineEnv } from "@vlandoss/env";
 import { loadConfig } from "@vlandoss/env/fs";
 import { Env } from "./schema.ts";
 
-const config = await loadConfig(Env);
+const config = loadConfig(Env);
 
 export const env = defineEnv({
   schema: Env,
@@ -69,7 +69,7 @@ server.listen(env.server.PORT, env.server.HOST);
 
 - **`schema()`** is the contract. Leaves use Standard Schema validators (Zod here, but any Standard Schema lib works). The `@vlandoss/env/zod` primitives (`e.port`, `e.host`, `e.logLevel`, `e.bool`) are opinionated single-purpose schemas — see the [Zod primitives reference](/docs/api-reference/zod).
 - **`config/<envName>.ts`** is the typed, versioned default per environment. `satisfies EnvConfig` is what gives you compile-time errors on typos. **Secrets do not go here** — leave them out of `config/*` and put them in `process.env`.
-- **`loadConfig(Env)`** is the short form: it auto-discovers `[src/]config/<envName>.{ts,mts,js,mjs,json}` under `process.cwd()` and returns the first match (or `{}` if none).
+- **`loadConfig(Env)`** is the short form: it **synchronously** auto-discovers `[src/]config/<envName>.{ts,mts,cts,js,mjs,cjs,json}` under `process.cwd()` and returns the first match (or `{}` if none) — no `await`.
 - **`defineEnv`** merges `defaults` (none here) → `config` → `process.env` and validates the result. See [Resolution order](/docs/concepts/resolution).
 - **`vars: { db: { URL: "DATABASE_URL" } }`** overrides the convention for one leaf. `db.URL` would default to `DB_URL`; here we map it to the conventional `DATABASE_URL`. See [Env-var naming](/docs/concepts/env-var-naming).
 
@@ -78,7 +78,7 @@ server.listen(env.server.PORT, env.server.HOST);
 If your config directory doesn't follow the convention, use the long form:
 
 ```ts
-const config = await loadConfig({ schema: Env, pattern: "config/{env}.ts" });
+const config = loadConfig({ schema: Env, pattern: "config/{env}.ts" });
 ```
 
 The pattern **must** contain `{env}`, and it throws if the resolved file doesn't exist (the short form silently falls back to `{}`).
@@ -87,8 +87,26 @@ The pattern **must** contain `{env}`, and it throws if the resolved file doesn't
 
 `loadConfig` always reads `envName()`. To load a non-current env, set `ENV=…` in the process env before calling — there's no `env` override on the function itself.
 
+## Resolving from a custom `cwd`
+
+Both auto-discovery and the `{env}` template resolve paths against `process.cwd()` by default. If the process working directory isn't the project root (monorepo task runners, orchestrators, SSR workers launched from elsewhere), pass `cwd` explicitly:
+
+```ts
+const config = loadConfig({ schema: Env, cwd: appRoot });                       // auto-discovery
+const config = loadConfig({ schema: Env, pattern: "config/{env}.ts", cwd: appRoot }); // template
+```
+
+## Config files loaded synchronously (`require()` / CJS)
+
+Because `loadConfig` is synchronous, it also works in **config files that tooling loads synchronously** — files pulled in via `require()` or bundled to CJS, where a top-level `await` would be rejected (`ERR_REQUIRE_ASYNC_MODULE`, or a build-time _"top-level await is not supported with the cjs output format"_). The wiring is exactly the same as above; there's no `await` to trip over.
+
+See the runnable [`backend-node-cjs`](https://github.com/variableland/env/tree/main/examples/backend-node-cjs), [`backend-bun-cjs`](https://github.com/variableland/env/tree/main/examples/backend-bun-cjs), and [`backend-deno-cjs`](https://github.com/variableland/env/tree/main/examples/backend-deno-cjs) examples — each boots its server from a CommonJS `require()` entry.
+
 ## Tradeoffs
 
 - Requires a runtime with a filesystem — works on Node, Bun, and Deno; not on Workers/Edge. Use the [Vite plugin](/docs/api-reference/vite) for those instead.
-- Loading `.ts` / `.mts` config files depends on the host runtime's TypeScript support: native in Bun and Deno, behind `--experimental-strip-types` in Node ≥22.6 (stable in 23.6). `.js` / `.mjs` / `.json` work everywhere.
-- The startup is async because `loadConfig` is async. If you can't use top-level `await`, hoist the boot into an `async function main()` and call it from your entrypoint.
+- `loadConfig` loads files with `require()`. Runtime requirements by extension:
+  - `.ts` / `.mts` / `.cts` — native TypeScript stripping (native in Bun/Deno, **Node ≥22.18**).
+  - `.mjs` / `.js` / `.cjs` — `require(esm)` (native in Bun/Deno, **Node ≥22.12**).
+  - `.json` — works on any supported Node.
+- Module loads are cached by Node/Bun/Deno's module system. Editing a `.ts`/`.mjs`/`.cjs` config in a long-running process isn't picked up until the process restarts; `.json` files are re-read on every call.

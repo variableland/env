@@ -1,0 +1,27 @@
+{
+  "name": "example-backend-node-cjs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@hono/node-server": "2.0.2",
+    "@vlandoss/env": "file:../../package/.local/vlandoss-env.tgz",
+    "hono": "4.12.18",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.15",
+    "@playwright/test": "1.59.1",
+    "@rrlab/biome-config": "0.0.2",
+    "@rrlab/biome-plugin": "1.1.0",
+    "@rrlab/cli": "1.1.0",
+    "@rrlab/ts-config": "0.0.2",
+    "@rrlab/ts-plugin": "1.1.0",
+    "@types/node": "24.12.4",
+    "playwright": "1.59.1",
+    "typescript": "6.0.3"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}

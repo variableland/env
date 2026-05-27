@@ -62,7 +62,7 @@ import { defineEnv } from "@vlandoss/env";
 import { loadConfig } from "@vlandoss/env/fs";
 import { ServerEnv } from "./schema.server.ts";
 
-const config = await loadConfig({ schema: ServerEnv, pattern: "app/config/{env}.ts" });
+const config = loadConfig({ schema: ServerEnv, pattern: "app/config/{env}.ts" });
 
 export const env = defineEnv({
   schema: ServerEnv,

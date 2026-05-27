@@ -2,7 +2,7 @@ import { defineEnv } from "@vlandoss/env";
 import { loadConfig } from "@vlandoss/env/fs";
 import { Env } from "./schema.ts";
 
-const config = await loadConfig(Env);
+const config = loadConfig(Env);
 
 export const env = defineEnv({
   schema: Env,
