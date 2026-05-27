@@ -6,6 +6,12 @@ settings:
 
 catalogs:
   default:
+    '@rrlab/ts-config':
+      specifier: 0.0.2
+      version: 0.0.2
+    '@rrlab/tsdown-config':
+      specifier: 0.1.0
+      version: 0.1.0
     '@types/node':
       specifier: 24.12.4
       version: 24.12.4
@@ -38,46 +44,42 @@ importers:
 
   .:
     dependencies:
+      '@biomejs/biome':
+        specifier: 2.4.15
+        version: 2.4.15
       '@changesets/changelog-github':
         specifier: 0.5.2
         version: 0.5.2
       '@changesets/cli':
         specifier: 2.29.8
         version: 2.29.8(@types/node@24.12.4)
+      '@rrlab/biome-config':
+        specifier: 0.0.2
+        version: 0.0.2(@biomejs/biome@2.4.15)
+      '@rrlab/biome-plugin':
+        specifier: 1.1.0
+        version: 1.1.0(@biomejs/biome@2.4.15)(@pnpm/logger@1001.0.1)(@rrlab/cli@1.1.0(@pnpm/logger@1001.0.1))
       '@rrlab/cli':
-        specifier: 0.0.3
-        version: 0.0.3(@pnpm/logger@1001.0.1)
+        specifier: 1.1.0
+        version: 1.1.0(@pnpm/logger@1001.0.1)
+      '@rrlab/ts-plugin':
+        specifier: 1.1.0
+        version: 1.1.0(@pnpm/logger@1001.0.1)(@rrlab/cli@1.1.0(@pnpm/logger@1001.0.1))(typescript@6.0.3)
+      '@rrlab/tsdown-plugin':
+        specifier: 1.1.0
+        version: 1.1.0(@pnpm/logger@1001.0.1)(@rrlab/cli@1.1.0(@pnpm/logger@1001.0.1))(tsdown@0.22.0(typescript@6.0.3))
       lefthook:
         specifier: 2.1.1
         version: 2.1.1
+      tsdown:
+        specifier: 0.22.0
+        version: 0.22.0(typescript@6.0.3)
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
       vitest:
         specifier: 4.1.0
         version: 4.1.0(@types/node@24.12.4)(@vitest/browser-playwright@4.1.0)(vite@8.0.11(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.8.4))
-    devDependencies:
-      '@biomejs/biome':
-        specifier: ^2.4.15
-        version: 2.4.15
-      '@rrlab/biome-config':
-        specifier: ^0.0.2
-        version: 0.0.2(@biomejs/biome@2.4.15)
-      '@rrlab/biome-plugin':
-        specifier: ^0.1.1
-        version: 0.1.1(@biomejs/biome@2.4.15)(@pnpm/logger@1001.0.1)(@rrlab/cli@0.0.3(@pnpm/logger@1001.0.1))
-      '@rrlab/ts-config':
-        specifier: ^0.0.2
-        version: 0.0.2(@types/node@24.12.4)(typescript@6.0.3)
-      '@rrlab/ts-plugin':
-        specifier: ^0.1.1
-        version: 0.1.1(@pnpm/logger@1001.0.1)(@rrlab/cli@0.0.3(@pnpm/logger@1001.0.1))(typescript@6.0.3)
-      '@rrlab/tsdown-plugin':
-        specifier: ^0.1.1
-        version: 0.1.1(@pnpm/logger@1001.0.1)(@rrlab/cli@0.0.3(@pnpm/logger@1001.0.1))(tsdown@0.22.0(typescript@6.0.3))
-      tsdown:
-        specifier: ^0.22.0
-        version: 0.22.0(typescript@6.0.3)
-      typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
 
   docsite:
     dependencies:
@@ -124,6 +126,9 @@ importers:
       '@cloudflare/vite-plugin':
         specifier: ^1.36.4
         version: 1.37.1(vite@8.0.11(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.8.4))(workerd@1.20260515.1)(wrangler@4.92.0)
+      '@rrlab/ts-config':
+        specifier: 'catalog:'
+        version: 0.0.2(@types/node@24.12.4)(typescript@6.0.3)
       '@tailwindcss/vite':
         specifier: 4.3.0
         version: 4.3.0(vite@8.0.11(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.8.4))
@@ -167,6 +172,12 @@ importers:
         specifier: 6.1.7
         version: 6.1.7
     devDependencies:
+      '@rrlab/ts-config':
+        specifier: 'catalog:'
+        version: 0.0.2(@types/node@24.12.4)(typescript@6.0.3)
+      '@rrlab/tsdown-config':
+        specifier: 'catalog:'
+        version: 0.1.0(tsdown@0.22.0(typescript@6.0.3))
       '@types/node':
         specifier: 'catalog:'
         version: 24.12.4
@@ -1736,15 +1747,15 @@ packages:
     peerDependencies:
       '@biomejs/biome': '>=2.0.0'
 
-  '@rrlab/biome-plugin@0.1.1':
-    resolution: {integrity: sha512-wtnJ4BQrjTk5EDpf9zCkWXUEGVHIJeFb1butcJ0YxAOUpUE9HMxe6xBnWlpkzg0mI4sHnAg5e1owjdxRzi1J+Q==}
+  '@rrlab/biome-plugin@1.1.0':
+    resolution: {integrity: sha512-DJll0Yfw3jifr7wUz20sDz7Ow6dCOtsvJYT6su3zM7niPb0KZ7OI3xrc4wPgf5dbsgbttKyv+6dzeKQsROmg7Q==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       '@biomejs/biome': '>=2.0.0'
-      '@rrlab/cli': 0.0.3
+      '@rrlab/cli': ^1.1.0
 
-  '@rrlab/cli@0.0.3':
-    resolution: {integrity: sha512-0+dwwG9C/FgOyKWNlyuEaiekQuovyVWqIKdvEuTVqqNSbaVZIcyI0lfkb8GIhh3b3Lc5IS6OY6S/FAlYEx6TVA==}
+  '@rrlab/cli@1.1.0':
+    resolution: {integrity: sha512-jK+NGnxfr5dfZze7gynYpmvMiecPxC+Z67GuHVxqSW6pM4gr1nw8q8OHALl4urmZbDnXmKMAIoSh/acvfp/YbA==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -1757,18 +1768,24 @@ packages:
       '@types/node':
         optional: true
 
-  '@rrlab/ts-plugin@0.1.1':
-    resolution: {integrity: sha512-HKYVyeKogn1nps3JzrH+0T5K1CxBkz38HnlXgnCAqjeCBQY09K/eF1l/JMoNb7VoylZ63iSGoVu3Qy5hdr/Pag==}
+  '@rrlab/ts-plugin@1.1.0':
+    resolution: {integrity: sha512-uHQOP7fgwFeLsiP36+0TMR7iDjb1LH8mP1d9loRTzMwrtlcl2CqM+5DmIJBdwb6n/sBe2+Ej6wW61IL8q+5o5Q==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@rrlab/cli': 0.0.3
+      '@rrlab/cli': ^1.1.0
       typescript: '>=5.0.0'
 
-  '@rrlab/tsdown-plugin@0.1.1':
-    resolution: {integrity: sha512-FRS8MvV+nk7uombzOcQSVdbvOvuD1Dj8r3ffgsvrx1bp2/5vjT5qudBvtskomHVoEjZcS8Yi2RIo6XrV9FUTBw==}
+  '@rrlab/tsdown-config@0.1.0':
+    resolution: {integrity: sha512-g7FZICvz5Gsf+bFc0dI9gRic3h1h0TI6joGCpJlbAQwJrh4S4iffiH4tIOH+ciNFKKTCjrohpNUB84awxiLDkw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@rrlab/cli': 0.0.3
+      tsdown: '>=0.22.0'
+
+  '@rrlab/tsdown-plugin@1.1.0':
+    resolution: {integrity: sha512-VhKZ5iGV7DRp+okFnswwkn/7Sa42Vd6QRxpgdOcxyb1lhtdIAfcZ1+1It7uZJlHyvF6++lM5nKiJKFUt4o9Evg==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      '@rrlab/cli': ^1.1.0
       tsdown: '>=0.22.0'
 
   '@shikijs/core@4.0.2':
@@ -2158,8 +2175,8 @@ packages:
   '@vitest/utils@4.1.0':
     resolution: {integrity: sha512-XfPXT6a8TZY3dcGY8EdwsBulFCIw+BeeX0RZn2x/BtiY/75YGh8FeWGG8QISN/WhaqSrE2OrlDgtF8q5uhOTmw==}
 
-  '@vlandoss/clibuddy@0.6.1':
-    resolution: {integrity: sha512-beguPZIA9qvDUxb1/oTBx2JBf71MHNQ4YJAict7VHS1t5Uxl1tXBxi+/I+Dhx3QaEmcD5sNrQsW/7d6YYDsAzQ==}
+  '@vlandoss/clibuddy@0.7.0':
+    resolution: {integrity: sha512-Z/2oPgBW3xrkL0L8Ug6WRmDmaYR7X8V38IaIMIcZhMCnlTXZALrajfj8n/ZAe07Y/A0kkoXz/ZIgJKYFoX+Twg==}
     engines: {node: '>=20.0.0'}
 
   '@vlandoss/loggy@0.2.1':
@@ -5529,20 +5546,20 @@ snapshots:
     dependencies:
       '@biomejs/biome': 2.4.15
 
-  '@rrlab/biome-plugin@0.1.1(@biomejs/biome@2.4.15)(@pnpm/logger@1001.0.1)(@rrlab/cli@0.0.3(@pnpm/logger@1001.0.1))':
+  '@rrlab/biome-plugin@1.1.0(@biomejs/biome@2.4.15)(@pnpm/logger@1001.0.1)(@rrlab/cli@1.1.0(@pnpm/logger@1001.0.1))':
     dependencies:
       '@biomejs/biome': 2.4.15
-      '@rrlab/cli': 0.0.3(@pnpm/logger@1001.0.1)
-      '@vlandoss/clibuddy': 0.6.1(@pnpm/logger@1001.0.1)
+      '@rrlab/cli': 1.1.0(@pnpm/logger@1001.0.1)
+      '@vlandoss/clibuddy': 0.7.0(@pnpm/logger@1001.0.1)
       comment-json: 4.2.5
     transitivePeerDependencies:
       - '@pnpm/logger'
 
-  '@rrlab/cli@0.0.3(@pnpm/logger@1001.0.1)':
+  '@rrlab/cli@1.1.0(@pnpm/logger@1001.0.1)':
     dependencies:
       '@clack/prompts': 0.11.0
       '@usage-spec/commander': 1.1.0
-      '@vlandoss/clibuddy': 0.6.1(@pnpm/logger@1001.0.1)
+      '@vlandoss/clibuddy': 0.7.0(@pnpm/logger@1001.0.1)
       '@vlandoss/loggy': 0.2.1
       commander: 14.0.3
       comment-json: 4.2.5
@@ -5563,19 +5580,23 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.12.4
 
-  '@rrlab/ts-plugin@0.1.1(@pnpm/logger@1001.0.1)(@rrlab/cli@0.0.3(@pnpm/logger@1001.0.1))(typescript@6.0.3)':
+  '@rrlab/ts-plugin@1.1.0(@pnpm/logger@1001.0.1)(@rrlab/cli@1.1.0(@pnpm/logger@1001.0.1))(typescript@6.0.3)':
     dependencies:
-      '@rrlab/cli': 0.0.3(@pnpm/logger@1001.0.1)
-      '@vlandoss/clibuddy': 0.6.1(@pnpm/logger@1001.0.1)
+      '@rrlab/cli': 1.1.0(@pnpm/logger@1001.0.1)
+      '@vlandoss/clibuddy': 0.7.0(@pnpm/logger@1001.0.1)
       comment-json: 4.2.5
       typescript: 6.0.3
     transitivePeerDependencies:
       - '@pnpm/logger'
 
-  '@rrlab/tsdown-plugin@0.1.1(@pnpm/logger@1001.0.1)(@rrlab/cli@0.0.3(@pnpm/logger@1001.0.1))(tsdown@0.22.0(typescript@6.0.3))':
+  '@rrlab/tsdown-config@0.1.0(tsdown@0.22.0(typescript@6.0.3))':
     dependencies:
-      '@rrlab/cli': 0.0.3(@pnpm/logger@1001.0.1)
-      '@vlandoss/clibuddy': 0.6.1(@pnpm/logger@1001.0.1)
+      tsdown: 0.22.0(typescript@6.0.3)
+
+  '@rrlab/tsdown-plugin@1.1.0(@pnpm/logger@1001.0.1)(@rrlab/cli@1.1.0(@pnpm/logger@1001.0.1))(tsdown@0.22.0(typescript@6.0.3))':
+    dependencies:
+      '@rrlab/cli': 1.1.0(@pnpm/logger@1001.0.1)
+      '@vlandoss/clibuddy': 0.7.0(@pnpm/logger@1001.0.1)
       magicast: 0.3.5
       tsdown: 0.22.0(typescript@6.0.3)
     transitivePeerDependencies:
@@ -6039,7 +6060,7 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
 
-  '@vlandoss/clibuddy@0.6.1(@pnpm/logger@1001.0.1)':
+  '@vlandoss/clibuddy@0.7.0(@pnpm/logger@1001.0.1)':
     dependencies:
       '@pnpm/fs.find-packages': 1000.0.24(@pnpm/logger@1001.0.1)
       '@pnpm/types': 1001.3.0

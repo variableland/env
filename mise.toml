@@ -11,15 +11,7 @@ pnpm = "10.30.3"
 
 [monorepo]
 config_roots = [
-  "examples/backend-node",
-  "examples/backend-bun",
-  "examples/backend-deno",
-  "examples/worker-cloudflare",
-  "examples/edge-nextjs",
-  "examples/spa-vite-plugin",
-  "examples/spa-vite-dynamic",
-  "examples/ssr-react-router",
-  "examples/ssr-tanstack-start",
+  "examples/*",
 ]
 
 [tasks.setup]
@@ -38,7 +30,7 @@ dir = "{{config_root}}/package"
 sources = ["src/**/*", "package.json", "tsdown.config.ts"]
 outputs = [".local/vlandoss-env.tgz"]
 run = [
-  "pnpm build",
+  "rr pack",
   "mkdir -p .local",
   "pnpm pack --pack-destination .local",
   "mv .local/vlandoss-env-*.tgz .local/vlandoss-env.tgz",
@@ -73,11 +65,13 @@ run = "pnpm --filter=docsite dev"
 
 [tasks."lib:test"]
 description = "Unit tests for @vlandoss/env"
-run = "pnpm --filter=@vlandoss/env test"
+dir = "{{config_root}}/package"
+run = "vitest run"
 
 [tasks."lib:build"]
 description = "Build @vlandoss/env"
-run = "pnpm --filter=@vlandoss/env build"
+dir = "{{config_root}}/package"
+run = "rr pack"
 
 [tasks.check]
 description = "JS & TS check across the workspace (package + docsite)"

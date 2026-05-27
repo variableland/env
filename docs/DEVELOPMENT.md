@@ -157,7 +157,7 @@ The full step-by-step is in [CONTRIBUTING.md](./CONTRIBUTING.md#adding-a-new-exa
 1. New dir under `examples/<name>/`.
 2. `package.json` with `"@vlandoss/env": "file:../../package/.local/vlandoss-env.tgz"` and the runtime's flavor of devDeps (e.g. `@types/bun` for Bun, `@types/deno` for Deno).
 3. `mise.toml` with `[tools]` and the standard tasks. Copy from the closest existing example.
-4. `biome.json` extending `@vlandoss/config/biome` (skip for Deno-only).
+4. `biome.json` extending `@rrlab/biome-config` (skip for Deno-only).
 5. Add the path to `[monorepo].config_roots` in the root [`mise.toml`](../mise.toml).
 6. Add a row to the matrix in [`.github/workflows/e2e.yml`](../.github/workflows/e2e.yml).
 7. Update the table in [`examples/README.md`](../examples/README.md).
