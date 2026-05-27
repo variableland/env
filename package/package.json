@@ -37,10 +37,9 @@
     "!src/**/*.test.*"
   ],
   "scripts": {
-    "build": "rr pack",
     "test": "vitest run",
     "test:browser": "vitest --browser.headless=false",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "rr pack"
   },
   "dependencies": {
     "@standard-schema/spec": "1.1.0",
@@ -75,6 +74,8 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
+    "@rrlab/ts-config": "catalog:",
+    "@rrlab/tsdown-config": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",

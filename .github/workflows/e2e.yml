@@ -69,4 +69,5 @@ jobs:
         run: mise run env:pack
 
       - name: 🧩 Test e2e
+        timeout-minutes: 5
         run: mise run //examples/${{ matrix.example }}:test:e2e

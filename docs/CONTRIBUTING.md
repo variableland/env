@@ -98,7 +98,7 @@ Examples are runtime-isolated demos. Each one is a real consumer of the publishe
    "@vlandoss/env": "file:../../package/.local/vlandoss-env.tgz"
    ```
 3. Add a `mise.toml` with the runtime tools (`node` / `bun` / `deno` / `pnpm`) and the standard tasks (`setup`, `start`, `test:e2e`, `check`). Use any of the existing examples as a template — pick the one with the closest runtime.
-4. Add a `biome.json` extending `@vlandoss/config/biome` (skip this for Deno-only examples).
+4. Add a `biome.json` extending `@rrlab/biome-config` (skip this for Deno-only examples).
 5. Add the path to `[monorepo].config_roots` in the root [`mise.toml`](../mise.toml).
 6. Add a row to the matrix in [`.github/workflows/e2e.yml`](../.github/workflows/e2e.yml).
 7. Update the table in [`examples/README.md`](../examples/README.md).

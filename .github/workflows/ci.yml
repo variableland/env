@@ -48,6 +48,7 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: test
     if: ${{ github.ref == 'refs/heads/main' }}
     permissions:
@@ -96,6 +97,7 @@ jobs:
 
   preview:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: ${{ startsWith(github.head_ref, 'feat') || startsWith(github.head_ref, 'fix') || contains(github.event.pull_request.labels.*.name, 'preview') }}
     permissions:
       id-token: write

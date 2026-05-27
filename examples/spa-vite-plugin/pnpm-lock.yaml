@@ -22,26 +22,26 @@ importers:
         version: 4.3.6
     devDependencies:
       '@biomejs/biome':
-        specifier: ^2.0.0
-        version: 2.4.4
+        specifier: 2.4.15
+        version: 2.4.15
       '@playwright/test':
         specifier: 1.59.1
         version: 1.59.1
       '@rrlab/biome-config':
-        specifier: ^0.0.2
-        version: 0.0.2(@biomejs/biome@2.4.4)
+        specifier: 0.0.2
+        version: 0.0.2(@biomejs/biome@2.4.15)
       '@rrlab/biome-plugin':
-        specifier: ^0.1.1
-        version: 0.1.1(@biomejs/biome@2.4.4)(@pnpm/logger@1001.0.1)(@rrlab/cli@0.0.3(@pnpm/logger@1001.0.1))
+        specifier: 1.1.0
+        version: 1.1.0(@biomejs/biome@2.4.15)(@pnpm/logger@1001.0.1)(@rrlab/cli@1.1.0(@pnpm/logger@1001.0.1))
       '@rrlab/cli':
-        specifier: 0.0.3
-        version: 0.0.3(@pnpm/logger@1001.0.1)
+        specifier: 1.1.0
+        version: 1.1.0(@pnpm/logger@1001.0.1)
       '@rrlab/ts-config':
-        specifier: ^0.0.2
+        specifier: 0.0.2
         version: 0.0.2(@types/node@24.12.4)(typescript@6.0.3)
       '@rrlab/ts-plugin':
-        specifier: ^0.1.1
-        version: 0.1.1(@pnpm/logger@1001.0.1)(@rrlab/cli@0.0.3(@pnpm/logger@1001.0.1))(typescript@6.0.3)
+        specifier: 1.1.0
+        version: 1.1.0(@pnpm/logger@1001.0.1)(@rrlab/cli@1.1.0(@pnpm/logger@1001.0.1))(typescript@6.0.3)
       '@types/node':
         specifier: 24.12.4
         version: 24.12.4
@@ -58,7 +58,7 @@ importers:
         specifier: 1.59.1
         version: 1.59.1
       typescript:
-        specifier: ^6.0.0
+        specifier: 6.0.3
         version: 6.0.3
       vite:
         specifier: 8.0.11
@@ -70,79 +70,83 @@ packages:
     resolution: {integrity: sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/helper-string-parser@7.27.1':
-    resolution: {integrity: sha512-qMlSxKbpRlAridDExk92nSobyDdpPijUq2DW6oDnUqd0iOGxmQjyqhMIihI9+zv4LPyZdRje2cavWPbCbWm3eA==}
+  '@babel/helper-string-parser@7.29.7':
+    resolution: {integrity: sha512-Pb5ijPrZ89GDH8223L4UP8i6QApWxs04RbPQJTeWDV0/keR2E36MeKnyr6LYmUUvqRRI+Iv87SuF1W6ErINzYw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-validator-identifier@7.28.5':
     resolution: {integrity: sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/parser@7.29.3':
-    resolution: {integrity: sha512-b3ctpQwp+PROvU/cttc4OYl4MzfJUWy6FZg+PMXfzmt/+39iHVF0sDfqay8TQM3JA2EUOyKcFZt75jWriQijsA==}
+  '@babel/helper-validator-identifier@7.29.7':
+    resolution: {integrity: sha512-qehxGkRj55h/ff8EMaJ+cYhyaKlHIxqYDn682wQD7RNp9UujOQsHog2uS0r2vzr4pW+sXf90NeeayjcNaX3fFg==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/parser@7.29.7':
+    resolution: {integrity: sha512-hnORnjP/1P/zFEndoeX+n+t1RwWRJiJpM/jO7FW32Kn9r5+sJB2JWOdYo4L6k78j15eCwY3Gm/7364B1EMwtNg==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  '@babel/types@7.29.0':
-    resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
+  '@babel/types@7.29.7':
+    resolution: {integrity: sha512-4zBIxpPzowiZpusoFkyGVwakdRJUyuH5PxQ/PrqghfdFWWasvnCdPfQXHrenDai+gyLARulZjZowCOj6fjT4pA==}
     engines: {node: '>=6.9.0'}
 
   '@bgotink/kdl@0.4.0':
     resolution: {integrity: sha512-F0uJCjo5FQvFdcGF5QbYVNfcGiRWlocuzyIdQxottZF2+gu6L2xjMGEu9PIpse2hifAca/19vIospgaETCKxIg==}
 
-  '@biomejs/biome@2.4.4':
-    resolution: {integrity: sha512-tigwWS5KfJf0cABVd52NVaXyAVv4qpUXOWJ1rxFL8xF1RVoeS2q/LK+FHgYoKMclJCuRoCWAPy1IXaN9/mS61Q==}
+  '@biomejs/biome@2.4.15':
+    resolution: {integrity: sha512-j5VH3a/h/HXTKBM50MDMxRCzkeLv9S2XJcW2WgnZT1+xyisi+0bISrXR82gCX+8S9lvK0skEvHJRN+3Ktr2hlw==}
     engines: {node: '>=14.21.3'}
     hasBin: true
 
-  '@biomejs/cli-darwin-arm64@2.4.4':
-    resolution: {integrity: sha512-jZ+Xc6qvD6tTH5jM6eKX44dcbyNqJHssfl2nnwT6vma6B1sj7ZLTGIk6N5QwVBs5xGN52r3trk5fgd3sQ9We9A==}
+  '@biomejs/cli-darwin-arm64@2.4.15':
+    resolution: {integrity: sha512-rF3PPqLq1yoST79zaQbDjVJwsuIeci/O+9bgNmC5QpgOqz6aqYuzA4abyAGx+mgyiDXn4A049xAN8gijbuR1Qg==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [darwin]
 
-  '@biomejs/cli-darwin-x64@2.4.4':
-    resolution: {integrity: sha512-Dh1a/+W+SUCXhEdL7TiX3ArPTFCQKJTI1mGncZNWfO+6suk+gYA4lNyJcBB+pwvF49uw0pEbUS49BgYOY4hzUg==}
+  '@biomejs/cli-darwin-x64@2.4.15':
+    resolution: {integrity: sha512-/5KHXYMfSJs1fNXiX30xFtI8JcCFV6zaVVLxOa0M2sfqBKHkpQhRTv94yxQWxeTY2lzo2OuTlNvPC+hDQt2wcQ==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [darwin]
 
-  '@biomejs/cli-linux-arm64-musl@2.4.4':
-    resolution: {integrity: sha512-+sPAXq3bxmFwhVFJnSwkSF5Rw2ZAJMH3MF6C9IveAEOdSpgajPhoQhbbAK12SehN9j2QrHpk4J/cHsa/HqWaYQ==}
+  '@biomejs/cli-linux-arm64-musl@2.4.15':
+    resolution: {integrity: sha512-ZPcxznxm0pogHBLZhYntyR3sR+MrZjqJIKEr7ZqVen0Rl+P/4upVmfYXjftizi9RoqZntg33fv/1fbdhbYXpEQ==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@biomejs/cli-linux-arm64@2.4.4':
-    resolution: {integrity: sha512-V/NFfbWhsUU6w+m5WYbBenlEAz8eYnSqRMDMAW3K+3v0tYVkNyZn8VU0XPxk/lOqNXLSCCrV7FmV/u3SjCBShg==}
+  '@biomejs/cli-linux-arm64@2.4.15':
+    resolution: {integrity: sha512-owaAMZD/T4LrD0ELNCk0Km3qrRHuM0X6EAyVE1FSqGY0rbLoiDLrO4Us2tllm6cAeB2Ioa9C2C08NZPdr8+0Ug==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@biomejs/cli-linux-x64-musl@2.4.4':
-    resolution: {integrity: sha512-gGvFTGpOIQDb5CQ2VC0n9Z2UEqlP46c4aNgHmAMytYieTGEcfqhfCFnhs6xjt0S3igE6q5GLuIXtdQt3Izok+g==}
+  '@biomejs/cli-linux-x64-musl@2.4.15':
+    resolution: {integrity: sha512-CNq/9W38SYSH023lfcQ4KKU8K0YX8T//FZUhcgtMMRABDojx5XsMV7jlweAvGSl389wJQB29Qo6Zb/a+jdvt+w==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@biomejs/cli-linux-x64@2.4.4':
-    resolution: {integrity: sha512-R4+ZCDtG9kHArasyBO+UBD6jr/FcFCTH8QkNTOCu0pRJzCWyWC4EtZa2AmUZB5h3e0jD7bRV2KvrENcf8rndBg==}
+  '@biomejs/cli-linux-x64@2.4.15':
+    resolution: {integrity: sha512-0jj7THz12GbUOLmMibktK6DZjqz2zV64KFxyBtcFTKPiiOIY0a7vns1elpO1dERvxpsZ5ik0oFfz0oGwFde1+g==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@biomejs/cli-win32-arm64@2.4.4':
-    resolution: {integrity: sha512-trzCqM7x+Gn832zZHgr28JoYagQNX4CZkUZhMUac2YxvvyDRLJDrb5m9IA7CaZLlX6lTQmADVfLEKP1et1Ma4Q==}
+  '@biomejs/cli-win32-arm64@2.4.15':
+    resolution: {integrity: sha512-ouhkYdlhp/1GghEJPdWwD/Vi3gQ1nFxuSpMolWsbq3Lsq3QUR4jl6UdhhscdCugKU5vOEuMiJhvKj66O0OCq+w==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [win32]
 
-  '@biomejs/cli-win32-x64@2.4.4':
-    resolution: {integrity: sha512-gnOHKVPFAAPrpoPt2t+Q6FZ7RPry/FDV3GcpU53P3PtLNnQjBmKyN2Vh/JtqXet+H4pme8CC76rScwdjDcT1/A==}
+  '@biomejs/cli-win32-x64@2.4.15':
+    resolution: {integrity: sha512-zBrGq5mx5wwpnow4+2BxUvleDM+GNd4sLbPaMapsSLQLD0NGRCquqPBTgN+7XkUteHvj7M+BstuI8tmnV7+HgQ==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
@@ -344,15 +348,15 @@ packages:
     peerDependencies:
       '@biomejs/biome': '>=2.0.0'
 
-  '@rrlab/biome-plugin@0.1.1':
-    resolution: {integrity: sha512-wtnJ4BQrjTk5EDpf9zCkWXUEGVHIJeFb1butcJ0YxAOUpUE9HMxe6xBnWlpkzg0mI4sHnAg5e1owjdxRzi1J+Q==}
+  '@rrlab/biome-plugin@1.1.0':
+    resolution: {integrity: sha512-DJll0Yfw3jifr7wUz20sDz7Ow6dCOtsvJYT6su3zM7niPb0KZ7OI3xrc4wPgf5dbsgbttKyv+6dzeKQsROmg7Q==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       '@biomejs/biome': '>=2.0.0'
-      '@rrlab/cli': 0.0.3
+      '@rrlab/cli': ^1.1.0
 
-  '@rrlab/cli@0.0.3':
-    resolution: {integrity: sha512-0+dwwG9C/FgOyKWNlyuEaiekQuovyVWqIKdvEuTVqqNSbaVZIcyI0lfkb8GIhh3b3Lc5IS6OY6S/FAlYEx6TVA==}
+  '@rrlab/cli@1.1.0':
+    resolution: {integrity: sha512-jK+NGnxfr5dfZze7gynYpmvMiecPxC+Z67GuHVxqSW6pM4gr1nw8q8OHALl4urmZbDnXmKMAIoSh/acvfp/YbA==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -365,11 +369,11 @@ packages:
       '@types/node':
         optional: true
 
-  '@rrlab/ts-plugin@0.1.1':
-    resolution: {integrity: sha512-HKYVyeKogn1nps3JzrH+0T5K1CxBkz38HnlXgnCAqjeCBQY09K/eF1l/JMoNb7VoylZ63iSGoVu3Qy5hdr/Pag==}
+  '@rrlab/ts-plugin@1.1.0':
+    resolution: {integrity: sha512-uHQOP7fgwFeLsiP36+0TMR7iDjb1LH8mP1d9loRTzMwrtlcl2CqM+5DmIJBdwb6n/sBe2+Ej6wW61IL8q+5o5Q==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@rrlab/cli': 0.0.3
+      '@rrlab/cli': ^1.1.0
       typescript: '>=5.0.0'
 
   '@standard-schema/spec@1.1.0':
@@ -411,13 +415,13 @@ packages:
       babel-plugin-react-compiler:
         optional: true
 
-  '@vlandoss/clibuddy@0.6.1':
-    resolution: {integrity: sha512-beguPZIA9qvDUxb1/oTBx2JBf71MHNQ4YJAict7VHS1t5Uxl1tXBxi+/I+Dhx3QaEmcD5sNrQsW/7d6YYDsAzQ==}
+  '@vlandoss/clibuddy@0.7.0':
+    resolution: {integrity: sha512-Z/2oPgBW3xrkL0L8Ug6WRmDmaYR7X8V38IaIMIcZhMCnlTXZALrajfj8n/ZAe07Y/A0kkoXz/ZIgJKYFoX+Twg==}
     engines: {node: '>=20.0.0'}
 
   '@vlandoss/env@file:../../package/.local/vlandoss-env.tgz':
-    resolution: {integrity: sha512-AvoyLkt7BsdzEt3IpodO+Jwt7BCiWCgLlUHNph15qCqEMdER7VBaLLqugauxW81iUUFRVsJPx7hEROZ2iMx7Ug==, tarball: file:../../package/.local/vlandoss-env.tgz}
-    version: 0.2.0
+    resolution: {integrity: sha512-WqMW2GO7Ir804EbXERSgbSz44GI7UdYksMFEMGTReMTEg/G3juegiX5W1leth0sElHmVuFhGGRaLzbKWo+NVgg==, tarball: file:../../package/.local/vlandoss-env.tgz}
+    version: 0.2.1
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: '>=19'
@@ -887,54 +891,56 @@ snapshots:
       js-tokens: 4.0.0
       picocolors: 1.1.1
 
-  '@babel/helper-string-parser@7.27.1': {}
+  '@babel/helper-string-parser@7.29.7': {}
 
   '@babel/helper-validator-identifier@7.28.5': {}
 
-  '@babel/parser@7.29.3':
-    dependencies:
-      '@babel/types': 7.29.0
+  '@babel/helper-validator-identifier@7.29.7': {}
 
-  '@babel/types@7.29.0':
+  '@babel/parser@7.29.7':
     dependencies:
-      '@babel/helper-string-parser': 7.27.1
-      '@babel/helper-validator-identifier': 7.28.5
+      '@babel/types': 7.29.7
+
+  '@babel/types@7.29.7':
+    dependencies:
+      '@babel/helper-string-parser': 7.29.7
+      '@babel/helper-validator-identifier': 7.29.7
 
   '@bgotink/kdl@0.4.0': {}
 
-  '@biomejs/biome@2.4.4':
+  '@biomejs/biome@2.4.15':
     optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 2.4.4
-      '@biomejs/cli-darwin-x64': 2.4.4
-      '@biomejs/cli-linux-arm64': 2.4.4
-      '@biomejs/cli-linux-arm64-musl': 2.4.4
-      '@biomejs/cli-linux-x64': 2.4.4
-      '@biomejs/cli-linux-x64-musl': 2.4.4
-      '@biomejs/cli-win32-arm64': 2.4.4
-      '@biomejs/cli-win32-x64': 2.4.4
+      '@biomejs/cli-darwin-arm64': 2.4.15
+      '@biomejs/cli-darwin-x64': 2.4.15
+      '@biomejs/cli-linux-arm64': 2.4.15
+      '@biomejs/cli-linux-arm64-musl': 2.4.15
+      '@biomejs/cli-linux-x64': 2.4.15
+      '@biomejs/cli-linux-x64-musl': 2.4.15
+      '@biomejs/cli-win32-arm64': 2.4.15
+      '@biomejs/cli-win32-x64': 2.4.15
 
-  '@biomejs/cli-darwin-arm64@2.4.4':
+  '@biomejs/cli-darwin-arm64@2.4.15':
     optional: true
 
-  '@biomejs/cli-darwin-x64@2.4.4':
+  '@biomejs/cli-darwin-x64@2.4.15':
     optional: true
 
-  '@biomejs/cli-linux-arm64-musl@2.4.4':
+  '@biomejs/cli-linux-arm64-musl@2.4.15':
     optional: true
 
-  '@biomejs/cli-linux-arm64@2.4.4':
+  '@biomejs/cli-linux-arm64@2.4.15':
     optional: true
 
-  '@biomejs/cli-linux-x64-musl@2.4.4':
+  '@biomejs/cli-linux-x64-musl@2.4.15':
     optional: true
 
-  '@biomejs/cli-linux-x64@2.4.4':
+  '@biomejs/cli-linux-x64@2.4.15':
     optional: true
 
-  '@biomejs/cli-win32-arm64@2.4.4':
+  '@biomejs/cli-win32-arm64@2.4.15':
     optional: true
 
-  '@biomejs/cli-win32-x64@2.4.4':
+  '@biomejs/cli-win32-x64@2.4.15':
     optional: true
 
   '@clack/core@0.5.0':
@@ -1108,24 +1114,24 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.0-rc.7': {}
 
-  '@rrlab/biome-config@0.0.2(@biomejs/biome@2.4.4)':
+  '@rrlab/biome-config@0.0.2(@biomejs/biome@2.4.15)':
     dependencies:
-      '@biomejs/biome': 2.4.4
+      '@biomejs/biome': 2.4.15
 
-  '@rrlab/biome-plugin@0.1.1(@biomejs/biome@2.4.4)(@pnpm/logger@1001.0.1)(@rrlab/cli@0.0.3(@pnpm/logger@1001.0.1))':
+  '@rrlab/biome-plugin@1.1.0(@biomejs/biome@2.4.15)(@pnpm/logger@1001.0.1)(@rrlab/cli@1.1.0(@pnpm/logger@1001.0.1))':
     dependencies:
-      '@biomejs/biome': 2.4.4
-      '@rrlab/cli': 0.0.3(@pnpm/logger@1001.0.1)
-      '@vlandoss/clibuddy': 0.6.1(@pnpm/logger@1001.0.1)
+      '@biomejs/biome': 2.4.15
+      '@rrlab/cli': 1.1.0(@pnpm/logger@1001.0.1)
+      '@vlandoss/clibuddy': 0.7.0(@pnpm/logger@1001.0.1)
       comment-json: 4.2.5
     transitivePeerDependencies:
       - '@pnpm/logger'
 
-  '@rrlab/cli@0.0.3(@pnpm/logger@1001.0.1)':
+  '@rrlab/cli@1.1.0(@pnpm/logger@1001.0.1)':
     dependencies:
       '@clack/prompts': 0.11.0
       '@usage-spec/commander': 1.1.0
-      '@vlandoss/clibuddy': 0.6.1(@pnpm/logger@1001.0.1)
+      '@vlandoss/clibuddy': 0.7.0(@pnpm/logger@1001.0.1)
       '@vlandoss/loggy': 0.2.1
       commander: 14.0.3
       comment-json: 4.2.5
@@ -1146,10 +1152,10 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.12.4
 
-  '@rrlab/ts-plugin@0.1.1(@pnpm/logger@1001.0.1)(@rrlab/cli@0.0.3(@pnpm/logger@1001.0.1))(typescript@6.0.3)':
+  '@rrlab/ts-plugin@1.1.0(@pnpm/logger@1001.0.1)(@rrlab/cli@1.1.0(@pnpm/logger@1001.0.1))(typescript@6.0.3)':
     dependencies:
-      '@rrlab/cli': 0.0.3(@pnpm/logger@1001.0.1)
-      '@vlandoss/clibuddy': 0.6.1(@pnpm/logger@1001.0.1)
+      '@rrlab/cli': 1.1.0(@pnpm/logger@1001.0.1)
+      '@vlandoss/clibuddy': 0.7.0(@pnpm/logger@1001.0.1)
       comment-json: 4.2.5
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -1190,7 +1196,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-rc.7
       vite: 8.0.11(@types/node@24.12.4)(yaml@2.8.4)
 
-  '@vlandoss/clibuddy@0.6.1(@pnpm/logger@1001.0.1)':
+  '@vlandoss/clibuddy@0.7.0(@pnpm/logger@1001.0.1)':
     dependencies:
       '@pnpm/fs.find-packages': 1000.0.24(@pnpm/logger@1001.0.1)
       '@pnpm/types': 1001.3.0
@@ -1374,8 +1380,8 @@ snapshots:
 
   magicast@0.3.5:
     dependencies:
-      '@babel/parser': 7.29.3
-      '@babel/types': 7.29.0
+      '@babel/parser': 7.29.7
+      '@babel/types': 7.29.7
       source-map-js: 1.2.1
 
   memoize@10.2.0:
