@@ -15,10 +15,10 @@ concurrency:
 
 jobs:
   test:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     # Run inside the official Playwright image: browsers (chromium v1217 for
     # playwright 1.59.1) are pre-baked, so the lib browser tests need no
-    # `playwright install` download — which hangs after 100% on these runners.
+    # `playwright install` download.
     container: mcr.microsoft.com/playwright:v1.59.1-noble
     timeout-minutes: 15
     env:

@@ -1,19 +1,9 @@
 name: Docsite
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "docsite/**"
-      - ".github/workflows/docsite.yml"
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - main
-    paths:
-      - "docsite/**"
-      - ".github/workflows/docsite.yml"
+  # Disabled on push/PR for now — the Lighthouse SEO audit is too slow and
+  # needs a rework. Run manually via the Actions tab in the meantime.
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -21,8 +11,8 @@ concurrency:
 
 jobs:
   seo:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
-    timeout-minutes: 8
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       MISE_EXPERIMENTAL: "1"
     steps:
@@ -49,7 +39,7 @@ jobs:
         uses: browser-actions/setup-chrome@v1
 
       - name: 🔎 SEO audit (Lighthouse CI)
-        timeout-minutes: 5
+        timeout-minutes: 12
         run: pnpm --filter docsite check:seo
 
       - name: 📤 Upload report
