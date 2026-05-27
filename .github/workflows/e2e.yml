@@ -27,6 +27,11 @@ jobs:
   test:
     name: ${{ matrix.example }}
     runs-on: blacksmith-4vcpu-ubuntu-2404
+    # Browser examples run inside the official Playwright image (browsers
+    # pre-baked, no download); non-browser examples run on the bare runner so
+    # their bun/deno toolchains stay untouched. Empty string ⇒ no container.
+    container: ${{ matrix.browser && 'mcr.microsoft.com/playwright:v1.59.1-noble' || '' }}
+    timeout-minutes: 12
     env:
       MISE_EXPERIMENTAL: "1"
     concurrency:
@@ -62,10 +67,6 @@ jobs:
 
       - name: 🎁 Pack @vlandoss/env
         run: mise run env:pack
-
-      - name: 🎭 Install Playwright browsers
-        if: matrix.browser
-        run: mise run playwright:install
 
       - name: 🧩 Test e2e
         run: mise run //examples/${{ matrix.example }}:test:e2e
