@@ -26,7 +26,7 @@ on:
 jobs:
   test:
     name: ${{ matrix.example }}
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     # Browser examples run inside the official Playwright image (browsers
     # pre-baked, no download); non-browser examples run on the bare runner so
     # their bun/deno toolchains stay untouched. Empty string ⇒ no container.
