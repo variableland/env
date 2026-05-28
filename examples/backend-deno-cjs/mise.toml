@@ -1,0 +1,37 @@
+[tools]
+deno = "2"
+node = "24"  # for `rr` (run-run) and `playwright` test runner; the server itself runs on Deno
+bun = "1.2.4"  # used only to hydrate `node_modules/` — Deno can't extract `file:` tarballs (bun does, with a flat layout Deno can read)
+
+[env]
+_.path = ["{{config_root}}/node_modules/.bin"]
+
+[tasks.setup]
+description = "Pack env + hydrate node_modules with bun (Deno can't extract `file:` tarballs); Deno reads it via nodeModulesDir: 'manual'"
+depends = ["//:env:pack"]
+sources = [
+  "package.json",
+  "bun.lock",
+  "deno.jsonc",
+  "{{config_root}}/../../package/.local/vlandoss-env.tgz",
+]
+run = "bun install"
+
+[tasks.reinstall]
+description = "Force-reinstall the env tarball"
+depends = ["//:env:pack"]
+run = "bun install --force"
+
+[tasks.start]
+depends = ["setup"]
+run = "deno run --allow-net --allow-env --allow-read server.cjs"
+
+[tasks."test:e2e"]
+description = "Playwright (node) drives a Deno-launched webServer"
+depends = ["setup"]
+run = "playwright test"
+
+[tasks.check]
+description = "JS & TS check"
+depends = ["setup"]
+run = "rr check"

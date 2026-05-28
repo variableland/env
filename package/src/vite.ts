@@ -3,7 +3,7 @@ import path from "node:path";
 import type { Plugin } from "vite";
 import { BUILD_TIME_ENV_NAME_ID } from "./lib/const.ts";
 
-const EXTENSIONS = [".ts", ".mts", ".js", ".mjs", ".json"];
+const EXTENSIONS = [".ts", ".mts", ".cts", ".js", ".mjs", ".cjs", ".json"];
 const DIRS = ["config", "src/config"];
 
 /**
@@ -39,7 +39,7 @@ export type EnvConfigOptions = {
  * Vite plugin that:
  *
  * 1. Resolves an alias (`#config` by default) to the config file matching
- *    Vite's `mode`. Discovery is `[src/]config/<mode>.{ts,mts,js,mjs,json}` —
+ *    Vite's `mode`. Discovery is `[src/]config/<mode>.{ts,mts,cts,js,mjs,cjs,json}` —
  *    same algorithm as `loadConfig` in `@vlandoss/env/fs`. Only the
  *    matched file enters the bundle.
  * 2. Injects `define: { __ENV_NAME__: JSON.stringify(mode) }`. The core's
@@ -97,7 +97,7 @@ export function envConfig(options: EnvConfigOptions = {}): Plugin {
     load(id) {
       if (id === VIRTUAL_MISSING_ID) {
         throw new Error(
-          `@vlandoss/env/vite: no config file found for mode "${resolvedMode}" — searched [src/]config/${resolvedMode}.{ts,mts,js,mjs,json} under ${cwd}`,
+          `@vlandoss/env/vite: no config file found for mode "${resolvedMode}" — searched [src/]config/${resolvedMode}.{ts,mts,cts,js,mjs,cjs,json} under ${cwd}`,
         );
       }
       return undefined;

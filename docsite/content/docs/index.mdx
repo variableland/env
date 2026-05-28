@@ -38,7 +38,7 @@ import { Env } from "./schema.ts";
 
 export const env = defineEnv({
   schema: Env,
-  config: await loadConfig(Env)
+  config: loadConfig(Env)
 });
 ```
 

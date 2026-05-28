@@ -1,0 +1,7 @@
+{
+  "extends": "@rrlab/ts-config/no-dom/app",
+  "compilerOptions": {
+    "types": ["bun"]
+  },
+  "include": ["src", "test", "playwright.config.ts"]
+}

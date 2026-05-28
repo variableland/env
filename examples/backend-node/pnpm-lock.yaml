@@ -271,9 +271,9 @@ packages:
     engines: {node: '>=20.0.0'}
 
   '@vlandoss/env@file:../../package/.local/vlandoss-env.tgz':
-    resolution: {integrity: sha512-WqMW2GO7Ir804EbXERSgbSz44GI7UdYksMFEMGTReMTEg/G3juegiX5W1leth0sElHmVuFhGGRaLzbKWo+NVgg==, tarball: file:../../package/.local/vlandoss-env.tgz}
+    resolution: {integrity: sha512-68fxC1E6fzAnrm+2Pkcb1zIqqA0YMpCr011QKx5mBqLAyN2My1EcIPcFA31KmmvyHTOk33+ufYCESLLVXISzMA==, tarball: file:../../package/.local/vlandoss-env.tgz}
     version: 0.2.1
-    engines: {node: '>=20.0.0'}
+    engines: {node: '>=22.18.0'}
     peerDependencies:
       react: '>=19'
       react-dom: '>=19'

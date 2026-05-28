@@ -1,102 +1,167 @@
-import { readFile, stat } from "node:fs/promises";
+import { readFileSync, statSync } from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { envName } from "./lib/runtime.ts";
 import type { Config, Schema } from "./lib/types.ts";
 import { isSchema } from "./lib/validate.ts";
 
-const EXTENSIONS = [".ts", ".mts", ".js", ".mjs", ".json"];
+const EXTENSIONS = [".ts", ".mts", ".cts", ".js", ".mjs", ".cjs", ".json"];
 const DIRS = ["config", "src/config"];
 
-async function isFile(p: string): Promise<boolean> {
-  try {
-    return (await stat(p)).isFile();
-  } catch {
-    return false;
-  }
-}
-
-async function loadFile(absPath: string): Promise<unknown> {
-  if (absPath.endsWith(".json")) {
-    const raw = await readFile(absPath, "utf8");
-    return JSON.parse(raw);
-  }
-
-  const mod = (await import(pathToFileURL(absPath).href)) as { default?: unknown };
-  if (!("default" in mod)) {
-    throw new Error(`Config file "${absPath}" must have a default export`);
-  }
-  return mod.default;
-}
+// ─── Pure helpers (no I/O) ───────────────────────────────────────────────────
 
 /**
- * Auto-discovery: looks for `[src/]config/<env>.{ts,mts,js,mjs,json}` in
- * `process.cwd()`, in that order. Returns `undefined` when nothing matches.
+ * Auto-discovery candidates: `[src/]config/<env>.{ts,mts,cts,js,mjs,cjs,json}`
+ * under `cwd`, in priority order (extension outer, dir inner).
  */
-async function autoDiscover(env: string, cwd: string): Promise<unknown | undefined> {
+function candidatePaths(env: string, cwd: string): string[] {
+  const out: string[] = [];
   for (const ext of EXTENSIONS) {
     for (const dir of DIRS) {
-      const candidate = path.join(cwd, dir, `${env}${ext}`);
-      if (await isFile(candidate)) {
-        return loadFile(candidate);
-      }
+      out.push(path.join(cwd, dir, `${env}${ext}`));
     }
   }
-  return undefined;
+  return out;
 }
 
-async function resolveTemplate(pattern: string, env: string, cwd: string): Promise<unknown> {
+/** Resolve a `{env}` template to an absolute path. Throws if the placeholder is missing. */
+function templatePath(pattern: string, env: string, cwd: string): string {
   if (!pattern.includes("{env}")) {
     throw new Error(
       `loadConfig pattern must contain the "{env}" placeholder. Got: "${pattern}". Drop the pattern argument to use auto-discovery, or include "{env}" to substitute the current env name.`,
     );
   }
-  const resolved = path.resolve(cwd, pattern.replace(/\{env\}/g, env));
-  if (!(await isFile(resolved))) {
-    throw new Error(`No config file found at "${resolved}" (env="${env}", pattern="${pattern}")`);
-  }
-  return loadFile(resolved);
+  return path.resolve(cwd, pattern.replace(/\{env\}/g, env));
 }
 
+function notFound(resolved: string, env: string, pattern: string): Error {
+  return new Error(`No config file found at "${resolved}" (env="${env}", pattern="${pattern}")`);
+}
+
+const isJson = (p: string): boolean => p.endsWith(".json");
+
+/**
+ * Normalize a loaded module to the config object. Discriminates by
+ * `Symbol.toStringTag === "Module"` (set by `require(esm)` on Node, Bun, and
+ * Deno) so we don't confuse a CJS object that happens to own a `default`
+ * property name with a real ESM namespace:
+ *
+ * - ES module namespace: take `.default`, or throw if the config forgot
+ *   `export default`.
+ * - CommonJS `module.exports`: use the value as-is (sibling keys preserved).
+ */
+function unwrapDefault(absPath: string, mod: unknown): unknown {
+  if (mod === null || typeof mod !== "object") return mod;
+  const isNamespace = (mod as Record<PropertyKey, unknown>)[Symbol.toStringTag] === "Module";
+  if (isNamespace) {
+    if ("default" in (mod as object)) return (mod as { default: unknown }).default;
+    throw new Error(`Config file "${absPath}" must have a default export`);
+  }
+  // CJS `module.exports`: the value IS the config.
+  return mod;
+}
+
+function normalize<S extends Schema>(
+  input: S | LoadConfigOptions<S>,
+): {
+  schema: S;
+  pattern?: string;
+  cwd?: string;
+} {
+  return isSchema(input) ? { schema: input as S } : input;
+}
+
+// ─── I/O ──────────────────────────────────────────────────────────────────────
+
+function isFile(p: string): boolean {
+  try {
+    return statSync(p).isFile();
+  } catch {
+    return false;
+  }
+}
+
+function loadFile(absPath: string): unknown {
+  if (isJson(absPath)) {
+    return JSON.parse(readFileSync(absPath, "utf8"));
+  }
+  // `require` loads the module synchronously. On Node ≥22.12 `require()` accepts
+  // ES modules and on ≥22.18 it strips TypeScript natively; Bun and Deno do both.
+  // We always require an ABSOLUTE path, so the `createRequire` referrer is only a
+  // formality — basing it on the config file (not `import.meta.url`) keeps this
+  // clean when the calling config is bundled to CJS (no `empty-import-meta` warning).
+  const require = createRequire(pathToFileURL(absPath));
+  return unwrapDefault(absPath, require(absPath));
+}
+
+// ─── Public API ──────────────────────────────────────────────────────────────
+
 export type LoadConfigOptions<S extends Schema> = {
-  /** The schema typing this config. Anchors the return type to `Promise<Config<S>>`. */
+  /** The schema typing this config. Anchors the return type to `Config<S>`. */
   schema: S;
   /**
    * Layout template with the `{env}` placeholder, e.g. `"src/config/{env}.ts"`.
    * `{env}` is replaced with the current `envName()` and the resulting path is loaded.
    * Drop this option to fall back on auto-discovery.
    */
-  pattern: string;
+  pattern?: string;
+  /**
+   * Base directory to resolve config paths against. Defaults to `process.cwd()`.
+   * Pass an explicit `cwd` when the process working directory isn't the project
+   * root (orchestrators, monorepo runners, SSR workers launched from elsewhere).
+   */
+  cwd?: string;
 };
 
 /**
- * Load a config object for use with `defineEnv({ config })`. Returns
- * `Promise<Config<S>>` so it pipes into `defineEnv` without a cast.
+ * Synchronously load a config object for use with `defineEnv({ config })`.
+ * Returns `Config<S>` directly, so it works in app code and in config files
+ * that a tool loads via `require()` or bundles to CJS.
  *
  * Two call shapes:
  *
  * - `loadConfig(schema)` — **auto-discovery**. Scans
- *   `[src/]config/<envName>.{ts,mts,js,mjs,json}` under `process.cwd()` and
- *   returns the first match. Returns `{}` when nothing is found (silent fallback).
+ *   `[src/]config/<envName>.{ts,mts,cts,js,mjs,cjs,json}` under `process.cwd()`
+ *   and returns the first match. Returns `{}` when nothing is found (silent fallback).
  *
- * - `loadConfig({ schema, pattern })` — **template**. The `pattern` must
- *   contain `{env}`, which is replaced with the current env name. Throws if
- *   the resolved file doesn't exist.
+ * - `loadConfig({ schema, pattern?, cwd? })` — **options form**.
+ *   - `pattern` (with `{env}`) resolves a single explicit path; throws if missing.
+ *   - `cwd` overrides `process.cwd()` (useful when the working directory isn't
+ *     the project root). Applies to both auto-discovery and template resolution.
  *
  * `schema` is a typing anchor only — runtime validation happens in `defineEnv`
  * after merging with `runtimeEnv`. No glob, no direct-path, no `env` override:
  * if you need to load a non-current env, set `ENV=…` in the process env first.
+ *
+ * **Module resolution & caching:** files are loaded with `require()`. Loading a
+ * `.ts`/`.mts`/`.cts` config needs `require(esm)` + native TypeScript stripping
+ * — native on Bun and Deno, and on **Node ≥22.18**. `.mjs`/`.js`/`.cjs` only
+ * need `require(esm)` (Node ≥22.12). `.json` works on any supported Node.
+ * Module loads are cached by Node/Bun/Deno's module system: repeated calls in
+ * the same process for the same path return the cached module — edits to a
+ * `.ts`/`.mjs`/etc. config are NOT picked up until the process restarts.
+ * `.json` files are re-read on every call.
  */
-export function loadConfig<S extends Schema>(schema: S): Promise<Config<S>>;
-export function loadConfig<S extends Schema>(options: LoadConfigOptions<S>): Promise<Config<S>>;
-export async function loadConfig<S extends Schema>(input: S | LoadConfigOptions<S>): Promise<Config<S>> {
-  const opts: LoadConfigOptions<S> | { schema: S; pattern?: undefined } = isSchema(input) ? { schema: input as S } : input;
+export function loadConfig<S extends Schema>(schema: S): Config<S>;
+export function loadConfig<S extends Schema>(options: LoadConfigOptions<S>): Config<S>;
+export function loadConfig<S extends Schema>(input: S | LoadConfigOptions<S>): Config<S> {
+  const { pattern, cwd: cwdOpt } = normalize(input);
   const env = envName();
-  const cwd = process.cwd();
+  const cwd = cwdOpt ?? process.cwd();
 
-  if (opts.pattern === undefined) {
-    const result = await autoDiscover(env, cwd);
-    return (result ?? {}) as Config<S>;
+  if (pattern === undefined) {
+    for (const candidate of candidatePaths(env, cwd)) {
+      if (isFile(candidate)) {
+        return loadFile(candidate) as Config<S>;
+      }
+    }
+    return {} as Config<S>;
   }
-  return (await resolveTemplate(opts.pattern, env, cwd)) as Config<S>;
+
+  const resolved = templatePath(pattern, env, cwd);
+  if (!isFile(resolved)) {
+    throw notFound(resolved, env, pattern);
+  }
+  return loadFile(resolved) as Config<S>;
 }

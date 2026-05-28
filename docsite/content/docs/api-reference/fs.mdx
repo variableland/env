@@ -6,13 +6,13 @@ icon: HardDrive
 
 The `@vlandoss/env/fs` entrypoint is the file-system adapter. It auto-discovers per-environment config files on disk so you don't have to wire imports by hand.
 
-Works on any runtime that exposes a Node-compatible filesystem: **Node ≥20**, **Bun**, and **Deno** (via its Node-compat layer). It does **not** work on Workers, Edge, or any environment without a filesystem — those should resolve config at build time (see [`@vlandoss/env/vite`](/docs/api-reference/vite)) or pass it explicitly to `defineEnv`.
+Works on any runtime that exposes a Node-compatible filesystem: **Node ≥22.12** (≥22.18 for `.ts`/`.mts`/`.cts` configs), **Bun**, and **Deno** (via its Node-compat layer). It does **not** work on Workers, Edge, or any environment without a filesystem — those should resolve config at build time (see [`@vlandoss/env/vite`](/docs/api-reference/vite)) or pass it explicitly to `defineEnv`.
 
 ## Exports
 
 | Export       | Kind     | Summary                                                                              |
 | ------------ | -------- | ------------------------------------------------------------------------------------ |
-| `loadConfig` | Function | Discover and load `[src/]config/<envName>.{ts,mts,js,mjs,json}` for the current env. |
+| `loadConfig` | Function | **Synchronously** discover and load `[src/]config/<envName>.{ts,mts,cts,js,mjs,cjs,json}` for the current env. Returns `Config<S>` directly (loads via `require()`), so it works in app code and in config files that tooling loads synchronously. Accepts an optional `pattern` (template) and `cwd` (override `process.cwd()`). |
 
 <Callout type="info">
   Full signatures and option tables are coming soon. Until then, see
@@ -20,7 +20,13 @@ Works on any runtime that exposes a Node-compatible filesystem: **Node ≥20**, 
 </Callout>
 
 <Callout type="warn">
-  Loading `.ts` / `.mts` files at runtime depends on the host runtime's TypeScript support: native in **Bun** and **Deno**, and in **Node ≥22.6** behind `--experimental-strip-types` (stable in 23.6). `.js` / `.mjs` / `.json` work everywhere.
+  `loadConfig` loads files with `require()`. Runtime requirements by extension:
+
+  - `.ts` / `.mts` / `.cts` — needs native TypeScript stripping (native in **Bun** and **Deno**, **Node ≥22.18**).
+  - `.mjs` / `.js` / `.cjs` — needs `require(esm)` (native in Bun/Deno, **Node ≥22.12**).
+  - `.json` — works on any supported Node.
+
+  Module loads are cached by the host's module system: editing a `.ts`/`.mjs`/`.cjs` config in a long-running process won't be picked up until restart. `.json` files are re-read on every call.
 </Callout>
 
 ## See also
