@@ -1,5 +1,14 @@
 # @vlandoss/env
 
+## 0.4.0
+
+### Minor Changes
+
+- [#24](https://github.com/variableland/env/pull/24) [`e814bfa`](https://github.com/variableland/env/commit/e814bfaf80227a5c4b11fa0341ce3725a7a9ddfc) Thanks [@rqbazan](https://github.com/rqbazan)! - Add `json` primitive to `@vlandoss/env/zod`: `e.json(schema)` decodes a
+  JSON-string env var into a validated object and also accepts the decoded
+  object from config files / defaults (codec `.or(schema)`, same dual-source
+  pattern as `e.bool`).
+
 ## 0.3.0
 
 ### Minor Changes
