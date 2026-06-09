@@ -89,3 +89,37 @@ describe("@vlandoss/env/zod — primitives compose with schema()", () => {
     ).toThrow(/auth\.SECRET/);
   });
 });
+
+describe("json — decodes string env vars and accepts decoded config values", () => {
+  const Env = schema({
+    rateLimit: {
+      CONFIG: e.json(z.object({ windowMs: z.number().int().positive(), max: z.number().int().positive() })),
+    },
+  });
+
+  it("decodes a JSON-string env var into an object", () => {
+    const env = defineEnv({
+      schema: Env,
+      runtimeEnv: { RATE_LIMIT_CONFIG: '{"windowMs":60000,"max":100}' },
+    });
+    expect(env.rateLimit.CONFIG).toEqual({ windowMs: 60000, max: 100 });
+  });
+
+  it("accepts an already-decoded object from config", () => {
+    const env = defineEnv({
+      schema: Env,
+      config: { rateLimit: { CONFIG: { windowMs: 60000, max: 100 } } },
+      runtimeEnv: {},
+    });
+    expect(env.rateLimit.CONFIG).toEqual({ windowMs: 60000, max: 100 });
+  });
+
+  it("throws with the dotpath on invalid JSON", () => {
+    expect(() =>
+      defineEnv({
+        schema: Env,
+        runtimeEnv: { RATE_LIMIT_CONFIG: "not json" },
+      }),
+    ).toThrow(/rateLimit\.CONFIG/);
+  });
+});

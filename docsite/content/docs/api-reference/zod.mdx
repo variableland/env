@@ -16,11 +16,43 @@ This entrypoint is **optional**: it's there because we wanted it ourselves, not 
 | `host`    | Schema | A non-empty hostname string.                                                   |
 | `bool`    | Schema | Loose boolean parser — accepts `"true"`/`"false"`/`"1"`/`"0"` and friends.     |
 | `secret`  | Schema | Non-empty string that gets redacted from console output and error messages.   |
+| `json`    | Schema factory | Parse a JSON-string env var into a validated object; also accepts the decoded object from config files. |
 
 <Callout type="info">
   Full signatures and behavioral notes are coming soon. Until then, treat these
   as drop-in Zod schemas — they expose the standard Zod API.
 </Callout>
+
+## `json`
+
+`json` is a factory: pass it the schema for the decoded shape and it returns a leaf that handles both sources a leaf can come from. A `process.env` var arrives as a JSON **string** and gets parsed and validated; a value from a config file or `defaults` arrives **already decoded** and is validated as-is. Either way the leaf infers as the decoded object — never `string`.
+
+```ts title="src/env/schema.ts"
+import { schema } from "@vlandoss/env";
+import * as e from "@vlandoss/env/zod";
+import * as z from "zod";
+
+const RateLimit = z.object({
+  windowMs: z.number().int().positive(),
+  max: z.number().int().positive(),
+});
+
+export const Env = schema({
+  rateLimit: { CONFIG: e.json(RateLimit) },
+});
+```
+
+```ts title="both sources validate against the same leaf"
+// from a process.env var — a JSON string, parsed then validated:
+//   RATE_LIMIT_CONFIG='{"windowMs":60000,"max":100}'
+
+// from a config file — the decoded object, validated as-is:
+export default {
+  rateLimit: { CONFIG: { windowMs: 60_000, max: 100 } },
+} satisfies EnvConfig;
+```
+
+Invalid JSON fails validation at boot with the offending dotpath (e.g. `Invalid value at "rateLimit.CONFIG"`), the same as any other leaf. This is the same dual-source pattern as [`bool`](#exports), which accepts both `"true"` strings and real booleans.
 
 ## See also
 
