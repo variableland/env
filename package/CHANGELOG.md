@@ -1,5 +1,25 @@
 # @vlandoss/env
 
+## 0.5.0
+
+### Minor Changes
+
+- [#26](https://github.com/variableland/env/pull/26) [`d355e6f`](https://github.com/variableland/env/commit/d355e6fc13765c12ae4cdf8b44b18b5ff1968684) Thanks [@rqbazan](https://github.com/rqbazan)! - The `envConfig()` Vite plugin can now select the env from a `VITE_ENV` env var instead of requiring `--mode`.
+
+  The plugin reads `VITE_ENV` from `process.env` **and** your `.env*` files (via Vite's `loadEnv`, so inline/shell values win over file values) and uses it to pick the per-env `#config` file and the `__ENV_NAME__` build constant. When `VITE_ENV` is unset or empty it falls back to Vite's `mode`, so `vite build --mode staging` keeps working unchanged — this is purely additive.
+
+  ```bash
+  # These are now equivalent:
+  VITE_ENV=staging vite build
+  vite build --mode staging
+  ```
+
+  The var name is configurable with the new `envVar` option (default `"VITE_ENV"`):
+
+  ```ts
+  envConfig({ envVar: "APP_ENV" });
+  ```
+
 ## 0.4.0
 
 ### Minor Changes
