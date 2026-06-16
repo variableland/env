@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { envConfig } from "../vite.ts";
 
 const fixturesDir = new URL("./fixtures", import.meta.url).pathname;
@@ -67,7 +67,7 @@ describe("envConfig() Vite plugin", () => {
     const plugin = envConfig({ cwd: fixturesDir });
     const result = invoke(plugin, "missing");
     const virtualId = result.resolve.alias["#config"];
-    expect(() => invokeLoad(plugin, virtualId)).toThrow(/no config file found for mode "missing"/);
+    expect(() => invokeLoad(plugin, virtualId)).toThrow(/no config file found for env "missing"/);
   });
 
   it("still injects __ENV_NAME__ when no config matches the mode", () => {
@@ -101,5 +101,43 @@ describe("envConfig() Vite plugin", () => {
     const plugin = envConfig({ cwd: fixturesDir });
     const result = invoke(plugin, "staging");
     expect(result.define.__ENV_NAME__).toBe('"staging"');
+  });
+
+  describe("VITE_ENV resolution", () => {
+    afterEach(() => {
+      delete process.env.VITE_ENV;
+      delete process.env.APP_ENV;
+    });
+
+    it("prefers VITE_ENV over Vite's mode for discovery and __ENV_NAME__", () => {
+      process.env.VITE_ENV = "staging";
+      const plugin = envConfig({ cwd: fixturesDir });
+      // `--mode development` would resolve config/development.json, but VITE_ENV wins.
+      const result = invoke(plugin, "development");
+      expect(result.resolve.alias["#config"]).toMatch(/fixtures\/src\/config\/staging\.json$/);
+      expect(result.define.__ENV_NAME__).toBe('"staging"');
+    });
+
+    it("falls back to mode when VITE_ENV is unset", () => {
+      const plugin = envConfig({ cwd: fixturesDir });
+      const result = invoke(plugin, "development");
+      expect(result.resolve.alias["#config"]).toMatch(/fixtures\/config\/development\.json$/);
+      expect(result.define.__ENV_NAME__).toBe('"development"');
+    });
+
+    it("treats an empty VITE_ENV as unset and falls back to mode", () => {
+      process.env.VITE_ENV = "";
+      const plugin = envConfig({ cwd: fixturesDir });
+      const result = invoke(plugin, "production");
+      expect(result.define.__ENV_NAME__).toBe('"production"');
+    });
+
+    it("honors a custom envVar name", () => {
+      process.env.APP_ENV = "staging";
+      const plugin = envConfig({ cwd: fixturesDir, envVar: "APP_ENV" });
+      const result = invoke(plugin, "development");
+      expect(result.resolve.alias["#config"]).toMatch(/fixtures\/src\/config\/staging\.json$/);
+      expect(result.define.__ENV_NAME__).toBe('"staging"');
+    });
   });
 });

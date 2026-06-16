@@ -8,7 +8,7 @@ icon: Boxes
 
 - Pure SPA built with Vite.
 - You want **each build artifact to ship only its env's config** — other env files must not be present in the deployment at all.
-- You're OK with one `vite build --mode <env>` per environment.
+- You're OK with one build per environment, selected via `--mode <env>` or a [`VITE_ENV` env var](/docs/guides/custom-modes#selecting-the-env-without---mode).
 
 If a single multi-env build is acceptable, the simpler [dynamic-import pattern](/docs/guides/spa-dynamic-import) is the default.
 
@@ -76,11 +76,11 @@ vite build --mode production
 vite build --mode staging
 ```
 
-Each command produces a separate `dist/` whose bundle contains **only** the matching `config/*.ts`.
+Each command produces a separate `dist/` whose bundle contains **only** the matching `config/*.ts`. Prefer an env var over `--mode`? `VITE_ENV=staging vite build` is equivalent — see [Selecting the env without `--mode`](/docs/guides/custom-modes#selecting-the-env-without---mode).
 
 ## What each piece does
 
-- **`envConfig()` plugin** registers `resolve.alias["#config"]` pointing at `[src/]config/<mode>.{ts,mts,cts,js,mjs,cjs,json}` (same discovery algorithm as `loadConfig`). It also injects `__ENV_NAME__ = JSON.stringify(mode)` so `envName()` returns the right mode in the browser — see [Custom modes](/docs/guides/custom-modes).
+- **`envConfig()` plugin** registers `resolve.alias["#config"]` pointing at `[src/]config/<env>.{ts,mts,cts,js,mjs,cjs,json}` (same discovery algorithm as `loadConfig`). The `<env>` is `VITE_ENV` (from `process.env` or `.env*`) falling back to Vite's `mode`. It also injects `__ENV_NAME__ = JSON.stringify(env)` so `envName()` returns the right env in the browser — see [Custom modes](/docs/guides/custom-modes).
 - **`#config.d.ts`** declares the type of the alias for TypeScript. Vite resolves the runtime import; this just stops `tsc` from complaining.
 - **`defineEnv({ schema, config })`** runs synchronously here — `config` is a plain object, not a Promise.
 
@@ -90,12 +90,13 @@ Each command produces a separate `dist/` whose bundle contains **only** the matc
 envConfig({
   alias: "#config",       // default
   cwd: process.cwd(),     // default — base directory for discovery
+  envVar: "VITE_ENV",     // default — env var that selects the env (falls back to `mode`)
 });
 ```
 
-When no file matches the current mode, the alias resolves to a virtual module that throws **only if `#config` is actually imported** — so tools that introspect the Vite config (Vitest's IDE-driven discovery, third-party plugins) don't trip over a config-time error.
+When no file matches the current env, the alias resolves to a virtual module that throws **only if `#config` is actually imported** — so tools that introspect the Vite config (Vitest's IDE-driven discovery, third-party plugins) don't trip over a config-time error.
 
 ## Tradeoffs
 
-- **One build per env.** Your CI/CD needs to run `vite build --mode <env>` for every environment you ship, and produce a separate artifact for each.
+- **One build per env.** Your CI/CD needs to run a build (`vite build --mode <env>`, or `VITE_ENV=<env> vite build`) for every environment you ship, and produce a separate artifact for each.
 - **No runtime switching.** Once built, the artifact is locked to its env. If you need to swap envs without rebuilding, use the [dynamic-import pattern](/docs/guides/spa-dynamic-import).

@@ -46,6 +46,29 @@ src/
 
 The plugin's discovery scans `[src/]config/<mode>.{ts,mts,cts,js,mjs,cjs,json}` and pulls in the right one — same algorithm as `loadConfig` in `@vlandoss/env/fs`.
 
+## Selecting the env without `--mode`
+
+If you'd rather not thread `--mode` through every command, set a `VITE_ENV` env var instead. The plugin reads it from `process.env` **and** your `.env*` files (via Vite's `loadEnv`, so an inline/shell value wins over a file value) and uses it to pick the config file and `__ENV_NAME__`. These are equivalent:
+
+```bash title="terminal"
+VITE_ENV=staging vite build
+vite build --mode staging
+```
+
+`VITE_ENV` takes precedence; when it's unset or empty the plugin falls back to Vite's `mode`, so `--mode` keeps working unchanged. Put it in a `.env` file to make it the default for a project:
+
+```dotenv title=".env.staging"
+VITE_ENV=staging
+```
+
+Rename the var with the `envVar` option if `VITE_ENV` clashes with something:
+
+```ts title="vite.config.ts"
+export default defineConfig({
+  plugins: [envConfig({ envVar: "APP_ENV" })],
+});
+```
+
 ## Verifying it works
 
 After a `vite build --mode staging`, anywhere in browser code:

@@ -11,7 +11,7 @@ icon: Hash
 First defined wins:
 
 1. **`env.ENV`** — explicit runtime override (always wins). Use this in CI, tests, or scripts.
-2. **`__ENV_NAME__`** — build-time literal injected by the `envConfig()` Vite plugin. Beats `NODE_ENV` because Vite forces `NODE_ENV="production"` regardless of `--mode`, so this is the only way `envName()` can return custom modes like `staging` / `qa` in the browser.
+2. **`__ENV_NAME__`** — build-time literal injected by the `envConfig()` Vite plugin (the env it built for: `VITE_ENV` if set, otherwise Vite's `mode`). Beats `NODE_ENV` because Vite forces `NODE_ENV="production"` regardless of `--mode`, so this is the only way `envName()` can return custom envs like `staging` / `qa` in the browser.
 3. **`env.NODE_ENV`**
 4. **`env.VITE_ENV`**
 5. **`"development"`** — fallback.
@@ -30,7 +30,7 @@ envName({ NODE_ENV: "test", ENV: "qa" });  // -> "qa"
 
 If you run `vite build --mode staging`, Vite **still sets `NODE_ENV="production"`** at build time. Without the `envConfig()` plugin, `envName()` in browser code would return `"production"` — not `"staging"`.
 
-The plugin solves this by injecting `__ENV_NAME__ = "staging"` as a build-time constant. That constant wins over `NODE_ENV` in the precedence chain, so the browser sees the mode you actually built.
+The plugin solves this by injecting `__ENV_NAME__ = "staging"` as a build-time constant (from `--mode staging` or `VITE_ENV=staging`). That constant wins over `NODE_ENV` in the precedence chain, so the browser sees the env you actually built.
 
 This is why **the plugin is required for custom Vite modes**, even if you load config via dynamic import (Pattern 1) and don't actually use the `#config` alias.
 
