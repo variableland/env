@@ -12,9 +12,20 @@ The `@vlandoss/env/vite` entrypoint exposes a single Vite plugin. It does two th
 | ------------ | -------- | ------------------------------------------------------------------------------------ |
 | `envConfig`  | Function | Returns a Vite plugin. Adds the `#config` alias and the `__ENV_NAME__` define.       |
 
+## `envConfig(options?)`
+
+The env name the plugin keys off comes from `VITE_ENV` (read from `process.env` and your `.env*` files), falling back to Vite's `mode` when unset — so you can pick the env with `VITE_ENV=staging vite build` instead of `--mode staging`. See [Custom modes → Selecting the env without `--mode`](/docs/guides/custom-modes#selecting-the-env-without---mode).
+
+`options` (all optional):
+
+| Option   | Type     | Default          | Summary                                                                                     |
+| -------- | -------- | ---------------- | ------------------------------------------------------------------------------------------- |
+| `alias`  | `string` | `"#config"`      | Import specifier the matched per-env config file is exposed as.                             |
+| `cwd`    | `string` | `process.cwd()`  | Base directory for config discovery and `.env*` loading.                                    |
+| `envVar` | `string` | `"VITE_ENV"`     | Env var that selects the env name. Falls back to Vite's `mode` when unset or empty.        |
+
 <Callout type="info">
-  Full signatures and option tables are coming soon. Until then, see
-  [Guides → SPA — Vite plugin](/docs/guides/spa-vite-plugin) and
+  See [Guides → SPA — Vite plugin](/docs/guides/spa-vite-plugin) and
   [Guides → Custom modes](/docs/guides/custom-modes) for the wiring.
 </Callout>
 
