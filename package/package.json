@@ -1,6 +1,6 @@
 {
   "name": "@vlandoss/env",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Contract-first environment configuration with typed schemas",
   "homepage": "https://github.com/variableland/env/tree/main/package#readme",
   "bugs": {
