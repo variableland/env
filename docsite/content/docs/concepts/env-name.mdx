@@ -11,7 +11,7 @@ icon: Hash
 First defined wins:
 
 1. **`env.ENV`** — explicit runtime override (always wins). Use this in CI, tests, or scripts.
-2. **`__ENV_NAME__`** — build-time literal injected by the `envConfig()` Vite plugin (the env it built for: `VITE_ENV` if set, otherwise Vite's `mode`). Beats `NODE_ENV` because Vite forces `NODE_ENV="production"` regardless of `--mode`, so this is the only way `envName()` can return custom envs like `staging` / `qa` in the browser.
+2. **`__ENV_NAME__`** — build-time literal injected by the `envConfig()` Vite plugin (the env it built for: `VITE_ENV` if set, otherwise Vite's `mode`). In a browser build this is the **only** source that carries the built env name into your code — `readEnv()` reads `window.__env`, never `process.env`, so without it `envName()` can't see `NODE_ENV` / `VITE_ENV` at all (see [the Vite gotcha](#the-vite-gotcha)). Placed above `NODE_ENV` so a build-time env name wins even over the `NODE_ENV="production"` that Vite forces regardless of `--mode`.
 3. **`env.NODE_ENV`**
 4. **`env.VITE_ENV`**
 5. **`"development"`** — fallback.
@@ -28,10 +28,10 @@ envName({ NODE_ENV: "test", ENV: "qa" });  // -> "qa"
 
 ## The Vite gotcha
 
-If you run `vite build --mode staging`, Vite **still sets `NODE_ENV="production"`** at build time. Without the `envConfig()` plugin, `envName()` in browser code would return `"production"` — not `"staging"`.
+In the browser, `envName()`'s `readEnv()` only sees `window.__env` (or the `<EnvScript />` tag) — **never `process.env` or `import.meta.env`**. So in a pure SPA, none of `NODE_ENV` / `VITE_ENV` reaches `envName()`: with no plugin and no `__ENV_NAME__`, every entry in the chain is empty and `envName()` falls through to its `"development"` fallback — *regardless* of the `--mode` or `VITE_ENV` you built with. A `vite build --mode production` that worked locally will quietly ship the **development** config.
 
-The plugin solves this by injecting `__ENV_NAME__ = "staging"` as a build-time constant (from `--mode staging` or `VITE_ENV=staging`). That constant wins over `NODE_ENV` in the precedence chain, so the browser sees the env you actually built.
+The plugin solves this by injecting `__ENV_NAME__` as a build-time constant (from `VITE_ENV`, else Vite's `mode`). That constant is the only thing `envName()` can read in the browser, so it sees the env you actually built.
 
-This is why **the plugin is required for custom Vite modes**, even if you load config via dynamic import (Pattern 1) and don't actually use the `#config` alias.
+This is why **the plugin is required for any non-development browser build** — even if you load config via dynamic import (Pattern 1) and don't actually use the `#config` alias.
 
 See [Guides → SPA dynamic import](/docs/guides/spa-dynamic-import) and [Guides → Custom modes](/docs/guides/custom-modes) for the wiring.

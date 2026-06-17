@@ -69,7 +69,7 @@ export default defineConfig({
 
 - **Dynamic `import()` in `defineEnv`**: Vite sees the template literal and emits one chunk per matching file under `../config/`. `defineEnv` auto-unwraps the ESM module namespace (no manual `.default`).
 - **`await defineEnv(...)`**: when `config` is a Promise, `defineEnv` returns `Promise<Env<S>>`. You can also skip the `await` and let consumers handle the Promise.
-- **`envConfig()` plugin**: in this pattern you don't import `#config`, so why bring the plugin? Because it also injects `__ENV_NAME__` at build time, which is **the only way `envName()` can return non-`production` values in the browser** — Vite forces `NODE_ENV="production"` regardless of `--mode`. Without the plugin, `envName()` in browser code would always say `"production"` after a build. See [`envName()`](/docs/concepts/env-name) and [Custom modes](/docs/guides/custom-modes).
+- **`envConfig()` plugin**: in this pattern you don't import `#config`, so why bring the plugin? Because it also injects `__ENV_NAME__` at build time, and that constant is **the only way the built env name reaches `envName()` in the browser** — `readEnv()` reads `window.__env`, never `process.env`, so a pure SPA can't see `NODE_ENV` / `VITE_ENV`. Without the plugin, `envName()` falls back to `"development"` after a build — silently shipping your dev config to every environment — no matter what `--mode` or `VITE_ENV` you built with. See [`envName()`](/docs/concepts/env-name) and [Custom modes](/docs/guides/custom-modes).
 
 ## Hardening chunk filenames
 
