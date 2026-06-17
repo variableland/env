@@ -30,7 +30,11 @@ export const ENV_GLOBAL_ID = "__env";
  * return the right env name in the browser without manual `runtimeEnv` plumbing.
  *
  * Sits **between** `env.ENV` (explicit runtime override) and `env.NODE_ENV` in
- * `envName()`'s precedence chain — required for non-default modes (`staging`,
- * `qa`, …) because Vite forces `NODE_ENV="production"` regardless of `--mode`.
+ * `envName()`'s precedence chain. In the browser it's the only source `envName()`
+ * has: `readEnv()` reads `window.__env`, never `process.env`, so a pure SPA sees
+ * no `NODE_ENV` / `VITE_ENV` and falls back to `"development"` without this inject.
+ * That's why the plugin is required for any non-development browser build — not
+ * just custom modes like `staging` / `qa` (which Vite would otherwise flatten by
+ * forcing `NODE_ENV="production"` regardless of `--mode`).
  */
 export const BUILD_TIME_ENV_NAME_ID = "__ENV_NAME__";
